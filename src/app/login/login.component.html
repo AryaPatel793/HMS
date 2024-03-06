@@ -1,0 +1,20 @@
+<h2>Hospital Management System</h2>
+<body>
+  <div class="login-page">
+    <div class="form">
+      <div class="login">
+        <div class="login-header">
+          <h3>LOGIN</h3>
+          <p>Please enter your credentials to login.</p>
+        </div>
+      </div>
+      <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="login-form">
+          <input type="email" formControlName="email" placeholder="Email" >
+          <p style="color: red;" *ngIf="f['email'] && f['email'].invalid && f['email'].touched">Valid email is required!</p>
+          <input type="password" formControlName="password" placeholder="Password" >
+          <p style="color: red;" *ngIf="f['password'] && f['password'].invalid && f['password'].touched">Valid password is required !</p>
+        <button type="submit" class="btn" [disabled]="loginForm.invalid">Login</button>
+      </form>
+    </div>
+  </div>
+</body>

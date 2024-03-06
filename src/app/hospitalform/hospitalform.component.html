@@ -1,0 +1,58 @@
+<h2>Hospital Detail Form</h2>
+<div class="container">
+    <form [formGroup]="hospitalForm" (ngSubmit)="saveHospital()">
+    <div class="row">
+        <div class="col-4">
+            <label for="">Name</label>
+            <input type="text" class="form-control" formControlName="name">
+            <p style="color: red;" *ngIf="f['name'] && f['name'].invalid && f['name'].touched">Valid name is required!</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4">
+            <label for="">Address</label>
+            <input type="text" class="form-control" formControlName="address">
+            <p style="color: red;" *ngIf="f['address'] && f['address'].invalid && f['address'].touched">Valid address is required!</p>
+        </div>
+        <div class="col-4">
+            <label for="">State</label>
+            <input type="text" class="form-control" formControlName="state">
+            <p style="color: red;" *ngIf="f['state'] && f['state'].invalid && f['state'].touched">Valid state is required!</p>
+        </div>
+        <div class="col-4">
+            <label for="">City</label>
+            <input type="text" class="form-control" formControlName="city">
+            <p style="color: red;" *ngIf="f['city'] && f['city'].invalid && f['city'].touched">Valid city is required!</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4">
+            <label for="">ZipCode</label>
+            <input type="text" class="form-control" formControlName="zipcode">
+            <p style="color: red;" *ngIf="f['zipcode'] && f['zipcode'].invalid && f['zipcode'].touched">Valid 6 digit zipcode is required!</p>
+        </div>
+        <div class="col-4">
+            <label for="">Hospital Type</label>
+            <select class="form-control form-select" formControlName="hospital_type">
+                <option value="GENERAL">GENERAL</option>
+                <option value="PRIVATE">PRIVATE</option>
+            </select>
+            <p style="color: red;" *ngIf="f['hospital_type'] && f['hospital_type'].invalid && f['hospital_type'].touched">Valid zipcode is required!</p>
+        </div>
+        <div class="col-4">
+            <label for="">Active Status</label>
+            <select class="form-control form-select" formControlName="is_active">
+                <option value="true">Active</option>
+                <option value="false">Not Active</option>
+            </select>
+            <p style="color: red;" *ngIf="f['is_active'] && f['is_active'].invalid && f['is_active'].touched">Valid zipcode is required!</p>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-6">
+            <button type="submit" class="btn btn-success"> Save Hospital</button>
+        </div>
+    </div>
+    </form>
+</div>
