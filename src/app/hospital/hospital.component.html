@@ -1,11 +1,13 @@
 <div class="row">
     <div class="col-12 d-flex justify-content-end">
-        <button type="button" [routerLink]="['/adminDashboard/addHospital']" routerLinkActive="active" (click)="onAddHospitalClick()" class="btn btn-dark">+ Add Hospital</button>
+        <button type="button" routerLink="../addHospital" routerLinkActive="active" (click)="onAddHospitalClick()" class="btn btn-dark">+ Add Hospital</button>
     </div>
 </div>
+
 <div class="row">
     <div class="col-12">
-        <ag-grid-angular class="ag-theme-quartz"
+        <ag-grid-angular 
+        class="ag-theme-quartz"
         style="height: 500px; width: 100%;"
         [rowData]="hospitalList"
         [columnDefs]="colDefs"
@@ -13,4 +15,3 @@
         </ag-grid-angular>
     </div>
 </div>
-<!-- routerLink="../addHospital"  -->
