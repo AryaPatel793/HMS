@@ -1,4 +1,5 @@
 <h2>Hospital Management System</h2>
+
 <body>
   <div class="login-page">
     <div class="form">
@@ -9,10 +10,12 @@
         </div>
       </div>
       <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="login-form">
-        <input type="email" class="form-control" [class.is-valid]="f['email'].valid" [class.is-invalid]="f['email'].invalid && f['email'].touched" formControlName="email" placeholder="Email">
-          <p class="field-validation-error" *ngIf="f['email'] && f['email'].invalid && f['email'].touched">Valid email is required!</p>
-          <input type="password" class="form-control " [class.is-valid]="f['password'].valid" [class.is-invalid]="f['password'].invalid && f['password'].touched" formControlName="password" placeholder="Password">
-          <p class="field-validation-error" *ngIf="f['password'] && f['password'].invalid && f['password'].touched">Minimum 6 length password required !</p>
+        <input type="email" class="form-control" [class.is-valid]="!isFieldValid('email')"
+          [class.is-invalid]="isFieldValid('email')" formControlName="email" placeholder="Email">
+        <p class="field-validation-error" *ngIf="isFieldValid('email')">Valid email is required!</p>
+        <input type="password" class="form-control " [class.is-valid]="!isFieldValid('password')"
+          [class.is-invalid]="isFieldValid('password')" formControlName="password" placeholder="Password">
+        <p class="field-validation-error" *ngIf="isFieldValid('password')">Minimum 6 length password required !</p>
         <button type="submit" class="btn" [disabled]="loginForm.invalid">Login</button>
       </form>
     </div>

@@ -37,6 +37,10 @@ export const routes: Routes = [
             component: HospitalformComponent,
         },
         {
+          path: 'addHospital/:id', // Use a dynamic segment for the hospital ID
+          component: HospitalformComponent,
+        },
+        {
           path: 'doctor',
           component: DoctorComponent
         },

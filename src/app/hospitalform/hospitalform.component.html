@@ -4,70 +4,70 @@
         <div class="row">
             <div class="col-4">
                 <label for="name">Name</label>
-                <input type="text" class="form-control" [class.is-valid]="f['name'].valid" [class.is-invalid]="f['name'].invalid && f['name'].touched" formControlName="name">
-                <p class="field-validation-error" *ngIf="f['name'].invalid && f['name'].touched">Valid name is required!</p>
+                <input type="text" class="form-control" [class.is-valid]="isFieldValid('name')"
+                    [class.is-invalid]="isFieldInvalid('name')" formControlName="name">
+                <p class="field-validation-error" *ngIf="isFieldInvalid('name')">Valid name is required!</p>
             </div>
         </div>
         <div class="row">
             <div class="col-4">
                 <label for="address">Address</label>
-                <input type="text" class="form-control" [class.is-valid]="f['address'].valid" [class.is-invalid]="f['address'].invalid && f['address'].touched" formControlName="address">
-                <p class="field-validation-error" *ngIf="f['address'].invalid && f['address'].touched">Valid address is required!</p>
+                <input type="text" class="form-control" [class.is-valid]="isFieldValid('address')"
+                    [class.is-invalid]="isFieldInvalid('address')" formControlName="address">
+                <p class="field-validation-error" *ngIf="isFieldInvalid('address')">Valid address is required!</p>
             </div>
-            <!-- <div class="col-4">
+            <div class="col-4">
                 <label for="state">State</label>
-                <input type="text" class="form-control" [class.is-valid]="f['state'].valid" [class.is-invalid]="f['state'].invalid && f['state'].touched" formControlName="state">
-                <p class="field-validation-error" *ngIf="f['state'].invalid && f['state'].touched">Valid state is required!</p>
+                <select class="form-control form-select" formControlName="state" (change)="onStateChange($event)"
+                    [class.is-valid]="isFieldValid('state')" [class.is-invalid]="isFieldInvalid('state')">
+                    <option value="" disabled>--Select a State--</option>
+                    <option *ngFor="let state of states" [value]="state">{{state}}</option>
+                </select>
+                <p class="field-validation-error" *ngIf="isFieldInvalid('state')">State is required!</p>
             </div>
             <div class="col-4">
                 <label for="city">City</label>
-                <input type="text" class="form-control" [class.is-valid]="f['city'].valid" [class.is-invalid]="f['city'].invalid && f['city'].touched" formControlName="city">
-                <p class="field-validation-error" *ngIf="f['city'].invalid && f['city'].touched">Valid city is required!</p>
-            </div> -->
-            
-                <div class="col-4">
-                    <label for="state">State</label>
-                    <select class="form-control form-select" formControlName="state" (change)="onStateChange($event)">
-                        <option value="" disabled>--Select a State--</option>
-                        <option *ngFor="let state of states" [value]="state">{{state}}</option>
-                    </select>
-                </div>
-                <div class="col-4">
-                    <label for="city">City</label>
-                    <select class="form-control form-select" formControlName="city">
-                        <option value="" disabled>--Select a City--</option>
-                        <option *ngFor="let city of cities" [value]="city">{{city}}</option>
-                    </select>
-                </div>
-            
+                <select class="form-control form-select" formControlName="city" [class.is-valid]="isFieldValid('city')"
+                    [class.is-invalid]="isFieldInvalid('city')">
+                    <option value="" disabled>--Select a City--</option>
+                    <option *ngFor="let city of cities" [value]="city">{{city}}</option>
+                </select>
+                <p class="field-validation-error" *ngIf="isFieldInvalid('city')">City is required!</p>
+            </div>
         </div>
         <div class="row">
             <div class="col-4">
                 <label for="zipcode">ZipCode</label>
-                <input type="text" class="form-control" [class.is-valid]="f['zipcode'].valid" [class.is-invalid]="f['zipcode'].invalid && f['zipcode'].touched" formControlName="zipcode">
-                <p class="field-validation-error" *ngIf="f['zipcode'].invalid && f['zipcode'].touched">Valid 6 digit zipcode is required!</p>
+                <input type="text" class="form-control" [class.is-valid]="isFieldValid('zipcode')"
+                    [class.is-invalid]="isFieldInvalid('zipcode')" formControlName="zipcode">
+                <p class="field-validation-error" *ngIf="isFieldInvalid('zipcode')">Valid 6 digit zipcode is required!
+                </p>
             </div>
             <div class="col-4">
                 <label for="hospital_type">Hospital Type</label>
-                <select class="form-control form-select" formControlName="hospital_type">
+                <select class="form-control form-select" [class.is-valid]="isFieldValid('hospital_type')"
+                    [class.is-invalid]="isFieldInvalid('hospital_type')" formControlName="hospital_type">
                     <option value="GENERAL">GENERAL</option>
                     <option value="PRIVATE">PRIVATE</option>
                 </select>
-                <p class="field-validation-error" *ngIf="f['hospital_type'].invalid && f['hospital_type'].touched">Valid hospital type is required!</p>
+                <p class="field-validation-error" *ngIf="isFieldInvalid('hospital_type')">Valid hospital type is
+                    required!</p>
             </div>
             <div class="col-4">
                 <label for="is_active">Active Status</label>
-                <select class="form-control form-select"  formControlName="is_active">
+                <select class="form-control form-select" formControlName="is_active"
+                    [class.is-valid]="isFieldValid('is_active')" [class.is-invalid]="isFieldInvalid('is_active')">
                     <option value="true">Active</option>
                     <option value="false">Not Active</option>
                 </select>
-                <p class="field-validation-error" *ngIf="f['is_active'].invalid && f['is_active'].touched">Valid active status is required!</p>
+                <p class="field-validation-error" *ngIf="isFieldInvalid('is_active')">Valid active status is required!
+                </p>
             </div>
         </div>
         <br>
         <div class="row">
             <div class="col-6">
-                <button type="submit" class="btn btn-success" [disabled]="hospitalForm.invalid"> Save Hospital</button>
+                <button type="submit" class="btn btn-success"> Save Hospital</button>
             </div>
         </div>
     </form>
