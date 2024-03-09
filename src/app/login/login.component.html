@@ -16,6 +16,7 @@
         <input type="password" class="form-control " [class.is-valid]="!isFieldValid('password')"
           [class.is-invalid]="isFieldValid('password')" formControlName="password" placeholder="Password">
         <p class="field-validation-error" *ngIf="isFieldValid('password')">Minimum 6 length password required !</p>
+        <!-- <p class="field-validation-error" *ngIf="isFieldValid('password')">Required 1 Uppercase ,1 Lowercase letter, 1 number, 1 Special Charater</p> -->
         <button type="submit" class="btn" [disabled]="loginForm.invalid">Login</button>
       </form>
     </div>

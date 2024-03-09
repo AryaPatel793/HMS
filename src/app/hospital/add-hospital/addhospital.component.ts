@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
-  AbstractControl,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
@@ -9,27 +8,27 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { HospitalService } from '../Services/Hospital/hospital.service';
-import { NotificationService } from '../Services/notification/notification.service';
+import { HospitalService } from '../../Services/Hospital/hospital.service';
+import { NotificationService } from '../../Services/notification/notification.service';
 import { Router } from '@angular/router';
-import { Hospital } from '../model/Hospital';
+import { Hospital } from '../../model/Hospital';
 import { NgIf } from '@angular/common';
 import { ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Constants } from '../Services/constants/Constants';
+import { Constant } from '../../Services/constant/Constant';
 import { NgZone } from '@angular/core';
 
 @Component({
   selector: 'app-hospitalform',
   standalone: true,
   imports: [ReactiveFormsModule, NgIf, CommonModule],
-  templateUrl: './hospitalform.component.html',
-  styleUrl: './hospitalform.component.css',
+  templateUrl: './addhospital.component.html',
+  styleUrl: './addhospital.component.css',
 })
-export class HospitalformComponent implements OnInit {
+export class AddHospitalComponent implements OnInit {
   hospitalForm!: FormGroup;
 
-  states: string[] = Constants.states;
+  states: string[] = Constant.states;
 
   cities: string[] = [];
 
@@ -121,7 +120,7 @@ export class HospitalformComponent implements OnInit {
 
   onStateChange(event: any) {
     const state = event.target.value;
-    this.cities = Constants.cityData[state] || [];
+    this.cities = Constant.cityData[state] || [];
     this.cdr.detectChanges();
   }
 

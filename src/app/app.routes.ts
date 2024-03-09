@@ -1,11 +1,14 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { AdminPageComponent } from './admin-page/admin-page.component';
-import { HospitalComponent } from './hospital/hospital.component';
+import { HospitalDetailComponent } from './hospital/hospital-detail/hospital-detail.component';
 import { DoctorComponent } from './doctor/doctor.component';
 import { PatientComponent } from './patient/patient.component';
 import { AppointmentComponent } from './appointment/appointment.component';
-import { HospitalformComponent } from './hospitalform/hospitalform.component';
+import { AddHospitalComponent } from './hospital/add-hospital/addhospital.component';
+import { HospitalComponent } from './hospital/hospital.component';
+import { DoctorDetailComponent } from './doctor/doctor-detail/doctor-detail.component';
+import { AddDoctorComponent } from './doctor/add-doctor/add-doctor.component';
 
 export const routes: Routes = [
     {
@@ -24,25 +27,38 @@ export const routes: Routes = [
         {
           path: 'hospital',
           component: HospitalComponent,
-          pathMatch: 'full',
-        //   children: [
-        //     {
-        //       path: 'addHospital',
-        //       component: HospitalformComponent,
-        //     }
-        //   ]
-        },
-        {
-            path: 'addHospital',
-            component: HospitalformComponent,
-        },
-        {
-          path: 'addHospital/:id', // Use a dynamic segment for the hospital ID
-          component: HospitalformComponent,
+          children:[
+            {
+              path: '',
+              component: HospitalDetailComponent,
+          },
+          {
+              path: 'addHospital',
+              component: AddHospitalComponent,
+          },
+          {
+            path: 'addHospital/:id',
+            component: AddHospitalComponent,
+          },
+          ]
         },
         {
           path: 'doctor',
-          component: DoctorComponent
+          component: DoctorComponent,
+          children:[
+            {
+              path:'',
+              component:DoctorDetailComponent
+            },
+            {
+              path: 'addDoctor',
+              component: AddDoctorComponent,
+          },
+          {
+            path: 'addDoctor/:id',
+            component: AddDoctorComponent,
+          },
+          ]
         },
         {
           path: 'patient',

@@ -1,14 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Constants } from '../constants/Constants';
+import { Constant } from '../constant/Constant';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HospitalService {
 
-  private static HOSPITAL_ENDPOINT = `${Constants.BASE_URL}hospitals/hospital`;
+  private static HOSPITAL_ENDPOINT = `${Constant.BASE_URL}hospitals/hospital`;
 
   constructor(private http:HttpClient) { }
 

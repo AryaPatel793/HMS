@@ -57,7 +57,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     let loginData = new Login(this.loginForm);
     this.loginService.login(loginData).subscribe((response: any) => {
       if (response.valid) {
-        this.notificationService.successNotification('Login Successfully');
+        this.notificationService.successNotification('Login Successfull');
         if (response.role == 'Admin') {
           this.router.navigate(['/adminDashboard']);
         }

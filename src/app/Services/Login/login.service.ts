@@ -1,14 +1,14 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Constants } from '../constants/Constants';
+import { Constant } from '../constant/Constant';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
 
-  private static LOGIN_ENDPOINT = `${Constants.BASE_URL}loginUser/login`;
+  private static LOGIN_ENDPOINT = `${Constant.BASE_URL}loginUser/login`;
 
   constructor(private http:HttpClient) { }
 
