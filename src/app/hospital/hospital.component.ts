@@ -76,7 +76,7 @@ export class HospitalComponent implements OnInit {
   }
 
   onIdClick(rowData: any) {
-    const hospitalId = rowData.id;
+    const hospitalId = rowData.hospitalId;
     console.log(hospitalId);
     console.log(rowData);
     this.router.navigate(['../addHospital', hospitalId], {
@@ -131,3 +131,5 @@ export class HospitalComponent implements OnInit {
 // }
 
 // [components]="frameworkComponents" in html file
+
+// changes
