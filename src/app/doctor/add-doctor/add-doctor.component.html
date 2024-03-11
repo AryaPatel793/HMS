@@ -60,6 +60,46 @@
                 </p>
             </div>
         </div>
+        <div class="row">
+            <div class="col-4">
+                <label for="user_name">User Name</label>
+                <input type="text" class="form-control" [class.is-valid]="isFieldValid('user_name')"
+                    [class.is-invalid]="isFieldInvalid('user_name')" formControlName="user_name">
+                <p class="field-validation-error" *ngIf="isFieldInvalid('user_name')">Valid user name is required!
+                </p>
+            </div>
+            <div class="col-4">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" [class.is-valid]="isFieldValid('email')"
+                    [class.is-invalid]="isFieldInvalid('email')" formControlName="email">
+                <p class="field-validation-error" *ngIf="isFieldInvalid('email')">Valid email is required!
+                </p>
+            </div>
+            <div class="col-4">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" [class.is-valid]="isFieldValid('password')"
+                    [class.is-invalid]="isFieldInvalid('password')" formControlName="password">
+                <p class="field-validation-error" *ngIf="isFieldInvalid('password')">Valid password is required!
+                </p>
+            </div>
+        </div>
+        <!-- Add this section to your form -->
+<!-- Add this section to your form -->
+<div class="row">
+    <div class="col-4">
+      <label for="hospitals">Hospitals</label>
+      <ng-multiselect-dropdown
+        [placeholder]="'Select Hospitals'"
+        [data]="hospitals"
+        [(ngModel)]="selectedHospitals"
+        [settings]="dropdownSettings"
+        formControlName="hospitals"
+      ></ng-multiselect-dropdown>
+      <p class="field-validation-error" *ngIf="isFieldInvalid('hospitals')">Please select at least one hospital.</p>
+    </div>
+  </div>
+  
+
         <br>
         <div class="row">
             <div class="col-6">

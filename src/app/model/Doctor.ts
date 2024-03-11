@@ -8,6 +8,10 @@ export class Doctor {
     zipcode: string;
     is_active: boolean;
     doctor_custom_id: string;
+    user_name: string;
+    email : string;
+    password: string;
+    selected_hospital: any[];
   
     constructor(data: any) {
       this.doctor_id = data.doctor_id;
@@ -19,6 +23,10 @@ export class Doctor {
       this.state = data.state;
       this.zipcode = data.zipcode;
       this.is_active = data.is_active;
+      this.user_name = data.user_name;
+      this.email = data.email;
+      this.password = data.password;
+      this.selected_hospital = [];
     }
   }
   

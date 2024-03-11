@@ -19,6 +19,9 @@ import { AgGridModule } from 'ag-grid-angular';
   styleUrl: './hospital-detail.component.css',
 })
 export class HospitalDetailComponent implements OnInit {
+
+  hospitalList: any[] = [];
+
   // Add a new property to the class for the cell renderer function
   hospitalIdCellRenderer = (params: any) => {
     const anchor = document.createElement('a');
@@ -40,14 +43,15 @@ export class HospitalDetailComponent implements OnInit {
       headerName: 'Hospital Id',
       cellRenderer: this.hospitalIdCellRenderer, // Use the new cell renderer here
     },
-    { field: 'name' },
-    { field: 'address' },
-    { field: 'city' },
-    { field: 'state' },
-    { field: 'zipCode' },
-    { field: 'hospitalType' },
+    { field: 'name' ,filter:true },
+    { field: 'address' ,filter:true  },
+    { field: 'city' ,filter:true },
+    { field: 'state' ,filter:true  },
+    { field: 'zipCode' ,filter:true },
+    { field: 'hospitalType' ,filter:true },
     {
       field: 'active',
+      filter:true ,
       headerName: 'Status',
       cellRenderer: this.activeCellRenderer,
     },
@@ -89,7 +93,6 @@ export class HospitalDetailComponent implements OnInit {
     minWidth: 100,
   };
 
-  hospitalList: any[] = [];
 
   getAllHospital() {
     this.hospitalService.getHospital().subscribe((response: any) => {

@@ -3,6 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
+  NgModel,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -17,11 +18,13 @@ import { ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Constant } from '../../Services/constant/Constant';
 import { NgZone } from '@angular/core';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { HospitalService } from '../../Services/Hospital/hospital.service';
 
 @Component({
   selector: 'app-add-doctor',
   standalone: true,
-  imports: [ReactiveFormsModule, NgIf, CommonModule],
+  imports: [ReactiveFormsModule, NgIf, CommonModule, NgMultiSelectDropDownModule],
   templateUrl: './add-doctor.component.html',
   styleUrl: './add-doctor.component.css'
 })
@@ -29,9 +32,23 @@ export class AddDoctorComponent {
 
   doctorForm!: FormGroup;
 
+  hospitals: any[] = []; // Populate this array with your hospital data
+
+  selectedHospitals: any[] = [];
+
   states: string[] = Constant.states;
 
   cities: string[] = [];
+
+  dropdownSettings = {
+    singleSelection: false,
+    idField: 'hospitalId', // Replace with your hospital ID field
+    textField: 'name', // Replace with your hospital name field
+    selectAllText: 'Select All',
+    unSelectAllText: 'Unselect All',
+    itemsShowLimit: 3,
+    allowSearchFilter: true,
+  };
 
   constructor(
     private http: HttpClient,
@@ -41,7 +58,8 @@ export class AddDoctorComponent {
     private router: Router,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef,
-    private zone: NgZone
+    private zone: NgZone,
+    private hospitalService : HospitalService
   ) {
     this.initializeForm();
     console.log('AddDoctorComponent constructor');
@@ -52,9 +70,14 @@ export class AddDoctorComponent {
       }
     });
   }
+  ngOnInit(): void {
+      this.getAllHospital();
+  }
 
-  ngOnInit() {
-    console.log('AddDoctorComponent ngOnInit');
+  getAllHospital() {
+    this.hospitalService.getHospital().subscribe((response: any) => {
+      this.hospitals = response;
+    });
   }
 
   private initializeForm() {
@@ -71,21 +94,33 @@ export class AddDoctorComponent {
         Validators.pattern(/^\d{6}$/),
       ]),
       is_active: new FormControl(null, [Validators.required]),
+      user_name: new FormControl(null, [Validators.required]),
+      email : new FormControl(null, [ Validators.required,Validators.pattern('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'),]),
+      password : new FormControl(null, [Validators.required,Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/),]),
+      hospitals : new FormControl([], [Validators.required])
     });
   }
 
   saveDoctor() {
     if (this.doctorForm.valid) {
       let doctorData = new Doctor(this.doctorForm.value);
-      this.doctorService
-        .addDoctor(doctorData)
-        .subscribe((result: any) => {
-          if (result.valid) {
-            this.notificationService.successNotification('Doctor added');
-            this.router.navigate(['/adminDashboard/doctor']);
-            this.initializeForm();
-          }
-        });
+  
+      // Extract only hospital IDs from the selected hospitals
+      const selectedHospitalIds = this.doctorForm.value.hospitals.map((hospital: any) => hospital.hospitalId);
+  
+      // Assign the selected hospital IDs to the doctorData
+      doctorData.selected_hospital = selectedHospitalIds;
+  
+      console.log(doctorData);
+      debugger;
+  
+      this.doctorService.addDoctor(doctorData).subscribe((result: any) => {
+        if (result.valid) {
+          this.notificationService.successNotification('Doctor added');
+          this.router.navigate(['/adminDashboard/doctor']);
+          this.initializeForm();
+        }
+      });
     } else {
       this.zone.run(() => {
         this.doctorForm.markAllAsTouched();
@@ -93,7 +128,7 @@ export class AddDoctorComponent {
       });
     }
   }
-
+  
 
   getDoctorDetailsById(id: any) {
     this.doctorService.getDoctorById(id).subscribe((doctor: any) => {
@@ -109,6 +144,9 @@ export class AddDoctorComponent {
         state: doctor.state,
         zipcode: doctor.zipcode,
         is_active: doctor.is_active,
+        user_name: doctor.user_name,
+        email: doctor.email,
+        password: doctor.password
       });
 
       // Update cities based on the state from the database
@@ -134,7 +172,4 @@ export class AddDoctorComponent {
   {
     return (this.doctorForm.get(field)?.valid);
   }
-
-
-
 }

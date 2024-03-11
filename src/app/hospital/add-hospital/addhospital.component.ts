@@ -60,11 +60,11 @@ export class AddHospitalComponent implements OnInit {
     this.hospitalForm = new FormGroup({
       hospital_id: new FormControl(''),
       hospital_custom_id: new FormControl(''),
-      name: new FormControl('', [Validators.required]),
-      address: new FormControl('', [Validators.required]),
+      name: new FormControl(null, [Validators.required]),
+      address: new FormControl(null, [Validators.required]),
       city: new FormControl(null, [Validators.required]),
       state: new FormControl(null, [Validators.required]),
-      zipcode: new FormControl('', [
+      zipcode: new FormControl(null, [
         Validators.required,
         Validators.pattern(/^\d{6}$/),
       ]),
@@ -82,21 +82,21 @@ export class AddHospitalComponent implements OnInit {
           if (result.valid) {
             this.notificationService.successNotification('Hospital added');
             this.router.navigate(['/adminDashboard/hospital']);
-            this.initializeForm();
+            // this.initializeForm();
           }
         });
     } else {
-      this.zone.run(() => {
+      
         this.hospitalForm.markAllAsTouched();
         this.notificationService.errorNotification('Please fill in all required fields correctly.');
-      });
+    
     }
   }
 
   getHospitalDetailsById(id: any) {
     this.hospitalService.getHospitalById(id).subscribe((hospital: any) => {
       // Initialize the form with the retrieved hospital data
-      this.initializeForm();
+      // this.initializeForm();
       this.hospitalForm.patchValue({
         hospital_id: hospital.hospital_id,
         hospital_custom_id: hospital.hospital_custom_id,
@@ -136,4 +136,5 @@ export class AddHospitalComponent implements OnInit {
   {
     return (this.hospitalForm.get(field)?.valid);
   }
+
 }

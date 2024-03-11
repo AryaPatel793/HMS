@@ -8,6 +8,8 @@ import { Constant } from '../constant/Constant';
 })
 export class LoginService {
 
+  private userName: string | undefined;
+
   private static LOGIN_ENDPOINT = `${Constant.BASE_URL}loginUser/login`;
 
   constructor(private http:HttpClient) { }
@@ -15,6 +17,20 @@ export class LoginService {
   login(credentials: any): Observable<any> {
     return this.http.post(LoginService.LOGIN_ENDPOINT, credentials);
   }
+
+  getUserName(): string |undefined{
+  return this.userName;
+  }
+
+  setUserName(user:string):void
+  {
+     this.userName= user;
+  }
+
+
+
+ 
+  
 }
 
 
