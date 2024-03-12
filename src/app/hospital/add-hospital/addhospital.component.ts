@@ -25,7 +25,7 @@ import { NgZone } from '@angular/core';
   templateUrl: './addhospital.component.html',
   styleUrl: './addhospital.component.css',
 })
-export class AddHospitalComponent implements OnInit {
+export class AddHospitalComponent implements OnInit, OnDestroy {
   hospitalForm!: FormGroup;
 
   states: string[] = Constant.states;
@@ -42,7 +42,6 @@ export class AddHospitalComponent implements OnInit {
     private cdr: ChangeDetectorRef,
     private zone: NgZone
   ) {
-    this.initializeForm();
     console.log('HospitalformComponent constructor');
     this.route.params.subscribe((params) => {
       const hospitalId = params['id'];
@@ -51,9 +50,15 @@ export class AddHospitalComponent implements OnInit {
       }
     });
   }
-
+  
   ngOnInit() {
+    this.initializeForm();
+
     console.log('HospitalformComponent ngOnInit');
+  }
+
+  ngOnDestroy(): void {
+    console.log('AddHospital Component destroyed')
   }
 
   private initializeForm() {
@@ -96,7 +101,7 @@ export class AddHospitalComponent implements OnInit {
   getHospitalDetailsById(id: any) {
     this.hospitalService.getHospitalById(id).subscribe((hospital: any) => {
       // Initialize the form with the retrieved hospital data
-      // this.initializeForm();
+      this.initializeForm();
       this.hospitalForm.patchValue({
         hospital_id: hospital.hospital_id,
         hospital_custom_id: hospital.hospital_custom_id,
@@ -125,7 +130,7 @@ export class AddHospitalComponent implements OnInit {
   }
 
   isFieldInvalid(field: string) {
-    console.log("InValid called");
+    // console.log("InValid called");
     return (
       this.hospitalForm.get(field)?.invalid &&
       (this.hospitalForm.get(field)?.touched ||
@@ -134,12 +139,13 @@ export class AddHospitalComponent implements OnInit {
   }
 
   isFieldValid(field :string)
-  { console.log("Is Field Valid called");
+  { 
+    // console.log("Is Field Valid called");
   
     return (this.hospitalForm.get(field)?.valid);
   }
 
   print(){
-    console.log(this.hospitalForm)
+  //    console.log(this.hospitalForm)
   }
 }

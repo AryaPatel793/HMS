@@ -1,6 +1,6 @@
 <h2>Doctor Detail Form</h2>
-<div class="container">
-    <form [formGroup]="doctorForm" (ngSubmit)="saveDoctor()">
+<div class="container" >
+    <form [formGroup]="doctorForm" (ngSubmit)="saveDoctor()" >
         <div class="row">
             <div class="col-4">
                 <label for="name">Name</label>
@@ -12,7 +12,8 @@
                 <label for="phoneNumber">Phone No:</label>
                 <input type="text" class="form-control" [class.is-valid]="isFieldValid('phone_number')"
                     [class.is-invalid]="isFieldInvalid('phone_number')" formControlName="phone_number">
-                <p class="field-validation-error" *ngIf="isFieldInvalid('phone_number')">10 digits phone number is required!</p>
+                <p class="field-validation-error" *ngIf="isFieldInvalid('phone_number')">10 digits phone number is
+                    required!</p>
             </div>
         </div>
         <div class="row">
@@ -84,19 +85,23 @@
             </div>
         </div>
         <!-- Add this section to your form -->
-<!-- Add this section to your form -->
-<div class="row">
-    <div class="col-4">
-      <label for="hospitals">Hospitals</label>
-      <ng-multiselect-dropdown
-        [placeholder]="'Select Hospitals'"
-        [data]="hospitals"
-        [settings]="dropdownSettings"
-        formControlName="hospitals"
-      ></ng-multiselect-dropdown>
-      <p class="field-validation-error" *ngIf="isFieldInvalid('hospitals')">Please select at least one hospital.</p>
-    </div>
-  </div>
+        <!-- Add this section to your form -->
+        <div class="row">
+            {{hospitals.length}}
+            <div class="col-4" >
+                <label for="hospitals">Hospitals</label>
+                <ng-multiselect-dropdown
+                #multiSelect
+                [placeholder]="'Select Hospitals'"
+                [settings]="dropdownSettings"
+                [data]="hospitals"
+                formControlName="hospitalList"
+                (change)="getAllHospital()"
+              ></ng-multiselect-dropdown>
+                <p class="field-validation-error" *ngIf="isFieldInvalid('hospitals')">Please select at least one
+                    hospital.</p>
+            </div>
+        </div>
         <br>
         <div class="row">
             <div class="col-6">

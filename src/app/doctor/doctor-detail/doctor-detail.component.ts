@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, ValueFormatterParams } from 'ag-grid-community';
 import { NgIf, isPlatformBrowser } from '@angular/common';
@@ -10,6 +10,9 @@ import { GridOptions } from 'ag-grid-community';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { AgGridModule } from 'ag-grid-angular';
+import { NgZone } from '@angular/core';
+
+
 @Component({
   selector: 'app-doctor-detail',
   standalone: true,
@@ -17,7 +20,7 @@ import { AgGridModule } from 'ag-grid-angular';
   templateUrl: './doctor-detail.component.html',
   styleUrl: './doctor-detail.component.css'
 })
-export class DoctorDetailComponent {
+export class DoctorDetailComponent implements OnInit, OnDestroy{
 
    // Add a new property to the class for the cell renderer function
    doctorIdCellRenderer = (params: any) => {
@@ -67,22 +70,31 @@ export class DoctorDetailComponent {
     @Inject(PLATFORM_ID) private platformId: any,
     private doctorService: DoctorService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private zone: NgZone,
   ) {}
-
+  
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.getAllDoctor();
     }
+    console.log('Doctor Detail Component Oninit')
+  }
+
+  ngOnDestroy(): void {
+    console.log('Doctor Detail Component destroyed')
   }
 
   onIdClick(rowData: any) {
     const doctorId = rowData.doctorId;
     console.log(doctorId);
     console.log(rowData);
-    this.router.navigate(['./addDoctor', doctorId], {
+    this.zone.run(() => {
+          this.router.navigate(['./addDoctor', doctorId], {
       relativeTo: this.route,
     });
+  });
+
   }
 
   defaultColDef = {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, ValueFormatterParams } from 'ag-grid-community';
 import { NgIf, isPlatformBrowser } from '@angular/common';
@@ -10,6 +10,9 @@ import { GridOptions } from 'ag-grid-community';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { AgGridModule } from 'ag-grid-angular';
+import { NgZone } from '@angular/core';
+
+
 
 @Component({
   selector: 'app-hospital',
@@ -18,7 +21,7 @@ import { AgGridModule } from 'ag-grid-angular';
   templateUrl: './hospital-detail.component.html',
   styleUrl: './hospital-detail.component.css',
 })
-export class HospitalDetailComponent implements OnInit {
+export class HospitalDetailComponent implements OnInit, OnDestroy {
 
   hospitalList: any[] = [];
 
@@ -70,22 +73,33 @@ export class HospitalDetailComponent implements OnInit {
     @Inject(PLATFORM_ID) private platformId: any,
     private hospitalService: HospitalService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private zone: NgZone,
+
   ) {}
+  
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.getAllHospital();
     }
+    console.log('Hospital Detail Component Oninit')
+  }
+
+  ngOnDestroy(): void {
+     console.log('Hospital Detail Component Destroyed')
   }
 
   onIdClick(rowData: any) {
     const hospitalId = rowData.hospitalId;
     console.log(hospitalId);
     console.log(rowData);
+    this.zone.run(() => {
     this.router.navigate(['./addHospital', hospitalId], {
       relativeTo: this.route,
     });
+  });
+
   }
 
   defaultColDef = {
@@ -95,9 +109,14 @@ export class HospitalDetailComponent implements OnInit {
 
 
   getAllHospital() {
-    this.hospitalService.getHospital().subscribe((response: any) => {
+
+    this.hospitalService.getHospital(this.getUsername()).subscribe((response: any) => {
       this.hospitalList = response;
     });
+  }
+
+  getUsername(): string | null{
+    return sessionStorage.getItem('username')
   }
 
   onGridReady(params: any) {

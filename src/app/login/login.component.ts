@@ -8,6 +8,8 @@ import { LoginService } from '../Services/Login/login.service';
 import { NgIf } from '@angular/common';
 import { NotificationService } from '../Services/notification/notification.service';
 import { Login } from '../model/Login';
+import { isPlatformBrowser } from '@angular/common';
+import { PLATFORM_ID, Inject } from '@angular/core';
 
 @Component({
   selector: 'app-login',
@@ -25,13 +27,16 @@ export class LoginComponent implements OnInit, OnDestroy {
     private router: Router,
     private toastr: ToastrService,
     private loginService: LoginService,
+    @Inject(PLATFORM_ID) private platformId: any,
     private notificationService: NotificationService
   ) {
     this.initForm();
   }
 
   ngOnInit() {
-    console.log('ngOnInit called');
+    if (isPlatformBrowser(this.platformId)) {
+      console.log('ngOnInit called');
+    }
   }
 
   ngOnDestroy() {
@@ -58,12 +63,13 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.loginService.login(loginData).subscribe((response: any) => {
       if (response.valid) {
         this.loginService.setUserName(response.user_name);
+        sessionStorage.setItem('username',response.user_name);
         this.notificationService.successNotification('Login Successfull');
         if (response.role == 'Admin') {
           this.router.navigate(['/adminDashboard']);
         }
         if (response.role == 'Doctor') {
-          // this.router.navigate(['/adminDashboard']);
+          this.router.navigate(['/adminDashboard']);
         }
         if (response.role == 'Patient') {
           // this.router.navigate(['/adminDashboard']);

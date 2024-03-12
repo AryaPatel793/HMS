@@ -12,9 +12,15 @@ import { LoginService } from '../Services/Login/login.service';
 export class AdminPageComponent {
 
   constructor( public loginService : LoginService){
-    console.log(loginService.getUserName());
+    console.log("Layout page constructor");
     
 
+  }
+
+
+
+  getUserName(){
+    return sessionStorage.getItem('username');
   }
 
   
