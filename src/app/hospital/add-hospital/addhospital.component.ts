@@ -125,6 +125,7 @@ export class AddHospitalComponent implements OnInit {
   }
 
   isFieldInvalid(field: string) {
+    console.log("InValid called");
     return (
       this.hospitalForm.get(field)?.invalid &&
       (this.hospitalForm.get(field)?.touched ||
@@ -133,8 +134,12 @@ export class AddHospitalComponent implements OnInit {
   }
 
   isFieldValid(field :string)
-  {
+  { console.log("Is Field Valid called");
+  
     return (this.hospitalForm.get(field)?.valid);
   }
 
+  print(){
+    console.log(this.hospitalForm)
+  }
 }

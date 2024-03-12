@@ -3,6 +3,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
+  FormsModule,
   NgModel,
   ReactiveFormsModule,
   Validators,
@@ -24,7 +25,7 @@ import { HospitalService } from '../../Services/Hospital/hospital.service';
 @Component({
   selector: 'app-add-doctor',
   standalone: true,
-  imports: [ReactiveFormsModule, NgIf, CommonModule, NgMultiSelectDropDownModule],
+  imports: [ReactiveFormsModule, NgIf, CommonModule, NgMultiSelectDropDownModule, FormsModule],
   templateUrl: './add-doctor.component.html',
   styleUrl: './add-doctor.component.css'
 })
@@ -97,8 +98,8 @@ export class AddDoctorComponent {
       user_name: new FormControl(null, [Validators.required]),
       email : new FormControl(null, [ Validators.required,Validators.pattern('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'),]),
       password : new FormControl(null, [Validators.required,Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/),]),
-      hospitals : new FormControl([], [Validators.required])
-    });
+      hospitals: new FormControl([], [Validators.required]),
+        });
   }
 
   saveDoctor() {
@@ -146,7 +147,8 @@ export class AddDoctorComponent {
         is_active: doctor.is_active,
         user_name: doctor.user_name,
         email: doctor.email,
-        password: doctor.password
+        password: doctor.password,
+        hospitals: doctor.selected_hospital
       });
 
       // Update cities based on the state from the database

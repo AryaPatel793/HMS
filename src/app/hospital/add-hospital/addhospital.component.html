@@ -6,8 +6,9 @@
                 <label for="name">Name</label>
                 <input type="text" class="form-control" [ngClass]="{
                   'is-valid': isFieldValid('name'),
-                  'is-invalid': isFieldInvalid('name')
-                }" formControlName="name">
+                  'is-invalid': isFieldInvalid('name'),
+                }" formControlName="name"
+                (input)="print()">
                 <p class="field-validation-error" *ngIf="isFieldInvalid('name')">Valid name is required!</p>
             </div>
         </div>

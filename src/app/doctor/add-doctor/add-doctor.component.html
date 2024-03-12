@@ -91,15 +91,12 @@
       <ng-multiselect-dropdown
         [placeholder]="'Select Hospitals'"
         [data]="hospitals"
-        [(ngModel)]="selectedHospitals"
         [settings]="dropdownSettings"
         formControlName="hospitals"
       ></ng-multiselect-dropdown>
       <p class="field-validation-error" *ngIf="isFieldInvalid('hospitals')">Please select at least one hospital.</p>
     </div>
   </div>
-  
-
         <br>
         <div class="row">
             <div class="col-6">
