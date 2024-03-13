@@ -29,10 +29,12 @@ export class HospitalDetailComponent implements OnInit, OnDestroy {
   hospitalIdCellRenderer = (params: any) => {
     const anchor = document.createElement('a');
     anchor.innerText = params.value;
+    if (this.getUserRole() === 'Admin') {
     anchor.href = 'javascript:void(0);'; // Set a non-navigating href
     anchor.addEventListener('click', () => {
       this.onIdClick(params.data);
     });
+  }
     return anchor;
   };
 
