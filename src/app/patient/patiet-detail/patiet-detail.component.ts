@@ -5,25 +5,24 @@ import { NgIf, isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID, Inject } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { DoctorService } from '../../Services/Doctor/doctor.service';
 import { GridOptions } from 'ag-grid-community';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { AgGridModule } from 'ag-grid-angular';
 import { NgZone } from '@angular/core';
-
+import { PatientService } from '../../Services/Patient/patient.service';
 
 @Component({
-  selector: 'app-doctor-detail',
+  selector: 'app-patiet-detail',
   standalone: true,
   imports: [AgGridAngular, RouterModule, RouterOutlet, AgGridModule, NgIf],
-  templateUrl: './doctor-detail.component.html',
-  styleUrl: './doctor-detail.component.css'
+  templateUrl: './patiet-detail.component.html',
+  styleUrl: './patiet-detail.component.css'
 })
-export class DoctorDetailComponent implements OnInit, OnDestroy{
+export class PatietDetailComponent implements OnInit, OnDestroy {
 
    // Add a new property to the class for the cell renderer function
-   doctorIdCellRenderer = (params: any) => {
+   patientIdCellRenderer = (params: any) => {
     const anchor = document.createElement('a');
     anchor.innerText = params.value;
     anchor.href = 'javascript:void(0);'; // Set a non-navigating href
@@ -35,27 +34,33 @@ export class DoctorDetailComponent implements OnInit, OnDestroy{
 
   userRole: string = 'Admin';
 
-  doctorList: any[] = [];
+  patientList: any[] = [];
 
   gridOptions: GridOptions = {};
 
   colDefs: ColDef[] = [
     {
-      field: 'doctorId',
-      headerName: 'Doctor Id',
-      cellRenderer: this.doctorIdCellRenderer, // Use the new cell renderer here
+      field: 'patient_custom_id',
+      headerName: 'Patient Id',
+      cellRenderer: this.patientIdCellRenderer, // Use the new cell renderer here
     },
     { field: 'name' },
-    { field: 'phoneNumber'},
+    { field:'age'},
+    { field:'blood_group', headerName: 'Blood Gorup'},
+    { field: 'phone_number', headerName: 'Phone Number'},
     { field: 'address' },
     { field: 'city' },
     { field: 'state' },
-    { field: 'zipCode' },
+    { field: 'zipcode' },
     {
-      field: 'active',
+      field: 'is_active',
       headerName: 'Status',
       cellRenderer: this.activeCellRenderer,
     },
+    { field: 'doctor_custom_id' , headerName: 'Doctor Id'},
+    { field: 'doctor_name', headerName: 'Doctor Name' },
+    { field: 'hospital_custom_id' , headerName: 'Hospital Id'},
+    { field: 'hospital_name', headerName: 'Hospital Name' },
     // {
     //   headerName: 'Actions',
     //   cellRenderer: 'editButtonRenderer',
@@ -67,32 +72,34 @@ export class DoctorDetailComponent implements OnInit, OnDestroy{
   ];
 
 
+  ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.getAllPatient();
+    }
+    console.log(" Patient Detail Component Onint")
+  }
+
   constructor(
     private http: HttpClient,
     @Inject(PLATFORM_ID) private platformId: any,
-    private doctorService: DoctorService,
     private router: Router,
     private route: ActivatedRoute,
     private zone: NgZone,
-  ) {}
-  
-  ngOnInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      this.getAllDoctor();
-    }
-    console.log('Doctor Detail Component Oninit')
+    private patientService : PatientService,
+  ){
+
+  }
+  ngOnDestroy(): void {
+    console.log("Patient detail Component destroyed")
   }
 
-  ngOnDestroy(): void {
-    console.log('Doctor Detail Component destroyed')
-  }
 
   onIdClick(rowData: any) {
-    const doctorId = rowData.doctorId;
-    console.log(doctorId);
+    const patientId = rowData.patient_custom_id;
+    console.log(patientId);
     console.log(rowData);
     this.zone.run(() => {
-          this.router.navigate(['./addDoctor', doctorId], {
+          this.router.navigate(['./addPatient', patientId], {
       relativeTo: this.route,
     });
   });
@@ -107,9 +114,9 @@ export class DoctorDetailComponent implements OnInit, OnDestroy{
     return sessionStorage.getItem('username')
   }
 
-  getAllDoctor() {
-    this.doctorService.getDoctor(this.getUsername()).subscribe((response: any) => {
-      this.doctorList = response;
+  getAllPatient() {
+    this.patientService.getPatient(this.getUsername()).subscribe((response: any) => {
+      this.patientList = response;
     });
   }
 
@@ -121,8 +128,8 @@ export class DoctorDetailComponent implements OnInit, OnDestroy{
     return params.value ? 'Active' : 'Not Active';
   }
 
-  onAddDoctorClick() {
-    console.log('Add doctor button clicked');
+  onAddPatientClick() {
+    console.log('Add patient button clicked');
   }
 
 }

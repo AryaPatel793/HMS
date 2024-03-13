@@ -93,7 +93,6 @@ export class HospitalDetailComponent implements OnInit, OnDestroy {
   onIdClick(rowData: any) {
     const hospitalId = rowData.hospitalId;
     console.log(hospitalId);
-    console.log(rowData);
     this.zone.run(() => {
     this.router.navigate(['./addHospital', hospitalId], {
       relativeTo: this.route,

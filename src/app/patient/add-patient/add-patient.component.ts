@@ -16,10 +16,8 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { DoctorService } from '../../Services/Doctor/doctor.service';
 import { NotificationService } from '../../Services/notification/notification.service';
 import { Router } from '@angular/router';
-import { Doctor } from '../../model/Doctor';
 import { NgIf } from '@angular/common';
 import { ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -32,9 +30,11 @@ import {
   IDropdownSettings,
   NgMultiSelectDropDownModule,
 } from 'ng-multiselect-dropdown';
+import { Patient } from '../../model/Patient';
+import { PatientService } from '../../Services/Patient/patient.service';
 
 @Component({
-  selector: 'app-add-doctor',
+  selector: 'app-add-patient',
   standalone: true,
   imports: [
     ReactiveFormsModule,
@@ -43,11 +43,11 @@ import {
     NgMultiSelectDropDownModule,
     FormsModule,
   ],
-  templateUrl: './add-doctor.component.html',
-  styleUrl: './add-doctor.component.css',
+  templateUrl: './add-patient.component.html',
+  styleUrl: './add-patient.component.css',
 })
-export class AddDoctorComponent implements OnInit, OnDestroy {
-  doctorForm!: FormGroup;
+export class AddPatientComponent implements OnInit, OnDestroy {
+  patientForm!: FormGroup;
 
   hospitals: any[] = []; // Populate this array with your hospital data
 
@@ -58,7 +58,7 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
   cities: string[] = [];
 
   public dropdownSettings: IDropdownSettings = {
-    singleSelection: false,
+    singleSelection: true,
     idField: 'hospitalId', // Replace with your hospital ID field
     textField: 'name', // Replace with your hospital name field
     selectAllText: 'Select All',
@@ -71,13 +71,13 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.getAllHospital();
     this.initializeForm();
-    console.log('add doctor OnInit');
+    console.log('add patient OnInit');
   }
 
   constructor(
     private http: HttpClient,
     private toastr: ToastrService,
-    private doctorService: DoctorService,
+    private patientService: PatientService,
     private notificationService: NotificationService,
     private router: Router,
     private route: ActivatedRoute,
@@ -86,16 +86,17 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
     @Inject(PLATFORM_ID) private platformId: any,
     private hospitalService: HospitalService
   ) {
-    console.log('AddDoctorComponent constructor');
+    console.log('AddpatientComponent constructor');
     this.route.params.subscribe((params) => {
-      const doctorId = params['id'];
-      if (doctorId) {
-        this.getDoctorDetailsById(doctorId);
+      const patientId = params['id'];
+      if (patientId) {
+        this.getPatientDetailsById(patientId);
       }
     });
   }
+
   ngOnDestroy(): void {
-    console.log('AddDoctorComponent Destroyed');
+    console.log('AddPatientComponent Destroyed');
   }
 
   getUsername(): string | null {
@@ -112,10 +113,15 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
   }
 
   private initializeForm() {
-    this.doctorForm = new FormGroup({
-      doctor_id: new FormControl(''),
-      doctor_custom_id: new FormControl(''),
-      doctor_name: new FormControl('', [Validators.required]),
+    this.patientForm = new FormGroup({
+      patient_id: new FormControl(''),
+      patient_custom_id: new FormControl(''),
+      name: new FormControl('', [Validators.required]),
+      age: new FormControl('', [Validators.required]),
+      blood_group: new FormControl('', [
+        Validators.required,
+        Validators.pattern(/^(A|B|AB|O)[+-]$/),
+      ]),
       phone_number: new FormControl(null, [
         Validators.required,
         Validators.pattern(/^\d{10}$/),
@@ -143,31 +149,33 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
     });
   }
 
-  saveDoctor() {
-    if (this.doctorForm.valid) {
-      let doctorData = new Doctor(this.doctorForm.value);
+  savePatient() {
+    if (this.patientForm.valid) {
+      let patientData = new Patient(this.patientForm.value);
 
       // Extract only hospital IDs from the selected hospitals
-      const selectedHospitalIds = this.doctorForm.value.hospitalList.map(
+      const selectedHospitalIds = this.patientForm.value.hospitalList.map(
         (hospital: any) => hospital.hospitalId
       );
 
-      // Assign the selected hospital IDs to the doctorData
-      doctorData.selected_hospital = selectedHospitalIds;
-      console.log(doctorData.selected_hospital);
-      console.log(doctorData);
+      patientData.doctor_user_name = this.getUsername();
+
+      // Assign the selected hospital IDs to the patientData
+      patientData.selected_hospital = selectedHospitalIds;
+      console.log(patientData.selected_hospital);
+      console.log(patientData);
       debugger;
 
-      this.doctorService.addDoctor(doctorData).subscribe((result: any) => {
+      this.patientService.addPatient(patientData).subscribe((result: any) => {
         if (result.valid) {
-          this.notificationService.successNotification('Doctor added');
-          this.router.navigate(['/adminDashboard/doctor']);
+          this.notificationService.successNotification('Patient added');
+          this.router.navigate(['/adminDashboard/patient']);
           this.initializeForm();
         }
       });
     } else {
       this.zone.run(() => {
-        this.doctorForm.markAllAsTouched();
+        this.patientForm.markAllAsTouched();
         this.notificationService.errorNotification(
           'Please fill in all required fields correctly.'
         );
@@ -175,29 +183,31 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
     }
   }
 
-  getDoctorDetailsById(id: any) {
-    this.doctorService.getDoctorById(id).subscribe((doctor: any) => {
+  getPatientDetailsById(id: any) {
+    this.patientService.getPatientById(id).subscribe((patient: any) => {
       // Initialize the form with the retrieved hospital data
-      console.log(doctor);
+      console.log(patient);
 
-      this.doctorForm.patchValue({
-        doctor_id: doctor.doctor_id,
-        doctor_custom_id: doctor.doctor_custom_id,
-        doctor_name: doctor.doctor_name,
-        phone_number: doctor.phone_number,
-        address: doctor.address,
-        city: doctor.city,
-        state: doctor.state,
-        zipcode: doctor.zipcode,
-        is_active: doctor.is_active,
-        user_name: doctor.user_name,
-        email: doctor.email,
-        password: doctor.password,
-        hospitalList: doctor.selected_hospital || [],
+      this.patientForm.patchValue({
+        patient_id: patient.patient_id,
+        patient_custom_id: patient.patient_custom_id,
+        name: patient.name,
+        age: patient.age,
+        blood_group: patient.blood_group,
+        phone_number: patient.phone_number,
+        address: patient.address,
+        city: patient.city,
+        state: patient.state,
+        zipcode: patient.zipcode,
+        is_active: patient.is_active,
+        user_name: patient.user_name,
+        email: patient.email,
+        password: patient.password,
+        hospitalList: patient.selected_hospital || [],
       });
 
       // Update cities based on the state from the database
-      this.onStateChange({ target: { value: doctor.state } });
+      this.onStateChange({ target: { value: patient.state } });
     });
   }
 
@@ -209,12 +219,13 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
 
   isFieldInvalid(field: string) {
     return (
-      this.doctorForm.get(field)?.invalid &&
-      (this.doctorForm.get(field)?.touched || this.doctorForm.get(field)?.dirty)
+      this.patientForm.get(field)?.invalid &&
+      (this.patientForm.get(field)?.touched ||
+        this.patientForm.get(field)?.dirty)
     );
   }
 
   isFieldValid(field: string) {
-    return this.doctorForm.get(field)?.valid;
+    return this.patientForm.get(field)?.valid;
   }
 }

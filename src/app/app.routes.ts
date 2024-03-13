@@ -9,6 +9,8 @@ import { AddHospitalComponent } from './hospital/add-hospital/addhospital.compon
 import { HospitalComponent } from './hospital/hospital.component';
 import { DoctorDetailComponent } from './doctor/doctor-detail/doctor-detail.component';
 import { AddDoctorComponent } from './doctor/add-doctor/add-doctor.component';
+import { PatietDetailComponent } from './patient/patiet-detail/patiet-detail.component';
+import { AddPatientComponent } from './patient/add-patient/add-patient.component';
 
 export const routes: Routes = [
     {
@@ -62,7 +64,21 @@ export const routes: Routes = [
         },
         {
           path: 'patient',
-          component: PatientComponent
+          component: PatientComponent,
+          children:[
+            {
+              path:'',
+              component: PatietDetailComponent,
+            },
+            {
+              path:'addPatient',
+              component: AddPatientComponent
+            },
+            {
+              path: 'addPatient/:id',
+              component: AddPatientComponent
+            }
+          ]
         },
         {
           path: 'appointment',

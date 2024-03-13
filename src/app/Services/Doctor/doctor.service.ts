@@ -9,11 +9,12 @@ import { Constant } from '../constant/Constant';
 export class DoctorService {
 
   private static DOCTOR_ENDPOINT = `${Constant.BASE_URL}doctors/doctor`;
+  private static ALL_DOCTOR =  `${Constant.BASE_URL}doctors/all`;
 
   constructor(private http:HttpClient) { }
 
-  getDoctor(): Observable<any> {
-    return this.http.get(DoctorService.DOCTOR_ENDPOINT);
+  getDoctor(userName :any): Observable<any> {
+    return this.http.get(`${DoctorService.ALL_DOCTOR}/${userName}`);
   }
 
   addDoctor(data: any): Observable<any> {

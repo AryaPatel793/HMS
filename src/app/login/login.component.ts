@@ -72,7 +72,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           this.router.navigate(['/adminDashboard']);
         }
         if (response.role == 'Patient') {
-          // this.router.navigate(['/adminDashboard']);
+          this.router.navigate(['/adminDashboard']);
         }
       } else {
         this.notificationService.errorNotification('Invalid Credentials');
