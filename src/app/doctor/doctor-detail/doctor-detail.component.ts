@@ -107,6 +107,10 @@ export class DoctorDetailComponent implements OnInit, OnDestroy{
     return sessionStorage.getItem('username')
   }
 
+  getUserRole(): string | null{
+    return sessionStorage.getItem('role')
+  }
+
   getAllDoctor() {
     this.doctorService.getDoctor(this.getUsername()).subscribe((response: any) => {
       this.doctorList = response;

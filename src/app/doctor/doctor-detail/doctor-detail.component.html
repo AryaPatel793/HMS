@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-12 d-flex justify-content-end" *ngIf="userRole === 'Admin'">
+    <div class="col-12 d-flex justify-content-end" *ngIf="getUserRole() === 'Admin'">
         <button type="button" routerLink="./addDoctor" routerLinkActive="active" (click)="onAddDoctorClick()"
             class="btn btn-dark">+ Add Doctor</button>
     </div>

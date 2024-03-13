@@ -117,6 +117,9 @@ export class HospitalDetailComponent implements OnInit, OnDestroy {
   getUsername(): string | null{
     return sessionStorage.getItem('username')
   }
+  getUserRole(): string | null{
+    return sessionStorage.getItem('role')
+  }
 
   onGridReady(params: any) {
     this.gridOptions = params.api;
