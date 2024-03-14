@@ -103,6 +103,10 @@ export class AddPatientComponent implements OnInit, OnDestroy {
     return sessionStorage.getItem('username');
   }
 
+  getUserRole(): string | null{
+    return sessionStorage.getItem('role')
+  }
+
   getAllHospital() {
     this.hospitalService
       .getHospital(this.getUsername())

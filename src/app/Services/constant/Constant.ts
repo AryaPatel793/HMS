@@ -33,4 +33,6 @@ export class Constant {
         'Uttarakhand': ['Dehradun', 'Haridwar', 'Roorkee', 'Haldwani', 'Rudrapur'],
         'West Bengal': ['Kolkata', 'Asansol', 'Siliguri', 'Durgapur', 'Bardhaman']
       };
+
+      public static timeSlot : string[] = ['10 to 11 am', '11 to 12 pm', '12 to 1 pm', '1 to 2 pm', '2 to 3 pm', '3 to 4 pm', '4 to 5 pm', '5 to 6 pm','6 to 7 pm'];
  }

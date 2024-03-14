@@ -47,6 +47,7 @@ import {
   styleUrl: './add-doctor.component.css',
 })
 export class AddDoctorComponent implements OnInit, OnDestroy {
+  
   doctorForm!: FormGroup;
 
   hospitals: any[] = []; // Populate this array with your hospital data
@@ -100,6 +101,9 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
 
   getUsername(): string | null {
     return sessionStorage.getItem('username');
+  }
+  getUserRole(): string | null{
+    return sessionStorage.getItem('role')
   }
 
   getAllHospital() {

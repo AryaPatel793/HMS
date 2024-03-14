@@ -26,7 +26,7 @@ export class DoctorDetailComponent implements OnInit, OnDestroy{
    doctorIdCellRenderer = (params: any) => {
     const anchor = document.createElement('a');
     anchor.innerText = params.value;
-    if (this.getUserRole() === 'Admin') {
+    if (this.getUserRole() === 'Admin'|| this.getUserRole() === 'Doctor') {
     anchor.href = 'javascript:void(0);'; // Set a non-navigating href
     anchor.addEventListener('click', () => {
       this.onIdClick(params.data);

@@ -11,6 +11,8 @@ import { DoctorDetailComponent } from './doctor/doctor-detail/doctor-detail.comp
 import { AddDoctorComponent } from './doctor/add-doctor/add-doctor.component';
 import { PatietDetailComponent } from './patient/patiet-detail/patiet-detail.component';
 import { AddPatientComponent } from './patient/add-patient/add-patient.component';
+import { AppointmentDetailComponent } from './appointment/appointment-detail/appointment-detail.component';
+import { AddAppointmentComponent } from './appointment/add-appointment/add-appointment.component';
 
 export const routes: Routes = [
     {
@@ -82,7 +84,21 @@ export const routes: Routes = [
         },
         {
           path: 'appointment',
-          component: AppointmentComponent
+          component: AppointmentComponent,
+          children:[
+            {
+              path:'',
+              component: AppointmentDetailComponent
+            },
+            {
+              path:'addAppointment',
+              component: AddAppointmentComponent
+            },
+            {
+              path:'addAppointment/:id',
+              component: AddAppointmentComponent
+            }
+          ]
         },
       ]
     }

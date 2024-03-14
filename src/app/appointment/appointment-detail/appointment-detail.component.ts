@@ -10,22 +10,21 @@ import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { AgGridModule } from 'ag-grid-angular';
 import { NgZone } from '@angular/core';
-import { PatientService } from '../../Services/Patient/patient.service';
-
+import { AppointmentService } from '../../Services/Appointment/appointment.service';
 @Component({
-  selector: 'app-patiet-detail',
+  selector: 'app-appointment-detail',
   standalone: true,
   imports: [AgGridAngular, RouterModule, RouterOutlet, AgGridModule, NgIf],
-  templateUrl: './patiet-detail.component.html',
-  styleUrl: './patiet-detail.component.css'
+  templateUrl: './appointment-detail.component.html',
+  styleUrl: './appointment-detail.component.css'
 })
-export class PatietDetailComponent implements OnInit, OnDestroy {
+export class AppointmentDetailComponent {
 
    // Add a new property to the class for the cell renderer function
-   patientIdCellRenderer = (params: any) => {
+   appointmentIdCellRenderer = (params: any) => {
     const anchor = document.createElement('a');
     anchor.innerText = params.value;
-    if (this.getUserRole() === 'Admin' || this.getUserRole() === "Patient"|| this.getUserRole()==='Doctor') {
+    if (this.getUserRole() === 'Admin' || this.getUserRole() === "Patient") {
     anchor.href = 'javascript:void(0);'; // Set a non-navigating href
     anchor.addEventListener('click', () => {
       this.onIdClick(params.data);
@@ -36,33 +35,28 @@ export class PatietDetailComponent implements OnInit, OnDestroy {
 
   userRole: string = 'Admin';
 
-  patientList: any[] = [];
+  appointmentList: any[] = [];
 
   gridOptions: GridOptions = {};
 
   colDefs: ColDef[] = [
     {
-      field: 'patient_custom_id',
-      headerName: 'Patient Id',
-      cellRenderer: this.patientIdCellRenderer, // Use the new cell renderer here
+      field: 'appointment_custom_id',
+      headerName: 'Appointment Id',
+      cellRenderer: this.appointmentIdCellRenderer, // Use the new cell renderer here
     },
-    { field: 'name' },
-    { field:'age'},
-    { field:'blood_group', headerName: 'Blood Gorup'},
-    { field: 'phone_number', headerName: 'Phone Number'},
-    { field: 'address' },
-    { field: 'city' },
-    { field: 'state' },
-    { field: 'zipcode' },
-    {
-      field: 'is_active',
-      headerName: 'Status',
-      cellRenderer: this.activeCellRenderer,
-    },
-    { field: 'doctor_custom_id' , headerName: 'Doctor Id'},
-    { field: 'doctor_name', headerName: 'Doctor Name' },
-    { field: 'hospital_custom_id' , headerName: 'Hospital Id'},
-    { field: 'hospital_name', headerName: 'Hospital Name' },
+    { field: 'appointment_title' },
+    { field:'appointment_detail'},
+    { field: 'appointment_date'},
+    { field: 'appointment_time' },
+    { field: 'patient_custom_id' },
+    { field: 'patient_name' },
+    { field: 'doctor_id' },
+    { field: 'doctor_name' },
+    { field: 'hospital_id' },
+    { field: 'hospital_name' },
+    { field: 'status'}
+    
     // {
     //   headerName: 'Actions',
     //   cellRenderer: 'editButtonRenderer',
@@ -73,12 +67,11 @@ export class PatietDetailComponent implements OnInit, OnDestroy {
     // },
   ];
 
-
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      this.getAllPatient();
+      this.getAllAppointment();
     }
-    console.log(" Patient Detail Component Onint")
+    console.log(" Appointment Detail Component Onint")
   }
 
   constructor(
@@ -87,21 +80,20 @@ export class PatietDetailComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private zone: NgZone,
-    private patientService : PatientService,
+    private appointmentService : AppointmentService
   ){
-
   }
+
   ngOnDestroy(): void {
-    console.log("Patient detail Component destroyed")
+    console.log("Appointment Detail Component destroyed")
   }
-
 
   onIdClick(rowData: any) {
-    const patientId = rowData.patient_custom_id;
-    console.log(patientId);
+    const appointmentId = rowData.appointment_custom_id;
+    console.log(appointmentId);
     console.log(rowData);
     this.zone.run(() => {
-          this.router.navigate(['./addPatient', patientId], {
+          this.router.navigate(['./addAppointment', appointmentId], {
       relativeTo: this.route,
     });
   });
@@ -120,9 +112,9 @@ export class PatietDetailComponent implements OnInit, OnDestroy {
     return sessionStorage.getItem('role')
   }
 
-  getAllPatient() {
-    this.patientService.getPatient(this.getUsername()).subscribe((response: any) => {
-      this.patientList = response;
+  getAllAppointment() {
+    this.appointmentService.getAllAppointment(this.getUsername()).subscribe((response: any) => {
+      this.appointmentList = response;
     });
   }
 
@@ -130,12 +122,9 @@ export class PatietDetailComponent implements OnInit, OnDestroy {
     this.gridOptions = params.api;
   }
 
-  activeCellRenderer(params: ValueFormatterParams): string {
-    return params.value ? 'Active' : 'Not Active';
-  }
-
-  onAddPatientClick() {
-    console.log('Add patient button clicked');
+ 
+  onAddAppointmentClick() {
+    console.log('Add appointment button clicked');
   }
 
 }

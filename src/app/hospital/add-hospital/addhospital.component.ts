@@ -53,7 +53,6 @@ export class AddHospitalComponent implements OnInit, OnDestroy {
   
   ngOnInit() {
     this.initializeForm();
-
     console.log('HospitalformComponent ngOnInit');
   }
 
@@ -101,7 +100,7 @@ export class AddHospitalComponent implements OnInit, OnDestroy {
   getHospitalDetailsById(id: any) {
     this.hospitalService.getHospitalById(id).subscribe((hospital: any) => {
       // Initialize the form with the retrieved hospital data
-      this.initializeForm();
+      // this.initializeForm();
       this.hospitalForm.patchValue({
         hospital_id: hospital.hospital_id,
         hospital_custom_id: hospital.hospital_custom_id,
