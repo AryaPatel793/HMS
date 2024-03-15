@@ -46,16 +46,18 @@ export class DoctorDetailComponent implements OnInit, OnDestroy{
       field: 'doctorId',
       headerName: 'Doctor Id',
       cellRenderer: this.doctorIdCellRenderer, // Use the new cell renderer here
+      filter:true
     },
-    { field: 'name' },
-    { field: 'phoneNumber'},
-    { field: 'address' },
-    { field: 'city' },
-    { field: 'state' },
-    { field: 'zipCode' },
+    { field: 'name',filter:true },
+    { field: 'phoneNumber',filter:true},
+    { field: 'address' ,filter:true},
+    { field: 'city' ,filter:true},
+    { field: 'state',filter:true },
+    { field: 'zipCode',filter:true },
     {
       field: 'active',
       headerName: 'Status',
+      filter:true,
       cellRenderer: this.activeCellRenderer,
     },
     // {

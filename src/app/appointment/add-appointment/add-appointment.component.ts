@@ -90,13 +90,14 @@ export class AddAppointmentComponent {
       appointment_detail : new FormControl('', [Validators.required]),
       appointment_date : new FormControl(null , [Validators.required,this.validateSundayDate]),
       appointment_time: new FormControl(null, [Validators.required]),
+      status : new FormControl(''),
     })
   }
 
   saveAppointment() {
     if (this.appointmentForm.valid) {
       let appointmentData = new Appointment(this.appointmentForm.value);
-      appointmentData.patient_username = this.getUsername();
+      appointmentData.username = this.getUsername();
       console.log(appointmentData);
       debugger;
 
@@ -133,6 +134,7 @@ export class AddAppointmentComponent {
         appointment_detail : appointment.appointment_detail,
         appointment_date: appointment.appointment_date,
         appointment_time: appointment.appointment_time,
+        status : appointment.status,
       });
 
     });

@@ -81,7 +81,7 @@ header a img {
 body {
   background: url('https://www.fortech.ro/wp-content/uploads/2020/06/Hospital-Management-System_Fortech.png') no-repeat center center fixed;
   background-size: cover;
-  font-family: "Roboto", sans-serif;
+  font-family: sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
