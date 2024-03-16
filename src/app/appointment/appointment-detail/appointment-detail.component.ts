@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AgGridAngular } from 'ag-grid-angular';
-import { ColDef, ValueFormatterParams } from 'ag-grid-community';
+import { ColDef } from 'ag-grid-community';
 import { NgIf, isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID, Inject } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
@@ -11,7 +11,6 @@ import { ActivatedRoute } from '@angular/router';
 import { AgGridModule } from 'ag-grid-angular';
 import { NgZone } from '@angular/core';
 import { AppointmentService } from '../../Services/Appointment/appointment.service';
-import { Appointment } from '../../model/Appointment';
 import { NotificationService } from '../../Services/notification/notification.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationPopUpComponent } from '../../confirmation-pop-up/confirmation-pop-up.component';
@@ -24,12 +23,11 @@ import { ConfirmationPopUpComponent } from '../../confirmation-pop-up/confirmati
   styleUrl: './appointment-detail.component.css',
 })
 export class AppointmentDetailComponent {
-  // Add a new property to the class for the cell renderer function
   appointmentIdCellRenderer = (params: any) => {
     const anchor = document.createElement('a');
     anchor.innerText = params.value;
     if (this.getUserRole() === 'Admin' || this.getUserRole() === 'Patient') {
-      anchor.href = 'javascript:void(0);'; // Set a non-navigating href
+      anchor.href = 'javascript:void(0);'; 
       anchor.addEventListener('click', () => {
         this.onIdClick(params.data);
       });
@@ -46,15 +44,15 @@ export class AppointmentDetailComponent {
         approveButton.innerText = 'Approve';
         approveButton.addEventListener('click', () => {
           console.log(params.data);
-          this.approveAppointment(params.data);
+          this.approveAppointment(params.data.appointment_id);
         });
 
         const rejectButton = document.createElement('button');
         rejectButton.className = 'btn btn-danger';
         rejectButton.innerText = 'Reject';
         rejectButton.addEventListener('click', () => {
-          console.log(params.data.appointment_custom_id);
-          this.rejectAppointment(params.data);
+          console.log(params.data);
+          this.rejectAppointment(params.data.appointment_id);
         });
 
         const container = document.createElement('div');
@@ -65,7 +63,7 @@ export class AppointmentDetailComponent {
         return status;
       }
     } else {
-      return status; // For patients or admins, display the status directly
+      return status;
     }
   };
 
@@ -80,7 +78,7 @@ export class AppointmentDetailComponent {
       field: 'appointment_custom_id',
       headerName: 'Appointment Id',
       filter: true,
-      cellRenderer: this.appointmentIdCellRenderer, // Use the new cell renderer here
+      cellRenderer: this.appointmentIdCellRenderer,
     },
     { field: 'appointment_title', filter: true },
     { field: 'appointment_detail', filter: true },
@@ -95,7 +93,7 @@ export class AppointmentDetailComponent {
     {
       field: 'status',
       headerName: 'Status',
-      minWidth: 200, // Adjust the width as needed to accommodate both buttons
+      minWidth: 200,
       cellRenderer: this.statusCellRenderer,
     },
     // {
@@ -124,7 +122,7 @@ export class AppointmentDetailComponent {
     private appointmentService: AppointmentService,
     private notificationService: NotificationService,
     private dialog: MatDialog
-  ) {}
+  ) { }
 
   ngOnDestroy(): void {
     console.log('Appointment Detail Component destroyed');
@@ -132,8 +130,6 @@ export class AppointmentDetailComponent {
 
   onIdClick(rowData: any) {
     const appointmentId = rowData.appointment_custom_id;
-    console.log(appointmentId);
-    console.log(rowData);
     this.zone.run(() => {
       this.router.navigate(['./addAppointment', appointmentId], {
         relativeTo: this.route,
@@ -174,15 +170,12 @@ export class AppointmentDetailComponent {
     console.log('Approve button clicked');
   }
 
-  approveAppointment(data: any) {
-    let appointmentData = new Appointment(data);
-    appointmentData.username = this.getUsername();
-    appointmentData.status = 'APPROVED';
-    console.log(appointmentData);
+  approveAppointment(id: any) {
+    console.log(id);
     debugger;
 
     this.appointmentService
-      .addAppointment(appointmentData)
+      .approveAppointment(id)
       .subscribe((response: any) => {
         this.zone.run(() => {
           if (response.valid) {
@@ -192,7 +185,7 @@ export class AppointmentDetailComponent {
       });
   }
 
-  rejectAppointment(data: any) {
+  rejectAppointment(id: any) {
     const dialogRef = this.dialog.open(ConfirmationPopUpComponent, {
       width: '300px',
       data: {
@@ -203,15 +196,10 @@ export class AppointmentDetailComponent {
     this.zone.run(() => {
       dialogRef.afterClosed().subscribe((result) => {
         if (result === true) {
-          // User confirmed the rejection
-          let appointmentData = new Appointment(data);
-          appointmentData.username = this.getUsername();
-          appointmentData.status = 'REJECTED';
-
           this.zone.run(() => {
-            // Call the service to reject the appointment
+
             this.appointmentService
-              .addAppointment(appointmentData)
+              .rejectAppointment(id)
               .subscribe((response: any) => {
                 if (response.valid) {
                   this.getAllAppointment();

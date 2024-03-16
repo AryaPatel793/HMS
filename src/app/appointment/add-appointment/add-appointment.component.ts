@@ -1,16 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import {
   Component,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-  ViewChildren,
 } from '@angular/core';
 import {
   FormControl,
   FormGroup,
   FormsModule,
-  NgModel,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -24,7 +19,6 @@ import { ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Constant } from '../../Services/constant/Constant';
 import { NgZone } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID, Inject } from '@angular/core';
 import { Appointment } from '../../model/Appointment';
 import { AppointmentService } from '../../Services/Appointment/appointment.service';
@@ -55,7 +49,7 @@ export class AddAppointmentComponent {
     private toastr: ToastrService,
     private doctorService: DoctorService,
     private notificationService: NotificationService,
-    private appointmentService : AppointmentService,
+    private appointmentService: AppointmentService,
     private router: Router,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef,
@@ -78,19 +72,18 @@ export class AddAppointmentComponent {
   getUsername(): string | null {
     return sessionStorage.getItem('username');
   }
-  getUserRole(): string | null{
+  getUserRole(): string | null {
     return sessionStorage.getItem('role')
   }
 
   private initializeForm() {
     this.appointmentForm = new FormGroup({
-      appointment_id : new FormControl(''),
-      appointment_custom_id : new FormControl(''),
-      appointment_title : new FormControl('', [Validators.required,]),
-      appointment_detail : new FormControl('', [Validators.required]),
-      appointment_date : new FormControl(null , [Validators.required,this.validateSundayDate]),
+      appointment_id: new FormControl(''),
+      appointment_custom_id: new FormControl(''),
+      appointment_title: new FormControl('', [Validators.required,]),
+      appointment_detail: new FormControl('', [Validators.required]),
+      appointment_date: new FormControl(null, [Validators.required, this.validateSundayDate]),
       appointment_time: new FormControl(null, [Validators.required]),
-      status : new FormControl(''),
     })
   }
 
@@ -98,15 +91,12 @@ export class AddAppointmentComponent {
     if (this.appointmentForm.valid) {
       let appointmentData = new Appointment(this.appointmentForm.value);
       appointmentData.username = this.getUsername();
-      console.log(appointmentData);
-      debugger;
-
       this.appointmentService.addAppointment(appointmentData).subscribe((result: any) => {
         if (result.valid) {
           this.notificationService.successNotification('Appointment created');
           this.router.navigate(['/adminDashboard/appointment']);
           this.initializeForm();
-        }else{
+        } else {
           this.notificationService.errorNotification(
             result.message
           );
@@ -123,18 +113,21 @@ export class AddAppointmentComponent {
   }
 
   getAppointmentDetailsById(id: any) {
-    this.appointmentService.getAppointmentById(id).subscribe((appointment: any) => {
-      // Initialize the form with the retrieved hospital data
-      console.log(appointment);
+    
+    const appointmentId = id.match(/\d+/)?.[0]; 
 
+    if (!appointmentId) {
+      console.error("Invalid appointment ID format.");
+      return;
+    }
+    this.appointmentService.getAppointmentById(appointmentId).subscribe((appointment: any) => {
       this.appointmentForm.patchValue({
         appointment_id: appointment.appointment_id,
-        appointment_custom_id : appointment.appointment_custom_id,
+        appointment_custom_id: appointment.appointment_custom_id,
         appointment_title: appointment.appointment_title,
-        appointment_detail : appointment.appointment_detail,
+        appointment_detail: appointment.appointment_detail,
         appointment_date: appointment.appointment_date,
         appointment_time: appointment.appointment_time,
-        status : appointment.status,
       });
 
     });
