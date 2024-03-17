@@ -43,19 +43,19 @@ export class DoctorDetailComponent implements OnInit, OnDestroy{
 
   colDefs: ColDef[] = [
     {
-      field: 'doctorId',
+      field: 'doctor_custom_id',
       headerName: 'Doctor Id',
       cellRenderer: this.doctorIdCellRenderer, // Use the new cell renderer here
       filter:true
     },
-    { field: 'name',filter:true },
-    { field: 'phoneNumber',filter:true},
+    { field: 'doctor_name',filter:true },
+    { field: 'phone_number',filter:true},
     { field: 'address' ,filter:true},
     { field: 'city' ,filter:true},
     { field: 'state',filter:true },
-    { field: 'zipCode',filter:true },
+    { field: 'zipcode',filter:true },
     {
-      field: 'active',
+      field: 'is_active',
       headerName: 'Status',
       filter:true,
       cellRenderer: this.activeCellRenderer,
@@ -92,9 +92,7 @@ export class DoctorDetailComponent implements OnInit, OnDestroy{
   }
 
   onIdClick(rowData: any) {
-    const doctorId = rowData.doctorId;
-    console.log(doctorId);
-    console.log(rowData);
+    const doctorId = rowData.doctor_custom_id;
     this.zone.run(() => {
           this.router.navigate(['./addDoctor', doctorId], {
       relativeTo: this.route,

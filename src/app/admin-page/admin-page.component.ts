@@ -3,6 +3,7 @@
   import { LoginService } from '../Services/Login/login.service';
   import { isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID, Inject } from '@angular/core';
+import { UserService } from '../Services/User/user.service';
 
   @Component({
     selector: 'app-admin-page',
@@ -15,13 +16,14 @@ import { PLATFORM_ID, Inject } from '@angular/core';
 
     username: string | null = null;
 
-    constructor(@Inject(PLATFORM_ID) private platformId: any) {}
+    constructor(
+      @Inject(PLATFORM_ID) private platformId: any,
+      private userService : UserService
+    ) {}
   
     ngOnInit(): void {
       if (isPlatformBrowser(this.platformId)) {
-        this.username = sessionStorage.getItem('username');
+        this.username = this.userService.getUsername();
       }
     }
-
-  
   }

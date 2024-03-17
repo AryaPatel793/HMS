@@ -1,21 +1,16 @@
-import { HttpClient } from '@angular/common/http';
 import {
   Component,
   OnDestroy,
   OnInit,
-  ViewChild,
-  ViewChildren,
 } from '@angular/core';
 import {
   FormControl,
   FormGroup,
   FormsModule,
-  NgModel,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ActivatedRoute, RouterModule } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { ActivatedRoute,} from '@angular/router';
 import { NotificationService } from '../../Services/notification/notification.service';
 import { Router } from '@angular/router';
 import { NgIf } from '@angular/common';
@@ -24,7 +19,6 @@ import { CommonModule } from '@angular/common';
 import { Constant } from '../../Services/constant/Constant';
 import { NgZone } from '@angular/core';
 import { HospitalService } from '../../Services/Hospital/hospital.service';
-import { isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID, Inject } from '@angular/core';
 import {
   IDropdownSettings,
@@ -32,6 +26,7 @@ import {
 } from 'ng-multiselect-dropdown';
 import { Patient } from '../../model/Patient';
 import { PatientService } from '../../Services/Patient/patient.service';
+import { UserService } from '../../Services/User/user.service';
 
 @Component({
   selector: 'app-add-patient',
@@ -47,9 +42,10 @@ import { PatientService } from '../../Services/Patient/patient.service';
   styleUrl: './add-patient.component.css',
 })
 export class AddPatientComponent implements OnInit, OnDestroy {
+
   patientForm!: FormGroup;
 
-  hospitals: any[] = []; // Populate this array with your hospital data
+  hospitals: any[] = [];
 
   selectedHospitals: any[] = [];
 
@@ -59,8 +55,8 @@ export class AddPatientComponent implements OnInit, OnDestroy {
 
   public dropdownSettings: IDropdownSettings = {
     singleSelection: true,
-    idField: 'hospitalId', // Replace with your hospital ID field
-    textField: 'name', // Replace with your hospital name field
+    idField: 'hospitalId',
+    textField: 'name',
     selectAllText: 'Select All',
     unSelectAllText: 'Unselect All',
     itemsShowLimit: 3,
@@ -68,15 +64,7 @@ export class AddPatientComponent implements OnInit, OnDestroy {
     defaultOpen: false,
   };
 
-  ngOnInit(): void {
-    this.getAllHospital();
-    this.initializeForm();
-    console.log('add patient OnInit');
-  }
-
   constructor(
-    private http: HttpClient,
-    private toastr: ToastrService,
     private patientService: PatientService,
     private notificationService: NotificationService,
     private router: Router,
@@ -84,7 +72,8 @@ export class AddPatientComponent implements OnInit, OnDestroy {
     private cdr: ChangeDetectorRef,
     private zone: NgZone,
     @Inject(PLATFORM_ID) private platformId: any,
-    private hospitalService: HospitalService
+    private hospitalService: HospitalService,
+    public userService : UserService
   ) {
     console.log('AddpatientComponent constructor');
     this.route.params.subscribe((params) => {
@@ -95,21 +84,19 @@ export class AddPatientComponent implements OnInit, OnDestroy {
     });
   }
 
+  ngOnInit(): void {
+    this.getAllHospital();
+    this.initializeForm();
+    console.log('add patient OnInit');
+  }
+
   ngOnDestroy(): void {
     console.log('AddPatientComponent Destroyed');
   }
 
-  getUsername(): string | null {
-    return sessionStorage.getItem('username');
-  }
-
-  getUserRole(): string | null{
-    return sessionStorage.getItem('role')
-  }
-
   getAllHospital() {
     this.hospitalService
-      .getHospital(this.getUsername())
+      .getHospital(this.userService.getUsername())
       .subscribe((response: any) => {
         this.hospitals = response;
         console.log(this.hospitals);
@@ -162,7 +149,7 @@ export class AddPatientComponent implements OnInit, OnDestroy {
         (hospital: any) => hospital.hospitalId
       );
 
-      patientData.doctor_user_name = this.getUsername();
+      patientData.doctor_user_name = this.userService.getUsername();
 
       // Assign the selected hospital IDs to the patientData
       patientData.selected_hospital = selectedHospitalIds;
@@ -210,7 +197,6 @@ export class AddPatientComponent implements OnInit, OnDestroy {
         hospitalList: patient.selected_hospital || [],
       });
 
-      // Update cities based on the state from the database
       this.onStateChange({ target: { value: patient.state } });
     });
   }

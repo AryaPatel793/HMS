@@ -1,15 +1,15 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ToastrService } from 'ngx-toastr';
 import { LoginService } from '../Services/Login/login.service';
 import { NgIf } from '@angular/common';
 import { NotificationService } from '../Services/notification/notification.service';
 import { Login } from '../model/Login';
 import { isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID, Inject } from '@angular/core';
+import { Constant } from '../Services/constant/Constant';
 
 @Component({
   selector: 'app-login',
@@ -23,12 +23,10 @@ export class LoginComponent implements OnInit, OnDestroy {
   loginForm!: FormGroup;
 
   constructor(
-    private http: HttpClient,
     private router: Router,
-    private toastr: ToastrService,
     private loginService: LoginService,
     @Inject(PLATFORM_ID) private platformId: any,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
   ) {
     this.initForm();
   }
@@ -65,13 +63,13 @@ export class LoginComponent implements OnInit, OnDestroy {
         sessionStorage.setItem('username',response.user_name);
         sessionStorage.setItem('role', response.role);
         this.notificationService.successNotification('Login Successfull');
-        if (response.role == 'Admin') {
+        if (response.role == Constant.ADMIN) {
           this.router.navigate(['/adminDashboard']);
         }
-        if (response.role == 'Doctor') {
+        if (response.role == Constant.DOCTOR) {
           this.router.navigate(['/adminDashboard']);
         }
-        if (response.role == 'Patient') {
+        if (response.role == Constant.PATIENT) {
           this.router.navigate(['/adminDashboard']);
         }
       } else {

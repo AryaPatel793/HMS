@@ -44,7 +44,7 @@ export class HospitalDetailComponent implements OnInit, OnDestroy {
 
   colDefs: ColDef[] = [
     {
-      field: 'hospitalId',
+      field: 'hospital_custom_id',
       headerName: 'Hospital Id',
       cellRenderer: this.hospitalIdCellRenderer, // Use the new cell renderer here
     },
@@ -52,10 +52,10 @@ export class HospitalDetailComponent implements OnInit, OnDestroy {
     { field: 'address' ,filter:true  },
     { field: 'city' ,filter:true },
     { field: 'state' ,filter:true  },
-    { field: 'zipCode' ,filter:true },
-    { field: 'hospitalType' ,filter:true },
+    { field: 'zipcode' ,filter:true },
+    { field: 'hospital_type' ,filter:true },
     {
-      field: 'active',
+      field: 'is_active',
       filter:true ,
       headerName: 'Status',
       cellRenderer: this.activeCellRenderer,
@@ -93,7 +93,7 @@ export class HospitalDetailComponent implements OnInit, OnDestroy {
   }
 
   onIdClick(rowData: any) {
-    const hospitalId = rowData.hospitalId;
+    const hospitalId = rowData.hospital_custom_id;
     console.log(hospitalId);
     this.zone.run(() => {
     this.router.navigate(['./addHospital', hospitalId], {

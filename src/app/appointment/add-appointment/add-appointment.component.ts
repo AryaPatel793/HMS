@@ -114,13 +114,7 @@ export class AddAppointmentComponent {
 
   getAppointmentDetailsById(id: any) {
     
-    const appointmentId = id.match(/\d+/)?.[0]; 
-
-    if (!appointmentId) {
-      console.error("Invalid appointment ID format.");
-      return;
-    }
-    this.appointmentService.getAppointmentById(appointmentId).subscribe((appointment: any) => {
+    this.appointmentService.getAppointmentById(id).subscribe((appointment: any) => {
       this.appointmentForm.patchValue({
         appointment_id: appointment.appointment_id,
         appointment_custom_id: appointment.appointment_custom_id,
