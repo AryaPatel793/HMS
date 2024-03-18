@@ -53,7 +53,7 @@ export class AppointmentDetailComponent implements OnInit, OnDestroy {
   // cell renderer to display status
   statusCellRenderer = (params: any) => {
     const status = params.value;
-    if (this.isAllowedRole()) {
+    if (this.userService.getUserRole() === Constant.DOCTOR) {
       if (status === 'PENDING') {
         const approveButton = document.createElement('button');
         approveButton.className = 'btn btn-success';

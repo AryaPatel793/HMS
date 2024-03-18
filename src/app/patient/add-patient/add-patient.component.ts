@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
+  FormBuilder,
   FormControl,
   FormGroup,
   FormsModule,
@@ -49,6 +50,8 @@ export class AddPatientComponent implements OnInit, OnDestroy {
 
   bloodGroups: string[] = Constant.bloodGroup;
 
+  allowedRoles: string[] = [Constant.DOCTOR];
+
   // Dropdown settings
   public dropdownSettings: IDropdownSettings = {
     singleSelection: true,
@@ -63,6 +66,7 @@ export class AddPatientComponent implements OnInit, OnDestroy {
 
   // Initialize required service
   constructor(
+    private formBuilder: FormBuilder,
     private patientService: PatientService,
     private notificationService: NotificationService,
     private router: Router,
@@ -105,49 +109,55 @@ export class AddPatientComponent implements OnInit, OnDestroy {
 
   // Initialize patient form
   private initializeForm() {
-    this.patientForm = new FormGroup({
-      patient_id: new FormControl(''),
-      patient_custom_id: new FormControl(''),
-      name: new FormControl('', [Validators.required]),
-      age: new FormControl('', [Validators.required]),
-      blood_group: new FormControl('', [Validators.required]),
-      phone_number: new FormControl(null, [
-        Validators.required,
-        Validators.pattern(/^\d{10}$/),
-      ]),
-      address: new FormControl('', [Validators.required]),
-      city: new FormControl('', [Validators.required]),
-      state: new FormControl('', [Validators.required]),
-      zipcode: new FormControl('', [
-        Validators.required,
-        Validators.pattern(/^\d{6}$/),
-      ]),
-      is_active: new FormControl(true, [Validators.required]),
-      user_name: new FormControl(null, [Validators.required]),
-      email: new FormControl(null, [
-        Validators.required,
-        Validators.pattern('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'),
-      ]),
-      password: new FormControl(null, [
-        Validators.required,
-        Validators.pattern(
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
-        ),
-      ]),
-      hospitalList: new FormControl([], [Validators.required]),
+    this.patientForm = this.formBuilder.group({
+      patient_id: [''],
+      patient_custom_id: [''],
+      name: ['', Validators.required],
+      age: ['', Validators.required],
+      blood_group: ['', Validators.required],
+      phone_number: [
+        null,
+        [Validators.required, Validators.pattern(/^\d{10}$/)],
+      ],
+      address: ['', Validators.required],
+      city: ['', Validators.required],
+      state: ['', Validators.required],
+      zipcode: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]],
+      is_active: [true, Validators.required],
+      user_name: [null, Validators.required],
+      email: [
+        null,
+        [
+          Validators.required,
+          Validators.pattern(
+            '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'
+          ),
+        ],
+      ],
+      password: [
+        null,
+        [
+          Validators.required,
+          Validators.pattern(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+          ),
+        ],
+      ],
+      hospitalList: [[], Validators.required],
     });
   }
 
-  // Save or update patient
-  savePatient() {
-    if(this.patientForm.invalid){
-        // show toater
-        return;
+   // Save or update patient
+   savePatient() {
+    if (this.patientForm.invalid) {
+      this.zone.run(() => {
+        this.patientForm.markAllAsTouched();
+        this.notificationService.errorNotification(
+          'Please fill in all required fields correctly.'
+        );
+      });
+      return
     }
-
-
-
-    if (this.patientForm.valid) {
       let patientData = new Patient(this.patientForm.value);
       const selectedHospitalIds = this.patientForm.value.hospitalList.map(
         (hospital: any) => hospital.hospital_custom_id
@@ -159,18 +169,12 @@ export class AddPatientComponent implements OnInit, OnDestroy {
         if (result.valid) {
           this.notificationService.successNotification('Patient added');
           this.router.navigate(['/userDashboard/patient']);
-        }else{
-          //TODO: ???????
+        } else {
+          this.notificationService.errorNotification(
+            'Some error occured'
+          ); 
         }
       });
-    } else {
-      this.zone.run(() => {
-        this.patientForm.markAllAsTouched();
-        this.notificationService.errorNotification(
-          'Please fill in all required fields correctly.'
-        );
-      });
-    }
   }
 
   // Get patient by ID
@@ -205,6 +209,16 @@ export class AddPatientComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
+  // Checking if the user's role is allowed
+  isAllowedRole(): boolean {
+    const userRole = this.userService.getUserRole();
+    return (
+      userRole !== null &&
+      userRole !== undefined &&
+      this.allowedRoles.includes(userRole)
+    );
+  }
+
   // Invalid field validation
   isFieldInvalid(field: string) {
     return (
@@ -216,6 +230,8 @@ export class AddPatientComponent implements OnInit, OnDestroy {
 
   // Valid field validation
   isFieldValid(field: string) {
-    return this.patientForm.get(field)?.valid && this.patientForm.get(field)?.touched;
+    return (
+      this.patientForm.get(field)?.valid && this.patientForm.get(field)?.touched
+    );
   }
 }

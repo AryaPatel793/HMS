@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
+  FormBuilder,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
@@ -32,6 +33,7 @@ export class AddHospitalComponent implements OnInit, OnDestroy {
 
   // Initialize required services
   constructor(
+    private formBuilder: FormBuilder,
     private hospitalService: HospitalService,
     private notificationService: NotificationService,
     private router: Router,
@@ -58,27 +60,33 @@ export class AddHospitalComponent implements OnInit, OnDestroy {
     console.log('AddHospital Component destroyed');
   }
 
-  // Initializing hospital form
+  // Initializing hospital form using FormBuilder
   private initializeForm() {
-    this.hospitalForm = new FormGroup({
-      hospital_id: new FormControl(''),
-      hospital_custom_id: new FormControl(''),
-      name: new FormControl(null, [Validators.required]),
-      address: new FormControl(null, [Validators.required]),
-      city: new FormControl('', [Validators.required]),
-      state: new FormControl('', [Validators.required]),
-      zipcode: new FormControl(null, [
+    this.hospitalForm = this.formBuilder.group({
+      hospital_id: [''],
+      hospital_custom_id: [''],
+      name: [null, Validators.required],
+      address: [null, Validators.required],
+      city: ['', Validators.required],
+      state: ['', Validators.required],
+      zipcode: [null, [
         Validators.required,
         Validators.pattern(/^\d{6}$/),
-      ]),
-      hospital_type: new FormControl('', [Validators.required]),
-      is_active: new FormControl(true, [Validators.required]),
+      ]],
+      hospital_type: ['', Validators.required],
+      is_active: [true, Validators.required],
     });
   }
 
   // Save or update hospital
   saveHospital() {
-    if (this.hospitalForm.valid) {
+    if (this.hospitalForm.invalid){
+      this.hospitalForm.markAllAsTouched();
+      this.notificationService.errorNotification(
+        'Please fill in all required fields correctly.'
+      );
+      return
+    }
       let hospitalData = new Hospital(this.hospitalForm.value);
       this.hospitalService
         .addHospital(hospitalData)
@@ -86,15 +94,14 @@ export class AddHospitalComponent implements OnInit, OnDestroy {
           if (result.valid) {
             this.notificationService.successNotification('Hospital added');
             this.router.navigate(['/userDashboard/hospital']);
+          }else{
+            this.notificationService.errorNotification(
+              'Some error occured'
+            );
           }
         });
-    } else {
-      this.hospitalForm.markAllAsTouched();
-      this.notificationService.errorNotification(
-        'Please fill in all required fields correctly.'
-      );
-    }
-  }
+    } 
+  
 
   // Get hospital by ID
   getHospitalDetailsById(id: any) {

@@ -99,7 +99,8 @@
                 </p>
             </div>
         </div>
-        <div class="row">
+
+        <div class="row" *ngIf="isAllowedRole()">
             <div class="col-4">
                 <label for="hospitals">Hospitals</label>
                 <ng-multiselect-dropdown #multiSelect [placeholder]="'Select One Hospital'" [settings]="dropdownSettings"

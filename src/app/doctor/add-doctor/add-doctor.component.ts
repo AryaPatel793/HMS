@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
+  FormBuilder,
   FormControl,
   FormGroup,
   FormsModule,
@@ -60,6 +61,7 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
 
   // Intializing required services
   constructor(
+    private formBuilder: FormBuilder,
     private doctorService: DoctorService,
     private notificationService: NotificationService,
     private router: Router,
@@ -99,69 +101,74 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
       });
   }
 
-  // Intializing doctor form
+  // Intializing doctor form using FormBuilder
   private initializeForm() {
-    this.doctorForm = new FormGroup({
-      doctor_id: new FormControl(''),
-      doctor_custom_id: new FormControl(''),
-      doctor_name: new FormControl('', [Validators.required]),
-      phone_number: new FormControl(null, [
-        Validators.required,
-        Validators.pattern(/^\d{10}$/),
-      ]),
-      address: new FormControl('', [Validators.required]),
-      city: new FormControl('', [Validators.required]),
-      state: new FormControl('', [Validators.required]),
-      zipcode: new FormControl('', [
-        Validators.required,
-        Validators.pattern(/^\d{6}$/),
-      ]),
-      is_active: new FormControl(true, [Validators.required]),
-      user_name: new FormControl(null, [Validators.required]),
-      email: new FormControl(null, [
-        Validators.required,
-        Validators.pattern('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'),
-      ]),
-      password: new FormControl(null, [
-        Validators.required,
-        Validators.pattern(
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
-        ),
-      ]),
-      hospitalList: new FormControl([], [Validators.required]),
+    this.doctorForm = this.formBuilder.group({
+      doctor_id: [''],
+      doctor_custom_id: [''],
+      doctor_name: ['', Validators.required],
+      phone_number: [
+        null,
+        [Validators.required, Validators.pattern(/^\d{10}$/)],
+      ],
+      address: ['', Validators.required],
+      city: ['', Validators.required],
+      state: ['', Validators.required],
+      zipcode: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]],
+      is_active: [true, Validators.required],
+      user_name: [null, Validators.required],
+      email: [
+        null,
+        [
+          Validators.required,
+          Validators.pattern(
+            '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'
+          ),
+        ],
+      ],
+      password: [
+        null,
+        [
+          Validators.required,
+          Validators.pattern(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+          ),
+        ],
+      ],
+      hospitalList: [[], Validators.required],
     });
   }
 
   // Save or update doctor details
   saveDoctor() {
-    if (this.doctorForm.valid) {
-      let doctorData = new Doctor(this.doctorForm.value);
-
-      const selectedHospitalIds = this.doctorForm.value.hospitalList.map(
-        (hospital: any) => hospital.hospital_custom_id
-      );
-
-      doctorData.selected_hospital = selectedHospitalIds;
-      this.doctorService.addDoctor(doctorData).subscribe((result: any) => {
-        if (result.valid) {
-          this.notificationService.successNotification('Doctor added');
-          this.router.navigate(['/userDashboard/doctor']);
-        }
-      });
-    } else {
+    if (this.doctorForm.invalid) {
       this.zone.run(() => {
         this.doctorForm.markAllAsTouched();
         this.notificationService.errorNotification(
           'Please fill in all required fields correctly.'
         );
       });
+      return;
     }
+    let doctorData = new Doctor(this.doctorForm.value);
+    const selectedHospitalIds = this.doctorForm.value.hospitalList.map(
+      (hospital: any) => hospital.hospital_custom_id
+    );
+
+    doctorData.selected_hospital = selectedHospitalIds;
+    this.doctorService.addDoctor(doctorData).subscribe((result: any) => {
+      if (result.valid) {
+        this.notificationService.successNotification('Doctor added');
+        this.router.navigate(['/userDashboard/doctor']);
+      } else {
+        this.notificationService.errorNotification('Some error occured');
+      }
+    });
   }
 
   // Get doctor by ID
   getDoctorDetailsById(id: any) {
     this.doctorService.getDoctorById(id).subscribe((doctor: any) => {
-
       this.doctorForm.patchValue({
         doctor_id: doctor.doctor_id,
         doctor_custom_id: doctor.doctor_custom_id,

@@ -40,8 +40,8 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
     minWidth: 100,
   };
 
-  allowedRoles: string[] = [Constant.ADMIN, Constant.PATIENT, Constant.PATIENT];
-  adminRole : string = Constant.ADMIN;
+  allowedRoles: string[] = [Constant.ADMIN, Constant.DOCTOR, Constant.PATIENT];
+  doctorRole : string = Constant.DOCTOR;
   patientIdCellRenderer = (params: any) => {
     const anchor = document.createElement('a');
     anchor.innerText = params.value;

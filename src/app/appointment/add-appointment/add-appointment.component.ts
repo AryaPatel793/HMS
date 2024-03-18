@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import {
+  FormBuilder,
   FormControl,
   FormGroup,
   FormsModule,
@@ -32,6 +33,7 @@ export class AddAppointmentComponent {
 
   // Constructor of initializing services
   constructor(
+    private formBuilder: FormBuilder,
     private notificationService: NotificationService,
     private appointmentService: AppointmentService,
     private router: Router,
@@ -60,45 +62,42 @@ export class AddAppointmentComponent {
     console.log('AddAppointmentComponent Destroyed');
   }
 
-  // Initialize form
+  // Initialize form using FormBuilder
   private initializeForm() {
-    this.appointmentForm = new FormGroup({
-      appointment_id: new FormControl(''),
-      appointment_custom_id: new FormControl(''),
-      appointment_title: new FormControl('', [Validators.required]),
-      appointment_detail: new FormControl('', [Validators.required]),
-      appointment_date: new FormControl(null, [
-        Validators.required,
-        this.validateSundayDate,
-      ]),
-      appointment_time: new FormControl(null, [Validators.required]),
+    this.appointmentForm = this.formBuilder.group({
+      appointment_id: [''],
+      appointment_custom_id: [''],
+      appointment_title: ['', Validators.required],
+      appointment_detail: ['', Validators.required],
+      appointment_date: [null, [Validators.required, this.validateSundayDate]],
+      appointment_time: [null, Validators.required],
     });
   }
 
   // Save appointment
   saveAppointment() {
-    if (this.appointmentForm.valid) {
-      let appointmentData = new Appointment(this.appointmentForm.value);
-      appointmentData.username = this.userService.getUsername();
-      this.appointmentService
-        .addAppointment(appointmentData)
-        .subscribe((result: any) => {
-          if (result.valid) {
-            this.notificationService.successNotification('Appointment created');
-            this.router.navigate(['/userDashboard/appointment']);
-            this.initializeForm();
-          } else {
-            this.notificationService.errorNotification(result.message);
-          }
-        });
-    } else {
+    if (this.appointmentForm.invalid) {
       this.zone.run(() => {
         this.appointmentForm.markAllAsTouched();
         this.notificationService.errorNotification(
           'Please fill in all required fields correctly.'
         );
       });
+      return;
     }
+    let appointmentData = new Appointment(this.appointmentForm.value);
+    appointmentData.username = this.userService.getUsername();
+    this.appointmentService
+      .addAppointment(appointmentData)
+      .subscribe((result: any) => {
+        if (result.valid) {
+          this.notificationService.successNotification('Appointment created');
+          this.router.navigate(['/userDashboard/appointment']);
+          this.initializeForm();
+        } else {
+          this.notificationService.errorNotification(result.message);
+        }
+      });
   }
 
   //Get appointment by ID
