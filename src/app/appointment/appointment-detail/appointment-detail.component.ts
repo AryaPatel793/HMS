@@ -59,6 +59,7 @@ export class AppointmentDetailComponent implements OnInit, OnDestroy {
         const approveButton = document.createElement('button');
         approveButton.className = 'btn btn-success';
         approveButton.innerText = 'Approve';
+        approveButton.style.marginRight = '5px'; 
         approveButton.addEventListener('click', () => {
           console.log(params.data);
           this.approveAppointment(params.data.appointment_id);

@@ -42,8 +42,6 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
 
   hospitals: any[] = [];
 
-  selectedHospitals: any[] = [];
-
   states: string[] = Constant.states;
 
   cities: string[] = [];
@@ -51,8 +49,8 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
   // Dropdown settings
   public dropdownSettings: IDropdownSettings = {
     singleSelection: false,
-    idField: 'hospitalId', // Replace with your hospital ID field
-    textField: 'name', // Replace with your hospital name field
+    idField: 'hospital_custom_id',
+    textField: 'name',
     selectAllText: 'Select All',
     unSelectAllText: 'Unselect All',
     itemsShowLimit: 3,
@@ -113,13 +111,13 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
         Validators.pattern(/^\d{10}$/),
       ]),
       address: new FormControl('', [Validators.required]),
-      city: new FormControl(null, [Validators.required]),
-      state: new FormControl(null, [Validators.required]),
+      city: new FormControl('', [Validators.required]),
+      state: new FormControl('', [Validators.required]),
       zipcode: new FormControl('', [
         Validators.required,
         Validators.pattern(/^\d{6}$/),
       ]),
-      is_active: new FormControl(null, [Validators.required]),
+      is_active: new FormControl(true, [Validators.required]),
       user_name: new FormControl(null, [Validators.required]),
       email: new FormControl(null, [
         Validators.required,
@@ -141,7 +139,7 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
       let doctorData = new Doctor(this.doctorForm.value);
 
       const selectedHospitalIds = this.doctorForm.value.hospitalList.map(
-        (hospital: any) => hospital.hospitalId
+        (hospital: any) => hospital.hospital_custom_id
       );
 
       doctorData.selected_hospital = selectedHospitalIds;
@@ -150,7 +148,6 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
         if (result.valid) {
           this.notificationService.successNotification('Doctor added');
           this.router.navigate(['/userDashboard/doctor']);
-          this.initializeForm();
         }
       });
     } else {
@@ -205,6 +202,6 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
 
   // Valid field validation
   isFieldValid(field: string) {
-    return this.doctorForm.get(field)?.valid;
+    return this.doctorForm.get(field)?.valid && this.doctorForm.get(field)?.touched;
   }
 }

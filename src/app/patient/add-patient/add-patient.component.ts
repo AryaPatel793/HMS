@@ -43,8 +43,6 @@ export class AddPatientComponent implements OnInit, OnDestroy {
 
   hospitals: any[] = [];
 
-  selectedHospitals: any[] = [];
-
   states: string[] = Constant.states;
 
   cities: string[] = [];
@@ -54,7 +52,7 @@ export class AddPatientComponent implements OnInit, OnDestroy {
   // Dropdown settings
   public dropdownSettings: IDropdownSettings = {
     singleSelection: true,
-    idField: 'hospitalId',
+    idField: 'hospital_custom_id',
     textField: 'name',
     selectAllText: 'Select All',
     unSelectAllText: 'Unselect All',
@@ -146,7 +144,7 @@ export class AddPatientComponent implements OnInit, OnDestroy {
     if (this.patientForm.valid) {
       let patientData = new Patient(this.patientForm.value);
       const selectedHospitalIds = this.patientForm.value.hospitalList.map(
-        (hospital: any) => hospital.hospitalId
+        (hospital: any) => hospital.hospital_custom_id
       );
       patientData.doctor_user_name = this.userService.getUsername();
       patientData.selected_hospital = selectedHospitalIds;
@@ -210,6 +208,6 @@ export class AddPatientComponent implements OnInit, OnDestroy {
 
   // Valid field validation
   isFieldValid(field: string) {
-    return this.patientForm.get(field)?.valid;
+    return this.patientForm.get(field)?.valid && this.patientForm.get(field)?.touched;
   }
 }

@@ -102,7 +102,7 @@
         <div class="row">
             <div class="col-4">
                 <label for="hospitals">Hospitals</label>
-                <ng-multiselect-dropdown #multiSelect [placeholder]="'Select Hospitals'" [settings]="dropdownSettings"
+                <ng-multiselect-dropdown #multiSelect [placeholder]="'Select One Hospital'" [settings]="dropdownSettings"
                     [data]="hospitals" formControlName="hospitalList" [class.is-valid]="isFieldValid('hospitalList')"
                     [class.is-invalid]="isFieldInvalid('hospitalList')"
                     (change)="getAllHospital()"></ng-multiselect-dropdown>

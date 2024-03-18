@@ -32,8 +32,6 @@ export class DoctorDetailComponent implements OnInit, OnDestroy {
     minWidth: 100,
   };
 
- 
-
   // Add a new property to the class for the cell renderer function
   doctorIdCellRenderer = (params: any) => {
     const anchor = document.createElement('a');

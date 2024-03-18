@@ -27,7 +27,7 @@
                 <label for="state">State</label>
                 <select class="form-control form-select" formControlName="state" (change)="onStateChange($event)"
                     [class.is-valid]="isFieldValid('state')" [class.is-invalid]="isFieldInvalid('state')">
-                    <option value="" disabled>--Select a State--</option>
+                    <option value="" disabled>Select a State</option>
                     <option *ngFor="let state of states" [value]="state">{{state}}</option>
                 </select>
                 <p class="field-validation-error" *ngIf="isFieldInvalid('state')">State is required!</p>
@@ -36,7 +36,7 @@
                 <label for="city">City</label>
                 <select class="form-control form-select" formControlName="city" [class.is-valid]="isFieldValid('city')"
                     [class.is-invalid]="isFieldInvalid('city')">
-                    <option value="" disabled>--Select a City--</option>
+                    <option value="" disabled>Select a City</option>
                     <option *ngFor="let city of cities" [value]="city">{{city}}</option>
                 </select>
                 <p class="field-validation-error" *ngIf="isFieldInvalid('city')">City is required!</p>
