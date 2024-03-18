@@ -35,14 +35,13 @@ export class AppointmentDetailComponent implements OnInit, OnDestroy {
     minWidth: 100,
   };
 
+  allowedRoles: string[] = [Constant.PATIENT];
+
   // Cell renderer for updating particular appointment
   appointmentIdCellRenderer = (params: any) => {
     const anchor = document.createElement('a');
     anchor.innerText = params.value;
-    if (
-      this.userService.getUserRole() === Constant.ADMIN ||
-      this.userService.getUserRole() === Constant.PATIENT
-    ) {
+    if (this.isAllowedRole()) {
       anchor.href = 'javascript:void(0);';
       anchor.addEventListener('click', () => {
         this.onIdClick(params.data);
@@ -54,7 +53,7 @@ export class AppointmentDetailComponent implements OnInit, OnDestroy {
   // cell renderer to display status
   statusCellRenderer = (params: any) => {
     const status = params.value;
-    if (this.userService.getUserRole() === Constant.DOCTOR) {
+    if (this.isAllowedRole()) {
       if (status === 'PENDING') {
         const approveButton = document.createElement('button');
         approveButton.className = 'btn btn-success';
@@ -168,6 +167,13 @@ export class AppointmentDetailComponent implements OnInit, OnDestroy {
   onGridReady(params: any) {
     this.gridOptions = params.api;
   }
+
+  // Checking if the user's role is allowed
+  isAllowedRole(): boolean {
+    const userRole = this.userService.getUserRole();
+    return userRole !== null && userRole !== undefined && this.allowedRoles.includes(userRole);
+  }
+  
 
   // Approving the appointment
   onApproveClick() {

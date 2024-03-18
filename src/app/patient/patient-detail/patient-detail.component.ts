@@ -40,14 +40,12 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
     minWidth: 100,
   };
 
+  allowedRoles: string[] = [Constant.ADMIN, Constant.PATIENT, Constant.PATIENT];
+  adminRole : string = Constant.ADMIN;
   patientIdCellRenderer = (params: any) => {
     const anchor = document.createElement('a');
     anchor.innerText = params.value;
-    if (
-      this.userService.getUserRole() === Constant.ADMIN ||
-      this.userService.getUserRole() === Constant.DOCTOR ||
-      this.userService.getUserRole() === Constant.PATIENT
-    ) {
+    if (this.isAllowedRole()) {
       anchor.href = 'javascript:void(0);';
       anchor.addEventListener('click', () => {
         this.onIdClick(params.data);
@@ -120,8 +118,6 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
   // Select hospital by ID
   onIdClick(rowData: any) {
     const patientId = rowData.patient_custom_id;
-    console.log(patientId);
-    console.log(rowData);
     this.zone.run(() => {
       this.router.navigate(['./addPatient', patientId], {
         relativeTo: this.route,
@@ -146,5 +142,15 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
   // Display status of patient -> active or not active
   activeCellRenderer(params: ValueFormatterParams): string {
     return params.value ? 'Active' : 'Not Active';
+  }
+
+  // Checking if the user's role is allowed
+  isAllowedRole(): boolean {
+    const userRole = this.userService.getUserRole();
+    return (
+      userRole !== null &&
+      userRole !== undefined &&
+      this.allowedRoles.includes(userRole)
+    );
   }
 }

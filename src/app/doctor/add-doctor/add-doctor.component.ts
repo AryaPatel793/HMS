@@ -96,7 +96,6 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
       .getHospital(this.userService.getUsername())
       .subscribe((response: any) => {
         this.hospitals = response;
-        console.log(this.hospitals);
       });
   }
 
@@ -143,7 +142,6 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
       );
 
       doctorData.selected_hospital = selectedHospitalIds;
-
       this.doctorService.addDoctor(doctorData).subscribe((result: any) => {
         if (result.valid) {
           this.notificationService.successNotification('Doctor added');
@@ -163,7 +161,6 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
   // Get doctor by ID
   getDoctorDetailsById(id: any) {
     this.doctorService.getDoctorById(id).subscribe((doctor: any) => {
-      console.log(doctor);
 
       this.doctorForm.patchValue({
         doctor_id: doctor.doctor_id,
@@ -202,6 +199,8 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
 
   // Valid field validation
   isFieldValid(field: string) {
-    return this.doctorForm.get(field)?.valid && this.doctorForm.get(field)?.touched;
+    return (
+      this.doctorForm.get(field)?.valid && this.doctorForm.get(field)?.touched
+    );
   }
 }

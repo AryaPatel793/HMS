@@ -65,14 +65,14 @@ export class AddHospitalComponent implements OnInit, OnDestroy {
       hospital_custom_id: new FormControl(''),
       name: new FormControl(null, [Validators.required]),
       address: new FormControl(null, [Validators.required]),
-      city: new FormControl(null, [Validators.required]),
-      state: new FormControl(null, [Validators.required]),
+      city: new FormControl('', [Validators.required]),
+      state: new FormControl('', [Validators.required]),
       zipcode: new FormControl(null, [
         Validators.required,
         Validators.pattern(/^\d{6}$/),
       ]),
-      hospital_type: new FormControl(null, [Validators.required]),
-      is_active: new FormControl(null, [Validators.required]),
+      hospital_type: new FormControl('', [Validators.required]),
+      is_active: new FormControl(true, [Validators.required]),
     });
   }
 
@@ -133,6 +133,9 @@ export class AddHospitalComponent implements OnInit, OnDestroy {
 
   // Valid field validation
   isFieldValid(field: string) {
-    return this.hospitalForm.get(field)?.valid;
+    return (
+      this.hospitalForm.get(field)?.valid &&
+      this.hospitalForm.get(field)?.touched
+    );
   }
 }

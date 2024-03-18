@@ -34,7 +34,7 @@ export class HospitalDetailComponent implements OnInit, OnDestroy {
     minWidth: 100,
   };
 
-
+  adminRole : string = Constant.ADMIN;
 
   // Add a new property to the class for the cell renderer function
   hospitalIdCellRenderer = (params: any) => {

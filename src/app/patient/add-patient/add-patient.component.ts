@@ -100,7 +100,6 @@ export class AddPatientComponent implements OnInit, OnDestroy {
       .getHospital(this.userService.getUsername())
       .subscribe((response: any) => {
         this.hospitals = response;
-        console.log(this.hospitals);
       });
   }
 
@@ -141,6 +140,13 @@ export class AddPatientComponent implements OnInit, OnDestroy {
 
   // Save or update patient
   savePatient() {
+    if(this.patientForm.invalid){
+        // show toater
+        return;
+    }
+
+
+
     if (this.patientForm.valid) {
       let patientData = new Patient(this.patientForm.value);
       const selectedHospitalIds = this.patientForm.value.hospitalList.map(
@@ -153,6 +159,8 @@ export class AddPatientComponent implements OnInit, OnDestroy {
         if (result.valid) {
           this.notificationService.successNotification('Patient added');
           this.router.navigate(['/userDashboard/patient']);
+        }else{
+          //TODO: ???????
         }
       });
     } else {

@@ -32,14 +32,14 @@ export class DoctorDetailComponent implements OnInit, OnDestroy {
     minWidth: 100,
   };
 
+  allowedRoles: string[] = [Constant.ADMIN, Constant.DOCTOR];
+  adminRole : any = Constant.ADMIN;
+
   // Add a new property to the class for the cell renderer function
   doctorIdCellRenderer = (params: any) => {
     const anchor = document.createElement('a');
     anchor.innerText = params.value;
-    if (
-      this.userService.getUserRole() === Constant.ADMIN ||
-      this.userService.getUserRole() === Constant.DOCTOR
-    ) {
+    if (this.isAllowedRole()) {
       anchor.href = 'javascript:void(0);';
       anchor.addEventListener('click', () => {
         this.onIdClick(params.data);
@@ -78,7 +78,6 @@ export class DoctorDetailComponent implements OnInit, OnDestroy {
     // },
   ];
 
-
   // To initialize required services
   constructor(
     private http: HttpClient,
@@ -87,7 +86,7 @@ export class DoctorDetailComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private zone: NgZone,
-    public userService: UserService,
+    public userService: UserService
   ) {}
 
   // Initialzing component
@@ -102,7 +101,6 @@ export class DoctorDetailComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     console.log('Doctor Detail Component destroyed');
   }
-
 
   // Selecting doctor by ID
   onIdClick(rowData: any) {
@@ -131,5 +129,15 @@ export class DoctorDetailComponent implements OnInit, OnDestroy {
   // To display doctor ->active or not active
   activeCellRenderer(params: ValueFormatterParams): string {
     return params.value ? 'Active' : 'Not Active';
+  }
+
+  // Checking if the user's role is allowed
+  isAllowedRole(): boolean {
+    const userRole = this.userService.getUserRole();
+    return (
+      userRole !== null &&
+      userRole !== undefined &&
+      this.allowedRoles.includes(userRole)
+    );
   }
 }
