@@ -7,18 +7,15 @@
                 <input type="text" class="form-control" [ngClass]="{
                   'is-valid': isFieldValid('name'),
                   'is-invalid': isFieldInvalid('name'),
-                }" formControlName="name"
-                (input)="print()">
+                }" formControlName="name">
                 <p class="field-validation-error" *ngIf="isFieldInvalid('name')">Valid name is required!</p>
             </div>
         </div>
         <div class="row">
             <div class="col-4">
                 <label for="address">Address</label>
-                <!-- <input type="text" class="form-control" [class.is-valid]="isFieldValid('address')"
-                    [class.is-invalid]="isFieldInvalid('address')" formControlName="address"> -->
-                    <textarea class="form-control" [class.is-valid]="isFieldValid('address')" 
-              [class.is-invalid]="isFieldInvalid('address')" formControlName="address"></textarea>
+                <textarea class="form-control" [class.is-valid]="isFieldValid('address')"
+                    [class.is-invalid]="isFieldInvalid('address')" formControlName="address"></textarea>
                 <p class="field-validation-error" *ngIf="isFieldInvalid('address')">Valid address is required!</p>
             </div>
             <div class="col-4">

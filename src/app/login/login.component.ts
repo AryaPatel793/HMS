@@ -9,7 +9,6 @@ import { NotificationService } from '../Services/notification/notification.servi
 import { Login } from '../model/Login';
 import { isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID, Inject } from '@angular/core';
-import { Constant } from '../Services/constant/Constant';
 
 @Component({
   selector: 'app-login',
@@ -19,28 +18,32 @@ import { Constant } from '../Services/constant/Constant';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent implements OnInit, OnDestroy {
-  
+  //Required attributes
   loginForm!: FormGroup;
 
+  // Initialize required services
   constructor(
     private router: Router,
     private loginService: LoginService,
     @Inject(PLATFORM_ID) private platformId: any,
-    private notificationService: NotificationService,
+    private notificationService: NotificationService
   ) {
     this.initForm();
   }
 
+  // Initializing component
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
       console.log('ngOnInit called');
     }
   }
 
+  //Destroying the component
   ngOnDestroy() {
     console.log('ngOnDestroy called');
   }
 
+  // Initializing login form
   initForm() {
     this.loginForm = new FormGroup({
       email: new FormControl('', [
@@ -56,28 +59,22 @@ export class LoginComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Checking valid credentials
   onLogin() {
     let loginData = new Login(this.loginForm);
     this.loginService.login(loginData).subscribe((response: any) => {
       if (response.valid) {
-        sessionStorage.setItem('username',response.user_name);
+        sessionStorage.setItem('username', response.user_name);
         sessionStorage.setItem('role', response.role);
         this.notificationService.successNotification('Login Successfull');
-        if (response.role == Constant.ADMIN) {
-          this.router.navigate(['/adminDashboard']);
-        }
-        if (response.role == Constant.DOCTOR) {
-          this.router.navigate(['/adminDashboard']);
-        }
-        if (response.role == Constant.PATIENT) {
-          this.router.navigate(['/adminDashboard']);
-        }
+        this.router.navigate(['/userDashboard']);
       } else {
         this.notificationService.errorNotification('Invalid Credentials');
       }
     });
   }
 
+  // Valid field validation
   isFieldValid(field: string) {
     return (
       this.loginForm.get(field)?.invalid &&

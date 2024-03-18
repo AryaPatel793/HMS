@@ -11,7 +11,8 @@ import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { AgGridModule } from 'ag-grid-angular';
 import { NgZone } from '@angular/core';
-
+import { Constant } from '../../Services/constant/Constant';
+import { UserService } from '../../Services/User/user.service';
 
 
 @Component({
@@ -23,13 +24,23 @@ import { NgZone } from '@angular/core';
 })
 export class HospitalDetailComponent implements OnInit, OnDestroy {
 
+  // Required attributes
   hospitalList: any[] = [];
+
+  gridOptions: GridOptions = {};
+
+  defaultColDef = {
+    flex: 1,
+    minWidth: 100,
+  };
+
+
 
   // Add a new property to the class for the cell renderer function
   hospitalIdCellRenderer = (params: any) => {
     const anchor = document.createElement('a');
     anchor.innerText = params.value;
-    if (this.getUserRole() === 'Admin') {
+    if (this.userService.getUserRole() === Constant.ADMIN) {
     anchor.href = 'javascript:void(0);'; // Set a non-navigating href
     anchor.addEventListener('click', () => {
       this.onIdClick(params.data);
@@ -38,10 +49,8 @@ export class HospitalDetailComponent implements OnInit, OnDestroy {
     return anchor;
   };
 
-  userRole: string = 'Admin';
 
-  gridOptions: GridOptions = {};
-
+// Defining table columns
   colDefs: ColDef[] = [
     {
       field: 'hospital_custom_id',
@@ -70,6 +79,7 @@ export class HospitalDetailComponent implements OnInit, OnDestroy {
     // },
   ];
 
+  // Initialize required services
   constructor(
     private http: HttpClient,
     @Inject(PLATFORM_ID) private platformId: any,
@@ -77,10 +87,11 @@ export class HospitalDetailComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private zone: NgZone,
+    public userService : UserService
 
   ) {}
   
-
+// Initialize component
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.getAllHospital();
@@ -88,10 +99,12 @@ export class HospitalDetailComponent implements OnInit, OnDestroy {
     console.log('Hospital Detail Component Oninit')
   }
 
+  // Destroy component
   ngOnDestroy(): void {
      console.log('Hospital Detail Component Destroyed')
   }
 
+  // Selecting particular hospital
   onIdClick(rowData: any) {
     const hospitalId = rowData.hospital_custom_id;
     console.log(hospitalId);
@@ -103,39 +116,26 @@ export class HospitalDetailComponent implements OnInit, OnDestroy {
 
   }
 
-  defaultColDef = {
-    flex: 1,
-    minWidth: 100,
-  };
-
-
+  // Get all hospital
   getAllHospital() {
-
-    this.hospitalService.getHospital(this.getUsername()).subscribe((response: any) => {
+    this.hospitalService.getHospital(this.userService.getUsername()).subscribe((response: any) => {
       this.hospitalList = response;
     });
   }
 
-  getUsername(): string | null{
-    return sessionStorage.getItem('username')
-  }
-  getUserRole(): string | null{
-    return sessionStorage.getItem('role')
-  }
-
+  // Gridd ready event
   onGridReady(params: any) {
     this.gridOptions = params.api;
   }
 
+  // To display hospital -> Active or not active
   activeCellRenderer(params: ValueFormatterParams): string {
     return params.value ? 'Active' : 'Not Active';
   }
 
-  onAddHospitalClick() {
-    console.log('Add Hospital button clicked');
-  }
 }
 
+// Required for deletion
 // onEditButtonClick(rowData: any) {
 //   // Get the selected hospital ID and navigate to the hospital form
 //   const hospitalId = rowData.id;

@@ -14,6 +14,8 @@ import { AppointmentService } from '../../Services/Appointment/appointment.servi
 import { NotificationService } from '../../Services/notification/notification.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationPopUpComponent } from '../../confirmation-pop-up/confirmation-pop-up.component';
+import { Constant } from '../../Services/constant/Constant';
+import { UserService } from '../../Services/User/user.service';
 
 @Component({
   selector: 'app-appointment-detail',
@@ -22,12 +24,26 @@ import { ConfirmationPopUpComponent } from '../../confirmation-pop-up/confirmati
   templateUrl: './appointment-detail.component.html',
   styleUrl: './appointment-detail.component.css',
 })
-export class AppointmentDetailComponent {
+export class AppointmentDetailComponent implements OnInit, OnDestroy {
+  //Required attributes
+  appointmentList: any[] = [];
+
+  gridOptions: GridOptions = {};
+
+  defaultColDef = {
+    flex: 1,
+    minWidth: 100,
+  };
+
+  // Cell renderer for updating particular appointment
   appointmentIdCellRenderer = (params: any) => {
     const anchor = document.createElement('a');
     anchor.innerText = params.value;
-    if (this.getUserRole() === 'Admin' || this.getUserRole() === 'Patient') {
-      anchor.href = 'javascript:void(0);'; 
+    if (
+      this.userService.getUserRole() === Constant.ADMIN ||
+      this.userService.getUserRole() === Constant.PATIENT
+    ) {
+      anchor.href = 'javascript:void(0);';
       anchor.addEventListener('click', () => {
         this.onIdClick(params.data);
       });
@@ -35,9 +51,10 @@ export class AppointmentDetailComponent {
     return anchor;
   };
 
+  // cell renderer to display status
   statusCellRenderer = (params: any) => {
     const status = params.value;
-    if (this.getUserRole() === 'Doctor') {
+    if (this.userService.getUserRole() === Constant.DOCTOR) {
       if (status === 'PENDING') {
         const approveButton = document.createElement('button');
         approveButton.className = 'btn btn-success';
@@ -67,12 +84,7 @@ export class AppointmentDetailComponent {
     }
   };
 
-  userRole: string = 'Admin';
-
-  appointmentList: any[] = [];
-
-  gridOptions: GridOptions = {};
-
+  // Defining table columns
   colDefs: ColDef[] = [
     {
       field: 'appointment_custom_id',
@@ -96,7 +108,7 @@ export class AppointmentDetailComponent {
       minWidth: 200,
       cellRenderer: this.statusCellRenderer,
     },
-    // {
+    // {   Code required for deletion
     //   headerName: 'Actions',
     //   cellRenderer: 'editButtonRenderer',
     //   width: 100,
@@ -106,13 +118,7 @@ export class AppointmentDetailComponent {
     // },
   ];
 
-  ngOnInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      this.getAllAppointment();
-    }
-    console.log(' Appointment Detail Component Onint');
-  }
-
+  //Constructor to initialize services
   constructor(
     private http: HttpClient,
     @Inject(PLATFORM_ID) private platformId: any,
@@ -121,13 +127,24 @@ export class AppointmentDetailComponent {
     private zone: NgZone,
     private appointmentService: AppointmentService,
     private notificationService: NotificationService,
-    private dialog: MatDialog
-  ) { }
+    private dialog: MatDialog,
+    public userService: UserService
+  ) {}
 
+  // Initialize appointment detail component
+  ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.getAllAppointment();
+    }
+    console.log(' Appointment Detail Component Onint');
+  }
+
+  // Destroy the component
   ngOnDestroy(): void {
     console.log('Appointment Detail Component destroyed');
   }
 
+  //Updating appointment by ID
   onIdClick(rowData: any) {
     const appointmentId = rowData.appointment_custom_id;
     this.zone.run(() => {
@@ -137,43 +154,25 @@ export class AppointmentDetailComponent {
     });
   }
 
-  defaultColDef = {
-    flex: 1,
-    minWidth: 100,
-  };
-
-  getUsername(): string | null {
-    return sessionStorage.getItem('username');
-  }
-
-  getUserRole(): string | null {
-    return sessionStorage.getItem('role');
-  }
-
+  // Get all apointment
   getAllAppointment() {
     this.appointmentService
-      .getAllAppointment(this.getUsername())
+      .getAllAppointment(this.userService.getUsername())
       .subscribe((response: any) => {
         this.appointmentList = response;
       });
   }
 
+  // AG grid ready event
   onGridReady(params: any) {
     this.gridOptions = params.api;
   }
 
-  onAddAppointmentClick() {
-    console.log('Add appointment button clicked');
-  }
-
+  // Approving the appointment
   onApproveClick() {
     console.log('Approve button clicked');
   }
-
   approveAppointment(id: any) {
-    console.log(id);
-    debugger;
-
     this.appointmentService
       .approveAppointment(id)
       .subscribe((response: any) => {
@@ -185,6 +184,7 @@ export class AppointmentDetailComponent {
       });
   }
 
+  // Rejecting the appointment
   rejectAppointment(id: any) {
     const dialogRef = this.dialog.open(ConfirmationPopUpComponent, {
       width: '300px',
@@ -197,7 +197,6 @@ export class AppointmentDetailComponent {
       dialogRef.afterClosed().subscribe((result) => {
         if (result === true) {
           this.zone.run(() => {
-
             this.appointmentService
               .rejectAppointment(id)
               .subscribe((response: any) => {

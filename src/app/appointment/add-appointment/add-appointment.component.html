@@ -1,23 +1,26 @@
 <h2>Appointment Detail Form</h2>
 <div class="container">
-    <form [formGroup]="appointmentForm" (ngSubmit)="saveAppointment()" >
+    <form [formGroup]="appointmentForm" (ngSubmit)="saveAppointment()">
         <div class="row">
             <div class="col-4">
                 <label for="Title">Appointment Title</label>
                 <input type="text" class="form-control" [class.is-valid]="isFieldValid('appointment_title')"
                     [class.is-invalid]="isFieldInvalid('appointment_title')" formControlName="appointment_title">
-                <p class="field-validation-error" *ngIf="isFieldInvalid('appointment_title')">Valid appointment title is required!</p>
+                <p class="field-validation-error" *ngIf="isFieldInvalid('appointment_title')">Valid appointment title is
+                    required!</p>
             </div>
             <div class="col-4">
                 <label for="Date"> Appointment Date</label>
-                <input type="date" class="form-control"  [class.is-valid]="isFieldValid('appointment_date')"
+                <input type="date" class="form-control" [class.is-valid]="isFieldValid('appointment_date')"
                     [class.is-invalid]="isFieldInvalid('appointment_date')" formControlName="appointment_date">
-                    <p class="field-validation-error" *ngIf="isFieldInvalid('appointment_date')">Valid appointment Date is required!</p>
-                </div>
+                <p class="field-validation-error" *ngIf="isFieldInvalid('appointment_date')">Valid appointment Date is
+                    required!</p>
+            </div>
             <div class="col-4">
                 <label for="time slot">Time Slot</label>
                 <select class="form-control form-select" formControlName="appointment_time"
-                    [class.is-valid]="isFieldValid('appointment_time')" [class.is-invalid]="isFieldInvalid('appointment_time')">
+                    [class.is-valid]="isFieldValid('appointment_time')"
+                    [class.is-invalid]="isFieldInvalid('appointment_time')">
                     <option value="" disabled>--Select a Time --</option>
                     <option *ngFor="let time of timeSlot" [value]="time">{{time}}</option>
                 </select>
@@ -27,9 +30,11 @@
         <div class="row">
             <div class="col-4">
                 <label for="Appointment Detail">Appointment Detail</label>
-                    <textarea class="form-control" [class.is-valid]="isFieldValid('appointment_detail')" 
-                    [class.is-invalid]="isFieldInvalid('appointment_detail')" formControlName="appointment_detail"></textarea>
-                <p class="field-validation-error" *ngIf="isFieldInvalid('appointment_detail')">Valid details is required!</p>
+                <textarea class="form-control" [class.is-valid]="isFieldValid('appointment_detail')"
+                    [class.is-invalid]="isFieldInvalid('appointment_detail')"
+                    formControlName="appointment_detail"></textarea>
+                <p class="field-validation-error" *ngIf="isFieldInvalid('appointment_detail')">Valid details is
+                    required!</p>
             </div>
         </div>
         <br>
@@ -40,6 +45,3 @@
         </div>
     </form>
 </div>
-
-
-<!-- format="YYYY-MM-DD" placeholder="YYYY-MM-DD" -->

@@ -1,17 +1,16 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
-
-  constructor() { }
+  constructor() {}
 
   getUsername(): string | null {
     return sessionStorage.getItem('username');
   }
 
   getUserRole(): string | null {
-    return sessionStorage.getItem('role')
+    return sessionStorage.getItem('role');
   }
 }

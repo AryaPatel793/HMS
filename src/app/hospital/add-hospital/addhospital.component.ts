@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   FormControl,
@@ -6,8 +5,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ActivatedRoute, RouterModule } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { ActivatedRoute } from '@angular/router';
 import { HospitalService } from '../../Services/Hospital/hospital.service';
 import { NotificationService } from '../../Services/notification/notification.service';
 import { Router } from '@angular/router';
@@ -16,7 +14,6 @@ import { NgIf } from '@angular/common';
 import { ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Constant } from '../../Services/constant/Constant';
-import { NgZone } from '@angular/core';
 
 @Component({
   selector: 'app-hospitalform',
@@ -26,21 +23,20 @@ import { NgZone } from '@angular/core';
   styleUrl: './addhospital.component.css',
 })
 export class AddHospitalComponent implements OnInit, OnDestroy {
+  // Required Attributes
   hospitalForm!: FormGroup;
 
   states: string[] = Constant.states;
 
   cities: string[] = [];
 
+  // Initialize required services
   constructor(
-    private http: HttpClient,
-    private toastr: ToastrService,
     private hospitalService: HospitalService,
     private notificationService: NotificationService,
     private router: Router,
     private route: ActivatedRoute,
-    private cdr: ChangeDetectorRef,
-    private zone: NgZone
+    private cdr: ChangeDetectorRef
   ) {
     console.log('HospitalformComponent constructor');
     this.route.params.subscribe((params) => {
@@ -50,16 +46,19 @@ export class AddHospitalComponent implements OnInit, OnDestroy {
       }
     });
   }
-  
+
+  // Initializing component
   ngOnInit() {
     this.initializeForm();
     console.log('HospitalformComponent ngOnInit');
   }
 
+  // Destroying the component
   ngOnDestroy(): void {
-    console.log('AddHospital Component destroyed')
+    console.log('AddHospital Component destroyed');
   }
 
+  // Initializing hospital form
   private initializeForm() {
     this.hospitalForm = new FormGroup({
       hospital_id: new FormControl(''),
@@ -77,6 +76,7 @@ export class AddHospitalComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Save or update hospital
   saveHospital() {
     if (this.hospitalForm.valid) {
       let hospitalData = new Hospital(this.hospitalForm.value);
@@ -85,22 +85,20 @@ export class AddHospitalComponent implements OnInit, OnDestroy {
         .subscribe((result: any) => {
           if (result.valid) {
             this.notificationService.successNotification('Hospital added');
-            this.router.navigate(['/adminDashboard/hospital']);
-            // this.initializeForm();
+            this.router.navigate(['/userDashboard/hospital']);
           }
         });
     } else {
-      
-        this.hospitalForm.markAllAsTouched();
-        this.notificationService.errorNotification('Please fill in all required fields correctly.');
-    
+      this.hospitalForm.markAllAsTouched();
+      this.notificationService.errorNotification(
+        'Please fill in all required fields correctly.'
+      );
     }
   }
 
+  // Get hospital by ID
   getHospitalDetailsById(id: any) {
     this.hospitalService.getHospitalById(id).subscribe((hospital: any) => {
-      // Initialize the form with the retrieved hospital data
-      // this.initializeForm();
       this.hospitalForm.patchValue({
         hospital_id: hospital.hospital_id,
         hospital_custom_id: hospital.hospital_custom_id,
@@ -113,23 +111,19 @@ export class AddHospitalComponent implements OnInit, OnDestroy {
         is_active: hospital.is_active,
       });
 
-      // Update cities based on the state from the database
       this.onStateChange({ target: { value: hospital.state } });
     });
   }
 
-  get f() {
-    return this.hospitalForm.controls;
-  }
-
+  // Update cities when state change
   onStateChange(event: any) {
     const state = event.target.value;
     this.cities = Constant.cityData[state] || [];
     this.cdr.detectChanges();
   }
 
+  // Invalid field validation
   isFieldInvalid(field: string) {
-    // console.log("InValid called");
     return (
       this.hospitalForm.get(field)?.invalid &&
       (this.hospitalForm.get(field)?.touched ||
@@ -137,14 +131,8 @@ export class AddHospitalComponent implements OnInit, OnDestroy {
     );
   }
 
-  isFieldValid(field :string)
-  { 
-    // console.log("Is Field Valid called");
-  
-    return (this.hospitalForm.get(field)?.valid);
-  }
-
-  print(){
-  //    console.log(this.hospitalForm)
+  // Valid field validation
+  isFieldValid(field: string) {
+    return this.hospitalForm.get(field)?.valid;
   }
 }

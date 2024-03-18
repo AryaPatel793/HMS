@@ -18,12 +18,19 @@ import { Constant } from '../../Services/constant/Constant';
 @Component({
   selector: 'app-patiet-detail',
   standalone: true,
-  imports: [AgGridAngular, RouterModule, RouterOutlet, AgGridModule, NgIf, MatSlideToggleModule],
-  templateUrl: './patiet-detail.component.html',
-  styleUrl: './patiet-detail.component.css'
+  imports: [
+    AgGridAngular,
+    RouterModule,
+    RouterOutlet,
+    AgGridModule,
+    NgIf,
+    MatSlideToggleModule,
+  ],
+  templateUrl: './patient-detail.component.html',
+  styleUrl: './patient-detail.component.css',
 })
-export class PatietDetailComponent implements OnInit, OnDestroy {
-
+export class PatientDetailComponent implements OnInit, OnDestroy {
+  // Required attributes
   patientList: any[] = [];
 
   gridOptions: GridOptions = {};
@@ -36,7 +43,11 @@ export class PatietDetailComponent implements OnInit, OnDestroy {
   patientIdCellRenderer = (params: any) => {
     const anchor = document.createElement('a');
     anchor.innerText = params.value;
-    if (this.userService.getUserRole() === Constant.ADMIN || this.userService.getUserRole() === Constant.DOCTOR || this.userService.getUserRole() === Constant.PATIENT) {
+    if (
+      this.userService.getUserRole() === Constant.ADMIN ||
+      this.userService.getUserRole() === Constant.DOCTOR ||
+      this.userService.getUserRole() === Constant.PATIENT
+    ) {
       anchor.href = 'javascript:void(0);';
       anchor.addEventListener('click', () => {
         this.onIdClick(params.data);
@@ -45,6 +56,7 @@ export class PatietDetailComponent implements OnInit, OnDestroy {
     return anchor;
   };
 
+  // Defining table columns
   colDefs: ColDef[] = [
     {
       field: 'patient_custom_id',
@@ -70,7 +82,8 @@ export class PatietDetailComponent implements OnInit, OnDestroy {
     { field: 'doctor_name', headerName: 'Doctor Name', filter: true },
     { field: 'hospital_custom_id', headerName: 'Hospital Id', filter: true },
     { field: 'hospital_name', headerName: 'Hospital Name', filter: true },
-    // {
+
+    // { Required for deletion
     //   headerName: 'Actions',
     //   cellRenderer: 'editButtonRenderer',
     //   width: 100,
@@ -80,14 +93,7 @@ export class PatietDetailComponent implements OnInit, OnDestroy {
     // },
   ];
 
-
-  ngOnInit(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      this.getAllPatient();
-    }
-    console.log(" Patient Detail Component Onint")
-  }
-
+  // Initialize required services
   constructor(
     private http: HttpClient,
     @Inject(PLATFORM_ID) private platformId: any,
@@ -95,15 +101,23 @@ export class PatietDetailComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private zone: NgZone,
     private patientService: PatientService,
-    public userService : UserService
-  ) {
+    public userService: UserService
+  ) {}
 
+  // Initialzation of component
+  ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.getAllPatient();
+    }
+    console.log(' Patient Detail Component Onint');
   }
+
+  // Destroy component
   ngOnDestroy(): void {
-    console.log("Patient detail Component destroyed")
+    console.log('Patient detail Component destroyed');
   }
 
-
+  // Select hospital by ID
   onIdClick(rowData: any) {
     const patientId = rowData.patient_custom_id;
     console.log(patientId);
@@ -115,22 +129,22 @@ export class PatietDetailComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Get all patient
   getAllPatient() {
-    this.patientService.getPatient(this.userService.getUsername()).subscribe((response: any) => {
-      this.patientList = response;
-    });
+    this.patientService
+      .getPatient(this.userService.getUsername())
+      .subscribe((response: any) => {
+        this.patientList = response;
+      });
   }
 
+  // Grid ready event
   onGridReady(params: any) {
     this.gridOptions = params.api;
   }
 
+  // Display status of patient -> active or not active
   activeCellRenderer(params: ValueFormatterParams): string {
     return params.value ? 'Active' : 'Not Active';
   }
-
-  onAddPatientClick() {
-    console.log('Add patient button clicked');
-  }
-
 }

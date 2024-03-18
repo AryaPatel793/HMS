@@ -4,67 +4,24 @@ import { Observable } from 'rxjs';
 import { Constant } from '../constant/Constant';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LoginService {
-
   private userName: string | undefined;
 
   private static LOGIN_ENDPOINT = `${Constant.BASE_URL}loginUser/login`;
 
-  constructor(private http:HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   login(credentials: any): Observable<any> {
     return this.http.post(LoginService.LOGIN_ENDPOINT, credentials);
   }
 
-  getUserName(): string |undefined{
-  return this.userName;
+  getUserName(): string | undefined {
+    return this.userName;
   }
 
-  setUserName(user:string):void
-  {
-     this.userName= user;
+  setUserName(user: string): void {
+    this.userName = user;
   }
-
-
-
- 
-  
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import { HttpClient } from '@angular/common/http';
-// import { Injectable } from '@angular/core';
-// import { Observable } from 'rxjs';
-// import { Constants } from '../constants/Constants';
-
-// @Injectable({
-//   providedIn: 'root'
-// })
-// export class LoginService {
-
-//   constructor(private http:HttpClient) { }
-
-//   login(credentials: any): Observable<any> {
-//     return this.http.post(`${Constants.LOGIN_ENDPOINT}`, credentials);
-//   }
-// }

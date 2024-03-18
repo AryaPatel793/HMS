@@ -11,56 +11,66 @@ import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { AgGridModule } from 'ag-grid-angular';
 import { NgZone } from '@angular/core';
-
+import { Constant } from '../../Services/constant/Constant';
+import { UserService } from '../../Services/User/user.service';
 
 @Component({
   selector: 'app-doctor-detail',
   standalone: true,
   imports: [AgGridAngular, RouterModule, RouterOutlet, AgGridModule, NgIf],
   templateUrl: './doctor-detail.component.html',
-  styleUrl: './doctor-detail.component.css'
+  styleUrl: './doctor-detail.component.css',
 })
-export class DoctorDetailComponent implements OnInit, OnDestroy{
-
-   // Add a new property to the class for the cell renderer function
-   doctorIdCellRenderer = (params: any) => {
-    const anchor = document.createElement('a');
-    anchor.innerText = params.value;
-    if (this.getUserRole() === 'Admin'|| this.getUserRole() === 'Doctor') {
-    anchor.href = 'javascript:void(0);'; // Set a non-navigating href
-    anchor.addEventListener('click', () => {
-      this.onIdClick(params.data);
-    });
-  }
-    return anchor;
-  };
-
-  userRole: string = 'Admin';
-
+export class DoctorDetailComponent implements OnInit, OnDestroy {
+  // Reuqired attributes
   doctorList: any[] = [];
 
   gridOptions: GridOptions = {};
 
+  defaultColDef = {
+    flex: 1,
+    minWidth: 100,
+  };
+
+ 
+
+  // Add a new property to the class for the cell renderer function
+  doctorIdCellRenderer = (params: any) => {
+    const anchor = document.createElement('a');
+    anchor.innerText = params.value;
+    if (
+      this.userService.getUserRole() === Constant.ADMIN ||
+      this.userService.getUserRole() === Constant.DOCTOR
+    ) {
+      anchor.href = 'javascript:void(0);';
+      anchor.addEventListener('click', () => {
+        this.onIdClick(params.data);
+      });
+    }
+    return anchor;
+  };
+
+  // Defining table columns
   colDefs: ColDef[] = [
     {
       field: 'doctor_custom_id',
       headerName: 'Doctor Id',
-      cellRenderer: this.doctorIdCellRenderer, // Use the new cell renderer here
-      filter:true
+      cellRenderer: this.doctorIdCellRenderer,
+      filter: true,
     },
-    { field: 'doctor_name',filter:true },
-    { field: 'phone_number',filter:true},
-    { field: 'address' ,filter:true},
-    { field: 'city' ,filter:true},
-    { field: 'state',filter:true },
-    { field: 'zipcode',filter:true },
+    { field: 'doctor_name', filter: true },
+    { field: 'phone_number', filter: true },
+    { field: 'address', filter: true },
+    { field: 'city', filter: true },
+    { field: 'state', filter: true },
+    { field: 'zipcode', filter: true },
     {
       field: 'is_active',
       headerName: 'Status',
-      filter:true,
+      filter: true,
       cellRenderer: this.activeCellRenderer,
     },
-    // {
+    // {  Required for deletion
     //   headerName: 'Actions',
     //   cellRenderer: 'editButtonRenderer',
     //   width: 100,
@@ -71,6 +81,7 @@ export class DoctorDetailComponent implements OnInit, OnDestroy{
   ];
 
 
+  // To initialize required services
   constructor(
     private http: HttpClient,
     @Inject(PLATFORM_ID) private platformId: any,
@@ -78,57 +89,49 @@ export class DoctorDetailComponent implements OnInit, OnDestroy{
     private router: Router,
     private route: ActivatedRoute,
     private zone: NgZone,
+    public userService: UserService,
   ) {}
-  
+
+  // Initialzing component
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.getAllDoctor();
     }
-    console.log('Doctor Detail Component Oninit')
+    console.log('Doctor Detail Component Oninit');
   }
 
+  // Destroying the component
   ngOnDestroy(): void {
-    console.log('Doctor Detail Component destroyed')
+    console.log('Doctor Detail Component destroyed');
   }
 
+
+  // Selecting doctor by ID
   onIdClick(rowData: any) {
     const doctorId = rowData.doctor_custom_id;
     this.zone.run(() => {
-          this.router.navigate(['./addDoctor', doctorId], {
-      relativeTo: this.route,
+      this.router.navigate(['./addDoctor', doctorId], {
+        relativeTo: this.route,
+      });
     });
-  });
   }
 
-  defaultColDef = {
-    flex: 1,
-    minWidth: 100,
-  };
-
-  getUsername(): string | null{
-    return sessionStorage.getItem('username')
-  }
-
-  getUserRole(): string | null{
-    return sessionStorage.getItem('role')
-  }
-
+  // Get all doctors
   getAllDoctor() {
-    this.doctorService.getDoctor(this.getUsername()).subscribe((response: any) => {
-      this.doctorList = response;
-    });
+    this.doctorService
+      .getDoctor(this.userService.getUsername())
+      .subscribe((response: any) => {
+        this.doctorList = response;
+      });
   }
 
+  // Grid ready event
   onGridReady(params: any) {
     this.gridOptions = params.api;
   }
 
+  // To display doctor ->active or not active
   activeCellRenderer(params: ValueFormatterParams): string {
     return params.value ? 'Active' : 'Not Active';
   }
-
-  onAddDoctorClick() {
-    console.log('Add doctor button clicked');
-  }
-
 }

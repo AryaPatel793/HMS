@@ -1,8 +1,4 @@
-import {
-  Component,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -10,7 +6,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ActivatedRoute,} from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { NotificationService } from '../../Services/notification/notification.service';
 import { Router } from '@angular/router';
 import { NgIf } from '@angular/common';
@@ -42,7 +38,7 @@ import { UserService } from '../../Services/User/user.service';
   styleUrl: './add-patient.component.css',
 })
 export class AddPatientComponent implements OnInit, OnDestroy {
-
+  //Required attributes
   patientForm!: FormGroup;
 
   hospitals: any[] = [];
@@ -53,6 +49,9 @@ export class AddPatientComponent implements OnInit, OnDestroy {
 
   cities: string[] = [];
 
+  bloodGroups: string[] = Constant.bloodGroup;
+
+  // Dropdown settings
   public dropdownSettings: IDropdownSettings = {
     singleSelection: true,
     idField: 'hospitalId',
@@ -64,6 +63,7 @@ export class AddPatientComponent implements OnInit, OnDestroy {
     defaultOpen: false,
   };
 
+  // Initialize required service
   constructor(
     private patientService: PatientService,
     private notificationService: NotificationService,
@@ -73,7 +73,7 @@ export class AddPatientComponent implements OnInit, OnDestroy {
     private zone: NgZone,
     @Inject(PLATFORM_ID) private platformId: any,
     private hospitalService: HospitalService,
-    public userService : UserService
+    public userService: UserService
   ) {
     console.log('AddpatientComponent constructor');
     this.route.params.subscribe((params) => {
@@ -84,16 +84,19 @@ export class AddPatientComponent implements OnInit, OnDestroy {
     });
   }
 
+  //Initializing component
   ngOnInit(): void {
     this.getAllHospital();
     this.initializeForm();
     console.log('add patient OnInit');
   }
 
+  // Destroying component
   ngOnDestroy(): void {
     console.log('AddPatientComponent Destroyed');
   }
 
+  // Get all hospital
   getAllHospital() {
     this.hospitalService
       .getHospital(this.userService.getUsername())
@@ -103,28 +106,26 @@ export class AddPatientComponent implements OnInit, OnDestroy {
       });
   }
 
+  // Initialize patient form
   private initializeForm() {
     this.patientForm = new FormGroup({
       patient_id: new FormControl(''),
       patient_custom_id: new FormControl(''),
       name: new FormControl('', [Validators.required]),
       age: new FormControl('', [Validators.required]),
-      blood_group: new FormControl('', [
-        Validators.required,
-        Validators.pattern(/^(A|B|AB|O)[+-]$/),
-      ]),
+      blood_group: new FormControl('', [Validators.required]),
       phone_number: new FormControl(null, [
         Validators.required,
         Validators.pattern(/^\d{10}$/),
       ]),
       address: new FormControl('', [Validators.required]),
-      city: new FormControl(null, [Validators.required]),
-      state: new FormControl(null, [Validators.required]),
+      city: new FormControl('', [Validators.required]),
+      state: new FormControl('', [Validators.required]),
       zipcode: new FormControl('', [
         Validators.required,
         Validators.pattern(/^\d{6}$/),
       ]),
-      is_active: new FormControl(null, [Validators.required]),
+      is_active: new FormControl(true, [Validators.required]),
       user_name: new FormControl(null, [Validators.required]),
       email: new FormControl(null, [
         Validators.required,
@@ -140,28 +141,20 @@ export class AddPatientComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Save or update patient
   savePatient() {
     if (this.patientForm.valid) {
       let patientData = new Patient(this.patientForm.value);
-
-      // Extract only hospital IDs from the selected hospitals
       const selectedHospitalIds = this.patientForm.value.hospitalList.map(
         (hospital: any) => hospital.hospitalId
       );
-
       patientData.doctor_user_name = this.userService.getUsername();
-
-      // Assign the selected hospital IDs to the patientData
       patientData.selected_hospital = selectedHospitalIds;
-      console.log(patientData.selected_hospital);
-      console.log(patientData);
-      debugger;
 
       this.patientService.addPatient(patientData).subscribe((result: any) => {
         if (result.valid) {
           this.notificationService.successNotification('Patient added');
-          this.router.navigate(['/adminDashboard/patient']);
-          this.initializeForm();
+          this.router.navigate(['/userDashboard/patient']);
         }
       });
     } else {
@@ -174,11 +167,9 @@ export class AddPatientComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Get patient by ID
   getPatientDetailsById(id: any) {
     this.patientService.getPatientById(id).subscribe((patient: any) => {
-      // Initialize the form with the retrieved hospital data
-      console.log(patient);
-
       this.patientForm.patchValue({
         patient_id: patient.patient_id,
         patient_custom_id: patient.patient_custom_id,
@@ -201,12 +192,14 @@ export class AddPatientComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Update cities when state changes
   onStateChange(event: any) {
     const state = event.target.value;
     this.cities = Constant.cityData[state] || [];
     this.cdr.detectChanges();
   }
 
+  // Invalid field validation
   isFieldInvalid(field: string) {
     return (
       this.patientForm.get(field)?.invalid &&
@@ -215,6 +208,7 @@ export class AddPatientComponent implements OnInit, OnDestroy {
     );
   }
 
+  // Valid field validation
   isFieldValid(field: string) {
     return this.patientForm.get(field)?.valid;
   }

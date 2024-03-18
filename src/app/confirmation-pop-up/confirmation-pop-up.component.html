@@ -1,9 +1,9 @@
-
 <h2 mat-dialog-title>Confirmation</h2>
 <mat-dialog-content>
-    {{data.message}}
+  {{data.message}}
 </mat-dialog-content>
 <mat-dialog-actions style="display: flex; justify-content: center;">
-    <button mat-button mat-dialog-close cdkFocusInitial  class="btn btn-danger" (click)="onConfirm()" >{{data.confirm}}</button>
+  <button mat-button mat-dialog-close cdkFocusInitial class="btn btn-danger"
+    (click)="onConfirm()">{{data.confirm}}</button>
   <button mat-button mat-dialog-close class="btn btn-light" (click)="onCancel()">Cancel</button>
 </mat-dialog-actions>

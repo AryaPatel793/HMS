@@ -15,11 +15,13 @@
                 <p class="field-validation-error" *ngIf="isFieldInvalid('age')">Valid age is required!</p>
             </div>
             <div class="col-4">
-                <label for="name">Blood Group</label>
-                <input type="text" class="form-control" [class.is-valid]="isFieldValid('blood_group')"
-                    [class.is-invalid]="isFieldInvalid('blood_group')" formControlName="blood_group">
-                <p class="field-validation-error" *ngIf="isFieldInvalid('blood_group')">Valid blood group is required!
-                </p>
+                <label for="blood group">Blood Group</label>
+                <select class="form-control form-select" formControlName="blood_group"
+                    [class.is-valid]="isFieldValid('blood_group')" [class.is-invalid]="isFieldInvalid('blood_group')">
+                    <option value="" disabled>Select a blood group</option>
+                    <option *ngFor="let bloodGroup of bloodGroups" [value]="bloodGroup">{{bloodGroup}}</option>
+                </select>
+                <p class="field-validation-error" *ngIf="isFieldInvalid('blood_group')">Blood group is required!</p>
             </div>
         </div>
         <div class="row">
@@ -33,7 +35,7 @@
                 <label for="state">State</label>
                 <select class="form-control form-select" formControlName="state" (change)="onStateChange($event)"
                     [class.is-valid]="isFieldValid('state')" [class.is-invalid]="isFieldInvalid('state')">
-                    <option value="" disabled>--Select a State--</option>
+                    <option value="" disabled>Select a State</option>
                     <option *ngFor="let state of states" [value]="state">{{state}}</option>
                 </select>
                 <p class="field-validation-error" *ngIf="isFieldInvalid('state')">State is required!</p>
@@ -42,7 +44,7 @@
                 <label for="city">City</label>
                 <select class="form-control form-select" formControlName="city" [class.is-valid]="isFieldValid('city')"
                     [class.is-invalid]="isFieldInvalid('city')">
-                    <option value="" disabled>--Select a City--</option>
+                    <option value="" disabled>Select a City</option>
                     <option *ngFor="let city of cities" [value]="city">{{city}}</option>
                 </select>
                 <p class="field-validation-error" *ngIf="isFieldInvalid('city')">City is required!</p>
@@ -101,9 +103,10 @@
             <div class="col-4">
                 <label for="hospitals">Hospitals</label>
                 <ng-multiselect-dropdown #multiSelect [placeholder]="'Select Hospitals'" [settings]="dropdownSettings"
-                    [data]="hospitals" formControlName="hospitalList"
+                    [data]="hospitals" formControlName="hospitalList" [class.is-valid]="isFieldValid('hospitalList')"
+                    [class.is-invalid]="isFieldInvalid('hospitalList')"
                     (change)="getAllHospital()"></ng-multiselect-dropdown>
-                <p class="field-validation-error" *ngIf="isFieldInvalid('hospitals')">Please select only one
+                <p class="field-validation-error" *ngIf="isFieldInvalid('hospitalList')">Please select only one
                     hospital.</p>
             </div>
         </div>

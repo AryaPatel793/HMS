@@ -4,17 +4,15 @@ import { Observable } from 'rxjs';
 import { Constant } from '../constant/Constant';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AppointmentService {
-
   private static APPOINTMENT_ENDPOINT = `${Constant.BASE_URL}appointments/appointment`;
   private static ALL_APPOINTMENT = `${Constant.BASE_URL}appointments/all`;
   private static APPROVE_APPOINTMENT = `${Constant.BASE_URL}appointments/appointment/approve`;
   private static REJECT_APPOINTMENT = `${Constant.BASE_URL}appointments/appointment/reject`;
 
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getAllAppointment(userName: any): Observable<any> {
     return this.http.get(`${AppointmentService.ALL_APPOINTMENT}/${userName}`);
@@ -29,11 +27,10 @@ export class AppointmentService {
   }
 
   approveAppointment(id: any): Observable<any> {
-    return this.http.post(AppointmentService.APPROVE_APPOINTMENT, id)
+    return this.http.post(AppointmentService.APPROVE_APPOINTMENT, id);
   }
 
   rejectAppointment(id: any): Observable<any> {
-    return this.http.post(AppointmentService.REJECT_APPOINTMENT, id)
-
+    return this.http.post(AppointmentService.REJECT_APPOINTMENT, id);
   }
 }
