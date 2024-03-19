@@ -97,7 +97,7 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
     this.hospitalService
       .getHospital(this.userService.getUsername())
       .subscribe((response: any) => {
-        this.hospitals = response;
+        this.hospitals = response.data;
       });
   }
 
@@ -156,19 +156,20 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
     );
 
     doctorData.selected_hospital = selectedHospitalIds;
-    this.doctorService.addDoctor(doctorData).subscribe((result: any) => {
-      if (result.valid) {
+    this.doctorService.addDoctor(doctorData).subscribe((response: any) => {
+      if (response.code === 201) {
         this.notificationService.successNotification('Doctor added');
         this.router.navigate(['/userDashboard/doctor']);
-      } else {
-        this.notificationService.errorNotification('Some error occured');
+      } else if(response.code === 404) {
+        this.notificationService.errorNotification(response.message);
       }
     });
   }
 
   // Get doctor by ID
   getDoctorDetailsById(id: any) {
-    this.doctorService.getDoctorById(id).subscribe((doctor: any) => {
+    this.doctorService.getDoctorById(id).subscribe((response: any) => {
+      const doctor = response.data
       this.doctorForm.patchValue({
         doctor_id: doctor.doctor_id,
         doctor_custom_id: doctor.doctor_custom_id,

@@ -130,7 +130,7 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
     this.patientService
       .getPatient(this.userService.getUsername())
       .subscribe((response: any) => {
-        this.patientList = response;
+        this.patientList = response.data;
       });
   }
 

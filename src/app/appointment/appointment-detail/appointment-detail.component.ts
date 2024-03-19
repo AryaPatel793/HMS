@@ -159,7 +159,7 @@ export class AppointmentDetailComponent implements OnInit, OnDestroy {
     this.appointmentService
       .getAllAppointment(this.userService.getUsername())
       .subscribe((response: any) => {
-        this.appointmentList = response;
+        this.appointmentList = response.data;
       });
   }
 
@@ -184,7 +184,7 @@ export class AppointmentDetailComponent implements OnInit, OnDestroy {
       .approveAppointment(id)
       .subscribe((response: any) => {
         this.zone.run(() => {
-          if (response.valid) {
+          if (response.code === 200) {
             this.getAllAppointment();
           }
         });
@@ -207,7 +207,7 @@ export class AppointmentDetailComponent implements OnInit, OnDestroy {
             this.appointmentService
               .rejectAppointment(id)
               .subscribe((response: any) => {
-                if (response.valid) {
+                if (response.code === 200) {
                   this.getAllAppointment();
                 }
               });

@@ -103,7 +103,7 @@ export class AddPatientComponent implements OnInit, OnDestroy {
     this.hospitalService
       .getHospital(this.userService.getUsername())
       .subscribe((response: any) => {
-        this.hospitals = response;
+        this.hospitals = response.data;
       });
   }
 
@@ -165,13 +165,13 @@ export class AddPatientComponent implements OnInit, OnDestroy {
       patientData.doctor_user_name = this.userService.getUsername();
       patientData.selected_hospital = selectedHospitalIds;
 
-      this.patientService.addPatient(patientData).subscribe((result: any) => {
-        if (result.valid) {
+      this.patientService.addPatient(patientData).subscribe((response: any) => {
+        if (response.code === 201) {
           this.notificationService.successNotification('Patient added');
           this.router.navigate(['/userDashboard/patient']);
-        } else {
+        } else if (response.code === 404) {
           this.notificationService.errorNotification(
-            'Some error occured'
+            response.message
           ); 
         }
       });
@@ -179,7 +179,8 @@ export class AddPatientComponent implements OnInit, OnDestroy {
 
   // Get patient by ID
   getPatientDetailsById(id: any) {
-    this.patientService.getPatientById(id).subscribe((patient: any) => {
+    this.patientService.getPatientById(id).subscribe((response: any) => {
+      const patient = response.data
       this.patientForm.patchValue({
         patient_id: patient.patient_id,
         patient_custom_id: patient.patient_custom_id,

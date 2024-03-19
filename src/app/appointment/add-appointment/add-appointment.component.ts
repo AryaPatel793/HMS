@@ -69,7 +69,7 @@ export class AddAppointmentComponent {
       appointment_custom_id: [''],
       appointment_title: ['', Validators.required],
       appointment_detail: ['', Validators.required],
-      appointment_date: [null, [Validators.required, this.validateSundayDate]],
+      appointment_date: [null, [Validators.required, this.validateDate]],
       appointment_time: [null, Validators.required],
     });
   }
@@ -89,13 +89,13 @@ export class AddAppointmentComponent {
     appointmentData.username = this.userService.getUsername();
     this.appointmentService
       .addAppointment(appointmentData)
-      .subscribe((result: any) => {
-        if (result.valid) {
+      .subscribe((response: any) => {
+        if (response.code === 201) {
           this.notificationService.successNotification('Appointment created');
           this.router.navigate(['/userDashboard/appointment']);
           this.initializeForm();
-        } else {
-          this.notificationService.errorNotification(result.message);
+        } else if (response.code === 404) {
+          this.notificationService.errorNotification(response.message);
         }
       });
   }
@@ -104,7 +104,8 @@ export class AddAppointmentComponent {
   getAppointmentDetailsById(id: any) {
     this.appointmentService
       .getAppointmentById(id)
-      .subscribe((appointment: any) => {
+      .subscribe((response: any) => {
+        const appointment = response.data;
         this.appointmentForm.patchValue({
           appointment_id: appointment.appointment_id,
           appointment_custom_id: appointment.appointment_custom_id,
@@ -116,12 +117,21 @@ export class AddAppointmentComponent {
       });
   }
 
-  // Validating the date for sunday
-  validateSundayDate(control: FormControl): { [key: string]: any } | null {
+  validateDate(control: FormControl): { [key: string]: any } | null {
     const selectedDate = new Date(control.value);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); 
+
+    // Check if selected date is in the past
+    if (selectedDate < today) {
+      return { pastDate: true };
+    }
+
+    // Check if selected date is Sunday
     if (selectedDate.getDay() === 0) {
       return { sundayDate: true };
     }
+
     return null;
   }
 

@@ -14,7 +14,7 @@
                 <input type="date" class="form-control" [class.is-valid]="isFieldValid('appointment_date')"
                     [class.is-invalid]="isFieldInvalid('appointment_date')" formControlName="appointment_date">
                 <p class="field-validation-error" *ngIf="isFieldInvalid('appointment_date')">Valid appointment Date is
-                    required!</p>
+                    required! Excluding past date and sunday</p>
             </div>
             <div class="col-4">
                 <label for="time slot">Time Slot</label>

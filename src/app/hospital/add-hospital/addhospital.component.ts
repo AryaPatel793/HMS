@@ -90,13 +90,13 @@ export class AddHospitalComponent implements OnInit, OnDestroy {
       let hospitalData = new Hospital(this.hospitalForm.value);
       this.hospitalService
         .addHospital(hospitalData)
-        .subscribe((result: any) => {
-          if (result.valid) {
+        .subscribe((response: any) => {
+          if (response.code === 201) {
             this.notificationService.successNotification('Hospital added');
             this.router.navigate(['/userDashboard/hospital']);
-          }else{
+          }else if(response.code === 404){
             this.notificationService.errorNotification(
-              'Some error occured'
+              response.message
             );
           }
         });
@@ -105,7 +105,8 @@ export class AddHospitalComponent implements OnInit, OnDestroy {
 
   // Get hospital by ID
   getHospitalDetailsById(id: any) {
-    this.hospitalService.getHospitalById(id).subscribe((hospital: any) => {
+    this.hospitalService.getHospitalById(id).subscribe((response: any) => {
+      const hospital = response.data;
       this.hospitalForm.patchValue({
         hospital_id: hospital.hospital_id,
         hospital_custom_id: hospital.hospital_custom_id,

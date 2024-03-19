@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { LoginService } from '../Services/Login/login.service';
 import { NgIf } from '@angular/common';
@@ -25,6 +25,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private loginService: LoginService,
+    private formBuilder: FormBuilder,
     @Inject(PLATFORM_ID) private platformId: any,
     private notificationService: NotificationService
   ) {
@@ -43,19 +44,11 @@ export class LoginComponent implements OnInit, OnDestroy {
     console.log('ngOnDestroy called');
   }
 
-  // Initializing login form
-  initForm() {
-    this.loginForm = new FormGroup({
-      email: new FormControl('', [
-        Validators.required,
-        Validators.pattern('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'),
-      ]),
-      password: new FormControl('', [
-        Validators.required,
-        Validators.pattern(
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
-        ),
-      ]),
+   // Initializing login form using FormBuilder
+   initForm() {
+    this.loginForm = this.formBuilder.group({
+      email: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$')]],
+      password: ['', [Validators.required, Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]]
     });
   }
 
@@ -63,13 +56,13 @@ export class LoginComponent implements OnInit, OnDestroy {
   onLogin() {
     let loginData = new Login(this.loginForm);
     this.loginService.login(loginData).subscribe((response: any) => {
-      if (response.valid) {
-        sessionStorage.setItem('username', response.user_name);
-        sessionStorage.setItem('role', response.role);
+      if (response.code === 200) {
+        sessionStorage.setItem('username', response.data.user_name);
+        sessionStorage.setItem('role', response.data.role);
         this.notificationService.successNotification('Login Successfull');
         this.router.navigate(['/userDashboard']);
-      } else {
-        this.notificationService.errorNotification('Invalid Credentials');
+      } else if(response.code === 404) {
+        this.notificationService.errorNotification(response.message);
       }
     });
   }
