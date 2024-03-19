@@ -101,7 +101,7 @@ export class AddPatientComponent implements OnInit, OnDestroy {
   // Get all hospital
   getAllHospital() {
     this.hospitalService
-      .getHospital(this.userService.getUsername())
+      .getHospital(this.userService.getUserEmail())
       .subscribe((response: any) => {
         this.hospitals = response.data;
       });
@@ -162,7 +162,7 @@ export class AddPatientComponent implements OnInit, OnDestroy {
       const selectedHospitalIds = this.patientForm.value.hospitalList.map(
         (hospital: any) => hospital.hospital_custom_id
       );
-      patientData.doctor_user_name = this.userService.getUsername();
+      patientData.doctor_email = this.userService.getUserEmail();
       patientData.selected_hospital = selectedHospitalIds;
 
       this.patientService.addPatient(patientData).subscribe((response: any) => {

@@ -59,6 +59,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       if (response.code === 200) {
         sessionStorage.setItem('username', response.data.user_name);
         sessionStorage.setItem('role', response.data.role);
+        sessionStorage.setItem('userEmail', response.data.email);
         this.notificationService.successNotification('Login Successfull');
         this.router.navigate(['/userDashboard']);
       } else if(response.code === 404) {

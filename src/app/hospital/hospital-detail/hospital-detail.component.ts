@@ -118,7 +118,8 @@ export class HospitalDetailComponent implements OnInit, OnDestroy {
 
   // Get all hospital
   getAllHospital() {
-    this.hospitalService.getHospital(this.userService.getUsername()).subscribe((response: any) => {
+    console.log(this.userService.getUserEmail())
+    this.hospitalService.getHospital(this.userService.getUserEmail()).subscribe((response: any) => {
       this.hospitalList = response.data;
     });
   }

@@ -13,4 +13,8 @@ export class UserService {
   getUserRole(): string | null {
     return sessionStorage.getItem('role');
   }
+
+  getUserEmail(): string | null {
+    return sessionStorage.getItem('userEmail')
+  }
 }

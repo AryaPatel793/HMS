@@ -13,7 +13,7 @@ export class Patient {
   user_name: string;
   email: string;
   password: string;
-  doctor_user_name: string | null;
+  doctor_email: string | null;
   selected_hospital: any[];
 
   constructor(data: any) {
@@ -31,7 +31,7 @@ export class Patient {
     this.user_name = data.user_name;
     this.email = data.email;
     this.password = data.password;
-    this.doctor_user_name = '';
+    this.doctor_email = '';
     this.selected_hospital = [];
   }
 }

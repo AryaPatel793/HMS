@@ -95,7 +95,7 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
   // Get all hospitals
   getAllHospital() {
     this.hospitalService
-      .getHospital(this.userService.getUsername())
+      .getHospital(this.userService.getUserEmail())
       .subscribe((response: any) => {
         this.hospitals = response.data;
       });

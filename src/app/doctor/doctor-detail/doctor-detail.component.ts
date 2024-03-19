@@ -115,7 +115,7 @@ export class DoctorDetailComponent implements OnInit, OnDestroy {
   // Get all doctors
   getAllDoctor() {
     this.doctorService
-      .getDoctor(this.userService.getUsername())
+      .getDoctor(this.userService.getUserEmail())
       .subscribe((response: any) => {
         this.doctorList = response.data;
       });
