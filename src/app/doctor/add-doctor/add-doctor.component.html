@@ -50,7 +50,7 @@
                 <p class="field-validation-error" *ngIf="isFieldInvalid('zipcode')">Valid 6 digit zipcode is required!
                 </p>
             </div>
-            <div class="col-4">
+            <div class="col-4" *ngIf="this.userService.getUserRole() === adminRole">
                 <label for="is_active">Active Status</label>
                 <select class="form-control form-select" formControlName="is_active"
                     [class.is-valid]="isFieldValid('is_active')" [class.is-invalid]="isFieldInvalid('is_active')">

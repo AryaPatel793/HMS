@@ -25,6 +25,7 @@ export class ConfirmationPopUpComponent implements OnInit, OnDestroy {
   // Initializing component
   ngOnInit(): void {
     console.log('Popup Component Onint');
+    console.log(this.data); 
   }
 
   // Destroying component

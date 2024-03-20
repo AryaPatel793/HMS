@@ -157,7 +157,7 @@ export class AppointmentDetailComponent implements OnInit, OnDestroy {
   // Get all apointment
   getAllAppointment() {
     this.appointmentService
-      .getAllAppointment(this.userService.getUsername())
+      .getAllAppointment(this.userService.getUserEmail())
       .subscribe((response: any) => {
         this.appointmentList = response.data;
       });
@@ -179,6 +179,7 @@ export class AppointmentDetailComponent implements OnInit, OnDestroy {
   onApproveClick() {
     console.log('Approve button clicked');
   }
+  // Approving the appointment
   approveAppointment(id: any) {
     this.appointmentService
       .approveAppointment(id)

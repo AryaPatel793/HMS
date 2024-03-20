@@ -86,7 +86,7 @@ export class AddAppointmentComponent {
       return;
     }
     let appointmentData = new Appointment(this.appointmentForm.value);
-    appointmentData.username = this.userService.getUsername();
+    appointmentData.user_email = this.userService.getUserEmail();
     this.appointmentService
       .addAppointment(appointmentData)
       .subscribe((response: any) => {

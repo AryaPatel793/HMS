@@ -47,6 +47,8 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
 
   cities: string[] = [];
 
+  adminRole : any = Constant.ADMIN;
+
   // Dropdown settings
   public dropdownSettings: IDropdownSettings = {
     singleSelection: false,

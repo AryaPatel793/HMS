@@ -13,6 +13,9 @@ import { AgGridModule } from 'ag-grid-angular';
 import { NgZone } from '@angular/core';
 import { Constant } from '../../Services/constant/Constant';
 import { UserService } from '../../Services/User/user.service';
+import { MatDialog } from '@angular/material/dialog';
+import { AddressPopUpComponent } from '../../address-pop-up/address-pop-up.component';
+
 
 @Component({
   selector: 'app-doctor-detail',
@@ -48,6 +51,17 @@ export class DoctorDetailComponent implements OnInit, OnDestroy {
     return anchor;
   };
 
+  // Cell renderer for displaying particular address
+  addressIdCellRenderer = (params: any) => {
+    const anchor = document.createElement('a');
+    anchor.innerText = params.value;
+      anchor.href = 'javascript:void(0);';
+      anchor.addEventListener('click', () => {
+        this.onAddressClick(params.data);
+      });
+    return anchor;
+  };
+
   // Defining table columns
   colDefs: ColDef[] = [
     {
@@ -58,7 +72,11 @@ export class DoctorDetailComponent implements OnInit, OnDestroy {
     },
     { field: 'doctor_name', filter: true },
     { field: 'phone_number', filter: true },
-    { field: 'address', filter: true },
+    { field: 'address',
+    headerName: 'Address',
+    filter: true,
+    cellRenderer: this.addressIdCellRenderer,
+    },
     { field: 'city', filter: true },
     { field: 'state', filter: true },
     { field: 'zipcode', filter: true },
@@ -86,7 +104,9 @@ export class DoctorDetailComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private zone: NgZone,
-    public userService: UserService
+    public userService: UserService,
+    private dialog: MatDialog,
+
   ) {}
 
   // Initialzing component
@@ -140,4 +160,19 @@ export class DoctorDetailComponent implements OnInit, OnDestroy {
       this.allowedRoles.includes(userRole)
     );
   }
+
+  //Address dialog box
+  onAddressClick(rowData: any) {
+    const address = rowData.address;
+    console.log(address)
+    this.zone.run(() => {
+    const dialogRef = this.dialog.open(AddressPopUpComponent, {
+      width: '500px',
+      data: {
+        message: address,
+      },
+    });
+  });
+
+}
 }

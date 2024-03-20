@@ -5,7 +5,7 @@ export class Appointment {
   appointment_detail: string;
   appointment_date: Date;
   appointment_time: string;
-  username: string | null;
+  user_email: string | null;
 
   constructor(data: any) {
     this.appointment_id = data.appointment_id;
@@ -14,6 +14,6 @@ export class Appointment {
     this.appointment_detail = data.appointment_detail;
     this.appointment_date = data.appointment_date;
     this.appointment_time = data.appointment_time;
-    this.username = '';
+    this.user_email = '';
   }
 }

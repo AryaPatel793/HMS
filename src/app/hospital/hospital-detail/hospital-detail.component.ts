@@ -13,7 +13,8 @@ import { AgGridModule } from 'ag-grid-angular';
 import { NgZone } from '@angular/core';
 import { Constant } from '../../Services/constant/Constant';
 import { UserService } from '../../Services/User/user.service';
-
+import { MatDialog } from '@angular/material/dialog';
+import { AddressPopUpComponent } from '../../address-pop-up/address-pop-up.component';
 
 @Component({
   selector: 'app-hospital',
@@ -23,7 +24,6 @@ import { UserService } from '../../Services/User/user.service';
   styleUrl: './hospital-detail.component.css',
 })
 export class HospitalDetailComponent implements OnInit, OnDestroy {
-
   // Required attributes
   hospitalList: any[] = [];
 
@@ -34,38 +34,53 @@ export class HospitalDetailComponent implements OnInit, OnDestroy {
     minWidth: 100,
   };
 
-  adminRole : string = Constant.ADMIN;
+  adminRole: string = Constant.ADMIN;
 
   // Add a new property to the class for the cell renderer function
   hospitalIdCellRenderer = (params: any) => {
     const anchor = document.createElement('a');
     anchor.innerText = params.value;
     if (this.userService.getUserRole() === Constant.ADMIN) {
-    anchor.href = 'javascript:void(0);'; // Set a non-navigating href
-    anchor.addEventListener('click', () => {
-      this.onIdClick(params.data);
-    });
-  }
+      anchor.href = 'javascript:void(0);'; // Set a non-navigating href
+      anchor.addEventListener('click', () => {
+        this.onIdClick(params.data);
+      });
+    }
     return anchor;
   };
 
+  // Cell renderer for displaying particular address
+  addressIdCellRenderer = (params: any) => {
+    const anchor = document.createElement('a');
+    anchor.innerText = params.value;
+    anchor.href = 'javascript:void(0);';
+    anchor.addEventListener('click', () => {
+      this.onAddressClick(params.data);
+    });
+    return anchor;
+  };
 
-// Defining table columns
+  // Defining table columns
   colDefs: ColDef[] = [
     {
       field: 'hospital_custom_id',
       headerName: 'Hospital Id',
       cellRenderer: this.hospitalIdCellRenderer, // Use the new cell renderer here
     },
-    { field: 'name' ,filter:true },
-    { field: 'address' ,filter:true  },
-    { field: 'city' ,filter:true },
-    { field: 'state' ,filter:true  },
-    { field: 'zipcode' ,filter:true },
-    { field: 'hospital_type' ,filter:true },
+    { field: 'name', filter: true },
+    {
+      field: 'address',
+      headerName: 'Address',
+      filter: true,
+      cellRenderer: this.addressIdCellRenderer,
+    },
+    { field: 'city', filter: true },
+    { field: 'state', filter: true },
+    { field: 'zipcode', filter: true },
+    { field: 'hospital_type', filter: true },
     {
       field: 'is_active',
-      filter:true ,
+      filter: true,
       headerName: 'Status',
       cellRenderer: this.activeCellRenderer,
     },
@@ -87,21 +102,21 @@ export class HospitalDetailComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private zone: NgZone,
-    public userService : UserService
-
+    public userService: UserService,
+    private dialog: MatDialog
   ) {}
-  
-// Initialize component
+
+  // Initialize component
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
       this.getAllHospital();
     }
-    console.log('Hospital Detail Component Oninit')
+    console.log('Hospital Detail Component Oninit');
   }
 
   // Destroy component
   ngOnDestroy(): void {
-     console.log('Hospital Detail Component Destroyed')
+    console.log('Hospital Detail Component Destroyed');
   }
 
   // Selecting particular hospital
@@ -109,19 +124,20 @@ export class HospitalDetailComponent implements OnInit, OnDestroy {
     const hospitalId = rowData.hospital_custom_id;
     console.log(hospitalId);
     this.zone.run(() => {
-    this.router.navigate(['./addHospital', hospitalId], {
-      relativeTo: this.route,
+      this.router.navigate(['./addHospital', hospitalId], {
+        relativeTo: this.route,
+      });
     });
-  });
-
   }
 
   // Get all hospital
   getAllHospital() {
-    console.log(this.userService.getUserEmail())
-    this.hospitalService.getHospital(this.userService.getUserEmail()).subscribe((response: any) => {
-      this.hospitalList = response.data;
-    });
+    console.log(this.userService.getUserEmail());
+    this.hospitalService
+      .getHospital(this.userService.getUserEmail())
+      .subscribe((response: any) => {
+        this.hospitalList = response.data;
+      });
   }
 
   // Gridd ready event
@@ -134,6 +150,19 @@ export class HospitalDetailComponent implements OnInit, OnDestroy {
     return params.value ? 'Active' : 'Not Active';
   }
 
+  //Address dialog box
+  onAddressClick(rowData: any) {
+    const address = rowData.address;
+    console.log(address);
+    this.zone.run(() => {
+      const dialogRef = this.dialog.open(AddressPopUpComponent, {
+        width: '500px',
+        data: {
+          message: address,
+        },
+      });
+    });
+  }
 }
 
 // Required for deletion

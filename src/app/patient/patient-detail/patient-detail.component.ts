@@ -14,6 +14,8 @@ import { PatientService } from '../../Services/Patient/patient.service';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { UserService } from '../../Services/User/user.service';
 import { Constant } from '../../Services/constant/Constant';
+import { MatDialog } from '@angular/material/dialog';
+import { AddressPopUpComponent } from '../../address-pop-up/address-pop-up.component';
 
 @Component({
   selector: 'app-patiet-detail',
@@ -41,7 +43,7 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
   };
 
   allowedRoles: string[] = [Constant.ADMIN, Constant.DOCTOR, Constant.PATIENT];
-  doctorRole : string = Constant.DOCTOR;
+  doctorRole: string = Constant.DOCTOR;
   patientIdCellRenderer = (params: any) => {
     const anchor = document.createElement('a');
     anchor.innerText = params.value;
@@ -51,6 +53,17 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
         this.onIdClick(params.data);
       });
     }
+    return anchor;
+  };
+
+  // Cell renderer for displaying particular address
+  addressIdCellRenderer = (params: any) => {
+    const anchor = document.createElement('a');
+    anchor.innerText = params.value;
+    anchor.href = 'javascript:void(0);';
+    anchor.addEventListener('click', () => {
+      this.onAddressClick(params.data);
+    });
     return anchor;
   };
 
@@ -66,7 +79,12 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
     { field: 'age', filter: true },
     { field: 'blood_group', headerName: 'Blood Gorup', filter: true },
     { field: 'phone_number', headerName: 'Phone Number', filter: true },
-    { field: 'address', filter: true },
+    {
+      field: 'address',
+      headerName: 'Address',
+      filter: true,
+      cellRenderer: this.addressIdCellRenderer,
+    },
     { field: 'city', filter: true },
     { field: 'state', filter: true },
     { field: 'zipcode', filter: true },
@@ -99,7 +117,8 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private zone: NgZone,
     private patientService: PatientService,
-    public userService: UserService
+    public userService: UserService,
+    private dialog: MatDialog
   ) {}
 
   // Initialzation of component
@@ -152,5 +171,18 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
       userRole !== undefined &&
       this.allowedRoles.includes(userRole)
     );
+  }
+  //Address dialog box
+  onAddressClick(rowData: any) {
+    const address = rowData.address;
+    console.log(address);
+    this.zone.run(() => {
+      const dialogRef = this.dialog.open(AddressPopUpComponent, {
+        width: '500px',
+        data: {
+          message: address,
+        },
+      });
+    });
   }
 }
