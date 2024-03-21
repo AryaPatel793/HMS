@@ -3,7 +3,6 @@ import {
   AbstractControl,
   FormArray,
   FormBuilder,
-  FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
@@ -23,8 +22,10 @@ import { Patient } from '../../model/Patient';
 import { PatientService } from '../../Services/Patient/patient.service';
 import { UserService } from '../../Services/User/user.service';
 import { MatStepperModule } from '@angular/material/stepper';
-import {IDropdownSettings,NgMultiSelectDropDownModule,} from 'ng-multiselect-dropdown';
-
+import {
+  IDropdownSettings,
+  NgMultiSelectDropDownModule,
+} from 'ng-multiselect-dropdown';
 
 @Component({
   selector: 'app-add-patient',
@@ -35,7 +36,7 @@ import {IDropdownSettings,NgMultiSelectDropDownModule,} from 'ng-multiselect-dro
     CommonModule,
     NgMultiSelectDropDownModule,
     FormsModule,
-    MatStepperModule
+    MatStepperModule,
   ],
   templateUrl: './add-patient.component.html',
   styleUrl: './add-patient.component.css',
@@ -109,46 +110,6 @@ export class AddPatientComponent implements OnInit, OnDestroy {
       });
   }
 
-  // // Initialize patient form
-  // private initializeForm() {
-  //   this.patientForm = this.formBuilder.group({
-  //     patient_id: [''],
-  //     patient_custom_id: [''],
-  //     name: ['', Validators.required],
-  //     age: ['', Validators.required],
-  //     blood_group: ['', Validators.required],
-  //     phone_number: [
-  //       null,
-  //       [Validators.required, Validators.pattern(/^\d{10}$/)],
-  //     ],
-  //     address: ['', Validators.required],
-  //     city: ['', Validators.required],
-  //     state: ['', Validators.required],
-  //     zipcode: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]],
-  //     is_active: [true, Validators.required],
-  //     user_name: [null, Validators.required],
-  //     email: [
-  //       null,
-  //       [
-  //         Validators.required,
-  //         Validators.pattern(
-  //           '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'
-  //         ),
-  //       ],
-  //     ],
-  //     password: [
-  //       null,
-  //       [
-  //         Validators.required,
-  //         Validators.pattern(
-  //           /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
-  //         ),
-  //       ],
-  //     ],
-  //     hospitalList: [[], Validators.required],
-  //   });
-  // }
-
   // Initialize patient form
   private initializeForm() {
     this.patientForm = this.formBuilder.group({
@@ -167,11 +128,17 @@ export class AddPatientComponent implements OnInit, OnDestroy {
           hospitalList: [[], Validators.required],
         }),
         this.formBuilder.group({
-          address: ['', [Validators.required, Validators.maxLength(150), Validators.minLength(10)]],
+          address: [
+            '',
+            [
+              Validators.required,
+              Validators.maxLength(150),
+              Validators.minLength(10),
+            ],
+          ],
           city: ['', Validators.required],
           state: ['', Validators.required],
           zipcode: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]],
-          
         }),
         this.formBuilder.group({
           user_name: [null, Validators.required],
@@ -182,7 +149,7 @@ export class AddPatientComponent implements OnInit, OnDestroy {
               Validators.pattern(
                 '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'
               ),
-              Validators.maxLength(20)
+              Validators.maxLength(20),
             ],
           ],
           password: [
@@ -199,7 +166,7 @@ export class AddPatientComponent implements OnInit, OnDestroy {
     });
   }
 
-  get formArray():  AbstractControl | null | FormArray {
+  get formArray(): AbstractControl | null | FormArray {
     return this.patientForm.get('formArray') as FormArray;
   }
 
@@ -215,87 +182,59 @@ export class AddPatientComponent implements OnInit, OnDestroy {
       return;
     }
     let patientData = new Patient(this.patientForm.value);
-    const [patientInfo, addressInfo, userInfo] = this.patientForm.value.formArray;
+    const [patientInfo, addressInfo, userInfo] =
+      this.patientForm.value.formArray;
     const selectedHospitalIds = patientInfo.hospitalList.map(
       (hospital: any) => hospital.hospital_custom_id
     );
     patientData.doctor_email = this.userService.getUserEmail();
     patientData.selected_hospital = selectedHospitalIds;
-    debugger
+    debugger;
     this.patientService.addPatient(patientData).subscribe((response: any) => {
       if (response.code === 201) {
         this.notificationService.successNotification('Patient added');
         this.router.navigate(['/userDashboard/patient']);
-      } else if (response.code === 404) {
+      } else if ( response.code === 404 ||
+        response.code === 704 ||
+        response.code === 804) {
         this.notificationService.errorNotification(response.message);
-      }
-      else if ( response.code === 704)
-      {
-        this.notificationService.errorNotification(response.message);
-      }
+      } 
     });
   }
 
   // Get patient by ID
-getPatientDetailsById(id: any) {
-  this.patientService.getPatientById(id).subscribe((response: any) => {
-    const patient = response.data;
-    this.patientForm.patchValue({
-      formArray: [
-        {
-          patient_id: patient.patient_id,
-          patient_custom_id: patient.patient_custom_id,
-          name: patient.name,
-          age: patient.age,
-          blood_group: patient.blood_group,
-          phone_number: patient.phone_number,
-          is_active: patient.is_active,
-          hospitalList: patient.selected_hospital || [],
-        },
-        {
-          address: patient.address,
-          city: patient.city,
-          state: patient.state,
-          zipcode: patient.zipcode,
-        },
-        {
-          user_name: patient.user_name,
-          email: patient.email,
-          password: patient.password,
-        },
-      ],
+  getPatientDetailsById(id: any) {
+    this.patientService.getPatientById(id).subscribe((response: any) => {
+      const patient = response.data;
+      this.patientForm.patchValue({
+        formArray: [
+          {
+            patient_id: patient.patient_id,
+            patient_custom_id: patient.patient_custom_id,
+            name: patient.name,
+            age: patient.age,
+            blood_group: patient.blood_group,
+            phone_number: patient.phone_number,
+            is_active: patient.is_active,
+            hospitalList: patient.selected_hospital || [],
+          },
+          {
+            address: patient.address,
+            city: patient.city,
+            state: patient.state,
+            zipcode: patient.zipcode,
+          },
+          {
+            user_name: patient.user_name,
+            email: patient.email,
+            password: patient.password,
+          },
+        ],
+      });
+
+      this.onStateChange({ target: { value: patient.state } });
     });
-
-    this.onStateChange({ target: { value: patient.state } });
-  });
-}
-
-
-  // // Get patient by ID
-  // getPatientDetailsById(id: any) {
-  //   this.patientService.getPatientById(id).subscribe((response: any) => {
-  //     const patient = response.data;
-  //     this.patientForm.patchValue({
-  //       patient_id: patient.patient_id,
-  //       patient_custom_id: patient.patient_custom_id,
-  //       name: patient.name,
-  //       age: patient.age,
-  //       blood_group: patient.blood_group,
-  //       phone_number: patient.phone_number,
-  //       address: patient.address,
-  //       city: patient.city,
-  //       state: patient.state,
-  //       zipcode: patient.zipcode,
-  //       is_active: patient.is_active,
-  //       user_name: patient.user_name,
-  //       email: patient.email,
-  //       password: patient.password,
-  //       hospitalList: patient.selected_hospital || [],
-  //     });
-
-  //     this.onStateChange({ target: { value: patient.state } });
-  //   });
-  // }
+  }
 
   // Update cities when state changes
   onStateChange(event: any) {
@@ -314,46 +253,27 @@ getPatientDetailsById(id: any) {
     );
   }
 
-  // // Invalid field validation
-  // isFieldInvalid(field: string) {
-  //   return (
-  //     this.patientForm.get(field)?.invalid &&
-  //     (this.patientForm.get(field)?.touched ||
-  //       this.patientForm.get(field)?.dirty)
-  //   );
-  // }
-
-  // // Valid field validation
-  // isFieldValid(field: string) {
-  //   return (
-  //     this.patientForm.get(field)?.valid && this.patientForm.get(field)?.touched
-  //   );
-  // }
-
   // Invalid field validation
-isFieldInvalid(arrayIndex: number, field: string) {
-  return (
-    this.patientForm.get('formArray')?.get(arrayIndex.toString())?.get(field)?.invalid &&
-    (this.patientForm.get('formArray')?.get(arrayIndex.toString())?.get(field)?.touched ||
-     this.patientForm.get('formArray')?.get(arrayIndex.toString())?.get(field)?.dirty)
-  );
-}
-
-// Valid field validation
-isFieldValid(arrayIndex: number, field: string) {
-  return (
-    this.patientForm.get('formArray')?.get(arrayIndex.toString())?.get(field)?.valid &&
-    this.patientForm.get('formArray')?.get(arrayIndex.toString())?.get(field)?.touched
-  );
-}
-
-
-  onPatentDetailNextClick(){
-    console.log("on patient detail next clicked")
+  isFieldInvalid(arrayIndex: number, field: string) {
+    return (
+      this.patientForm.get('formArray')?.get(arrayIndex.toString())?.get(field)
+        ?.invalid &&
+      (this.patientForm.get('formArray')?.get(arrayIndex.toString())?.get(field)
+        ?.touched ||
+        this.patientForm
+          .get('formArray')
+          ?.get(arrayIndex.toString())
+          ?.get(field)?.dirty)
+    );
   }
 
-  patientValue()
-  {
-    console.log(this.patientForm.value);
+  // Valid field validation
+  isFieldValid(arrayIndex: number, field: string) {
+    return (
+      this.patientForm.get('formArray')?.get(arrayIndex.toString())?.get(field)
+        ?.valid &&
+      this.patientForm.get('formArray')?.get(arrayIndex.toString())?.get(field)
+        ?.touched
+    );
   }
 }

@@ -1,11 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   FormBuilder,
-  FormControl,
+  FormArray,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
   Validators,
+  AbstractControl,
 } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { DoctorService } from '../../Services/Doctor/doctor.service';
@@ -19,6 +20,7 @@ import { Constant } from '../../Services/constant/Constant';
 import { UserService } from '../../Services/User/user.service';
 import { NgZone } from '@angular/core';
 import { HospitalService } from '../../Services/Hospital/hospital.service';
+import { MatStepperModule } from '@angular/material/stepper';
 import {
   IDropdownSettings,
   NgMultiSelectDropDownModule,
@@ -33,6 +35,7 @@ import {
     CommonModule,
     NgMultiSelectDropDownModule,
     FormsModule,
+    MatStepperModule,
   ],
   templateUrl: './add-doctor.component.html',
   styleUrl: './add-doctor.component.css',
@@ -47,7 +50,7 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
 
   cities: string[] = [];
 
-  adminRole : any = Constant.ADMIN;
+  adminRole: any = Constant.ADMIN;
 
   // Dropdown settings
   public dropdownSettings: IDropdownSettings = {
@@ -103,43 +106,101 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
       });
   }
 
+  // // Intializing doctor form using FormBuilder
+  // private initializeForm() {
+  //   this.doctorForm = this.formBuilder.group({
+  //     doctor_id: [''],
+  //     doctor_custom_id: [''],
+  //     doctor_name: ['', Validators.required],
+  //     phone_number: [
+  //       null,
+  //       [Validators.required, Validators.pattern(/^\d{10}$/)],
+  //     ],
+  //     address: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(150)]],
+  //     city: ['', Validators.required],
+  //     state: ['', Validators.required],
+  //     zipcode: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]],
+  //     is_active: [true, Validators.required],
+  //     user_name: [null, Validators.required],
+  //     email: [
+  //       null,
+  //       [
+  //         Validators.required,
+  //         Validators.pattern(
+  //           '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'
+  //         ),
+  //         Validators.maxLength(20)
+  //       ],
+  //     ],
+  //     password: [
+  //       null,
+  //       [
+  //         Validators.required,
+  //         Validators.pattern(
+  //           /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+  //         ),
+  //       ],
+  //     ],
+  //     hospitalList: [[], Validators.required],
+  //   });
+  // }
+
   // Intializing doctor form using FormBuilder
   private initializeForm() {
     this.doctorForm = this.formBuilder.group({
-      doctor_id: [''],
-      doctor_custom_id: [''],
-      doctor_name: ['', Validators.required],
-      phone_number: [
-        null,
-        [Validators.required, Validators.pattern(/^\d{10}$/)],
-      ],
-      address: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(150)]],
-      city: ['', Validators.required],
-      state: ['', Validators.required],
-      zipcode: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]],
-      is_active: [true, Validators.required],
-      user_name: [null, Validators.required],
-      email: [
-        null,
-        [
-          Validators.required,
-          Validators.pattern(
-            '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'
-          ),
-          Validators.maxLength(20)
-        ],
-      ],
-      password: [
-        null,
-        [
-          Validators.required,
-          Validators.pattern(
-            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
-          ),
-        ],
-      ],
-      hospitalList: [[], Validators.required],
+      formArray: this.formBuilder.array([
+        this.formBuilder.group({
+          doctor_id: [''],
+          doctor_custom_id: [''],
+          doctor_name: ['', Validators.required],
+          phone_number: [
+            null,
+            [Validators.required, Validators.pattern(/^\d{10}$/)],
+          ],
+          is_active: [true, Validators.required],
+          hospitalList: [[], Validators.required],
+        }),
+        this.formBuilder.group({
+          address: [
+            '',
+            [
+              Validators.required,
+              Validators.minLength(10),
+              Validators.maxLength(150),
+            ],
+          ],
+          city: ['', Validators.required],
+          state: ['', Validators.required],
+          zipcode: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]],
+        }),
+        this.formBuilder.group({
+          user_name: [null, Validators.required],
+          email: [
+            null,
+            [
+              Validators.required,
+              Validators.pattern(
+                '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'
+              ),
+              Validators.maxLength(20),
+            ],
+          ],
+          password: [
+            null,
+            [
+              Validators.required,
+              Validators.pattern(
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+              ),
+            ],
+          ],
+        }),
+      ]),
     });
+  }
+
+  get formArray(): AbstractControl | null | FormArray {
+    return this.doctorForm.get('formArray') as FormArray;
   }
 
   // Save or update doctor details
@@ -154,42 +215,52 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
       return;
     }
     let doctorData = new Doctor(this.doctorForm.value);
-    const selectedHospitalIds = this.doctorForm.value.hospitalList.map(
-      (hospital: any) => hospital.hospital_custom_id
-    );
-
+    const [doctorInfo, addressInfo, userInfo] = this.doctorForm.value.formArray;
+      const selectedHospitalIds = doctorInfo.hospitalList.map(
+        (hospital: any) => hospital.hospital_custom_id
+      );
     doctorData.selected_hospital = selectedHospitalIds;
     this.doctorService.addDoctor(doctorData).subscribe((response: any) => {
       if (response.code === 201) {
         this.notificationService.successNotification('Doctor added');
         this.router.navigate(['/userDashboard/doctor']);
-      } else if(response.code === 404 || response.code === 704 || response.code === 804) {
+      } else if (
+        response.code === 404 ||
+        response.code === 704 ||
+        response.code === 804
+      ) {
         this.notificationService.errorNotification(response.message);
       }
-      
     });
   }
 
   // Get doctor by ID
   getDoctorDetailsById(id: any) {
     this.doctorService.getDoctorById(id).subscribe((response: any) => {
-      const doctor = response.data
+      const doctor = response.data;
       this.doctorForm.patchValue({
+        formArray: [
+          {
         doctor_id: doctor.doctor_id,
         doctor_custom_id: doctor.doctor_custom_id,
         doctor_name: doctor.doctor_name,
         phone_number: doctor.phone_number,
+        is_active: doctor.is_active,
+        hospitalList: doctor.selected_hospital || [],
+          },
+          {
         address: doctor.address,
         city: doctor.city,
         state: doctor.state,
         zipcode: doctor.zipcode,
-        is_active: doctor.is_active,
+          },
+          {
         user_name: doctor.user_name,
         email: doctor.email,
         password: doctor.password,
-        hospitalList: doctor.selected_hospital || [],
+          }
+        ]
       });
-
       this.onStateChange({ target: { value: doctor.state } });
     });
   }
@@ -201,18 +272,42 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
-  // Invalid field validation
-  isFieldInvalid(field: string) {
+  // // Invalid field validation
+  // isFieldInvalid(field: string) {
+  //   return (
+  //     this.doctorForm.get(field)?.invalid &&
+  //     (this.doctorForm.get(field)?.touched || this.doctorForm.get(field)?.dirty)
+  //   );
+  // }
+
+  // // Valid field validation
+  // isFieldValid(field: string) {
+  //   return (
+  //     this.doctorForm.get(field)?.valid && this.doctorForm.get(field)?.touched
+  //   );
+  // }
+
+   // Invalid field validation
+   isFieldInvalid(arrayIndex: number, field: string) {
     return (
-      this.doctorForm.get(field)?.invalid &&
-      (this.doctorForm.get(field)?.touched || this.doctorForm.get(field)?.dirty)
+      this.doctorForm.get('formArray')?.get(arrayIndex.toString())?.get(field)
+        ?.invalid &&
+      (this.doctorForm.get('formArray')?.get(arrayIndex.toString())?.get(field)
+        ?.touched ||
+        this.doctorForm
+          .get('formArray')
+          ?.get(arrayIndex.toString())
+          ?.get(field)?.dirty)
     );
   }
 
   // Valid field validation
-  isFieldValid(field: string) {
+  isFieldValid(arrayIndex: number, field: string) {
     return (
-      this.doctorForm.get(field)?.valid && this.doctorForm.get(field)?.touched
+      this.doctorForm.get('formArray')?.get(arrayIndex.toString())?.get(field)
+        ?.valid &&
+      this.doctorForm.get('formArray')?.get(arrayIndex.toString())?.get(field)
+        ?.touched
     );
   }
 }

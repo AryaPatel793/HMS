@@ -14,18 +14,20 @@ export class Doctor {
   selected_hospital: any[];
 
   constructor(data: any) {
-    this.doctor_id = data.doctor_id;
-    this.doctor_custom_id = data.doctor_custom_id;
-    this.doctor_name = data.doctor_name;
-    this.phone_number = data.phone_number;
-    this.address = data.address;
-    this.city = data.city;
-    this.state = data.state;
-    this.zipcode = data.zipcode;
-    this.is_active = data.is_active;
-    this.user_name = data.user_name;
-    this.email = data.email;
-    this.password = data.password;
+    const [doctorInfo, addressInfo, userInfo] = data.formArray;
+    this.doctor_id = doctorInfo.doctor_id;
+    this.doctor_custom_id = doctorInfo.doctor_custom_id;
+    this.doctor_name = doctorInfo.doctor_name;
+    this.phone_number = doctorInfo.phone_number;
+    this.is_active = doctorInfo.is_active;
+
+    this.address = addressInfo.address;
+    this.city = addressInfo.city;
+    this.state = addressInfo.state;
+    this.zipcode = addressInfo.zipcode;
+    this.user_name = userInfo.user_name;
+    this.email = userInfo.email;
+    this.password = userInfo.password;
     this.selected_hospital = [];
   }
 }

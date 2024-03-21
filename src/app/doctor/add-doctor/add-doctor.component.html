@@ -1,4 +1,169 @@
 <h2>Doctor Detail Form</h2>
+<div class="form-container">
+    <form [formGroup]="doctorForm" (ngSubmit)="saveDoctor()" class="doctor-form">
+        <mat-horizontal-stepper formArrayName="formArray">
+            <!-- Doctor Details Step -->
+            <mat-step formGroupName="0" [stepControl]="formArray?.get([0])!" errorMessage="Doctor details is required.">
+            <ng-template matStepLabel>Doctor Details</ng-template>
+            <div class="row">
+                <div class="col-4">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" [class.is-valid]="isFieldValid(0,'doctor_name')"
+                        [class.is-invalid]="isFieldInvalid(0,'doctor_name')" formControlName="doctor_name">
+                    <p class="field-validation-error" *ngIf="isFieldInvalid(0,'doctor_name')">Valid name is required!</p>
+                </div>
+                <div class="col-4">
+                    <label for="phoneNumber">Phone No:</label>
+                    <input type="text" class="form-control" [class.is-valid]="isFieldValid(0,'phone_number')"
+                        [class.is-invalid]="isFieldInvalid(0,'phone_number')" formControlName="phone_number">
+                    <p class="field-validation-error" *ngIf="isFieldInvalid(0,'phone_number')">10 digits phone number is
+                        required!</p>
+                </div>
+                <div class="col-4" *ngIf="this.userService.getUserRole() === 'Admin'">
+                    <label for="hospitals">Hospitals</label>
+                    <ng-multiselect-dropdown #multiSelect [placeholder]="'Select Hospitals'" [settings]="dropdownSettings"
+                        [data]="hospitals" formControlName="hospitalList" (change)="getAllHospital()"
+                        [class.is-valid]="isFieldValid(0,'hospitalList')"
+                        [class.is-invalid]="isFieldInvalid(0,'hospitalList')"></ng-multiselect-dropdown>
+                    <p class="field-validation-error" *ngIf="isFieldInvalid(0,'hospitalList')">Please select at least one
+                        hospital.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4" *ngIf="this.userService.getUserRole() === adminRole">
+                    <label for="is_active">Active Status</label>
+                    <select class="form-control form-select" formControlName="is_active"
+                        [class.is-valid]="isFieldValid(0,'is_active')" [class.is-invalid]="isFieldInvalid(0,'is_active')">
+                        <option value="true">Active</option>
+                        <option value="false">Not Active</option>
+                    </select>
+                    <p class="field-validation-error" *ngIf="isFieldInvalid(0,'is_active')">Valid active status is required!
+                    </p>
+                </div>
+            </div>
+            <br>
+            <div class="next-btn" >
+                <button mat-button matStepperNext type="button" class="btn btn-light">Next</button>
+            </div>
+            </mat-step>
+            <!-- Address Details Step -->
+            <mat-step formGroupName="1" [stepControl]="formArray?.get([1])!" errorMessage="Address details is required.">
+                <ng-template matStepLabel>Address Details</ng-template>
+                <div class="row">
+                    <div class="col-4">
+                        <label for="address">Address</label>
+                        <textarea class="form-control" [class.is-valid]="isFieldValid(1,'address')"
+                            [class.is-invalid]="isFieldInvalid(1,'address')" formControlName="address"></textarea>
+                        <p class="field-validation-error" *ngIf="isFieldInvalid(1,'address')">Valid address is required!</p>
+                    </div>
+                    <div class="col-4">
+                        <label for="state">State</label>
+                        <select class="form-control form-select" formControlName="state" (change)="onStateChange($event)"
+                            [class.is-valid]="isFieldValid(1,'state')" [class.is-invalid]="isFieldInvalid(1,'state')">
+                            <option value="" disabled>Select a State</option>
+                            <option *ngFor="let state of states" [value]="state">{{state}}</option>
+                        </select>
+                        <p class="field-validation-error" *ngIf="isFieldInvalid(1,'state')">State is required!</p>
+                    </div>
+                    <div class="col-4">
+                        <label for="city">City</label>
+                        <select class="form-control form-select" formControlName="city" [class.is-valid]="isFieldValid(1,'city')"
+                            [class.is-invalid]="isFieldInvalid(1,'city')">
+                            <option value="" disabled>Select a City</option>
+                            <option *ngFor="let city of cities" [value]="city">{{city}}</option>
+                        </select>
+                        <p class="field-validation-error" *ngIf="isFieldInvalid(1,'city')">City is required!</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <label for="zipcode">ZipCode</label>
+                        <input type="text" class="form-control" [class.is-valid]="isFieldValid(1,'zipcode')"
+                            [class.is-invalid]="isFieldInvalid(1,'zipcode')" formControlName="zipcode">
+                        <p class="field-validation-error" *ngIf="isFieldInvalid(1,'zipcode')">Valid 6 digit zipcode is required!
+                        </p>
+                    </div>
+                </div>
+                <br>
+            <div class="two-btn-align">
+                <button mat-button matStepperPrevious type="button" class="btn btn-light">Back</button>
+                <button mat-button matStepperNext type="button" class="btn btn-light">Next</button>
+            </div>
+            </mat-step>
+            <!-- User Details Step -->
+        <mat-step formGroupName="2" [stepControl]="formArray?.get([2])!" errorMessage="User details is required.">
+            <div class="container">
+                <ng-template matStepLabel>User Details</ng-template>
+                <div class="row">
+                    <div class="col-4">
+                        <label for="user_name">User Name</label>
+                        <input type="text" class="form-control" [class.is-valid]="isFieldValid(2,'user_name')"
+                            [class.is-invalid]="isFieldInvalid(2,'user_name')" formControlName="user_name">
+                        <p class="field-validation-error" *ngIf="isFieldInvalid(2,'user_name')">Valid user name is
+                            required!
+                        </p>
+                    </div>
+                    <div class="col-4">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" [class.is-valid]="isFieldValid(2,'email')"
+                            [class.is-invalid]="isFieldInvalid(2,'email')" formControlName="email">
+                        <p class="field-validation-error" *ngIf="isFieldInvalid(2,'email')">Valid email is required!
+                        </p>
+                    </div>
+                    <div class="col-4">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" [class.is-valid]="isFieldValid(2,'password')"
+                            [class.is-invalid]="isFieldInvalid(2,'password')" formControlName="password">
+                        <p class="field-validation-error" *ngIf="isFieldInvalid(2,'password')">Valid password is
+                            required!
+                        </p>
+                    </div>
+                </div>
+                <br>
+                <div class="two-btn-align">
+                <button mat-button matStepperPrevious type="button" class="btn btn-light">Back</button>
+                <button mat-button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+            </div>
+        </mat-step>
+        </mat-horizontal-stepper>
+    </form>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <h2>Doctor Detail Form</h2>
 <div class="container">
     <form [formGroup]="doctorForm" (ngSubmit)="saveDoctor()">
         <div class="row">
@@ -102,4 +267,4 @@
             </div>
         </div>
     </form>
-</div>
+</div> -->

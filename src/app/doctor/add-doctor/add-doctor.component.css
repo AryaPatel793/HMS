@@ -8,3 +8,13 @@
     font-style: italic; /* Apply italics */
     text-align: left; /* Align to the left */
   }
+
+  .next-btn{
+    display: flex; 
+    justify-content: flex-end;
+  }
+
+  .two-btn-align{
+    display: flex;
+     justify-content: space-between;
+  }
