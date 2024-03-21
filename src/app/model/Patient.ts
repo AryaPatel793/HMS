@@ -16,22 +16,50 @@ export class Patient {
   doctor_email: string | null;
   selected_hospital: any[];
 
+
+
+
   constructor(data: any) {
-    this.patient_id = data.patient_id;
-    this.patient_custom_id = data.patient_custom_id;
-    this.name = data.name;
-    this.age = data.age;
-    this.blood_group = data.blood_group;
-    this.phone_number = data.phone_number;
-    this.address = data.address;
-    this.city = data.city;
-    this.state = data.state;
-    this.zipcode = data.zipcode;
-    this.is_active = data.is_active;
-    this.user_name = data.user_name;
-    this.email = data.email;
-    this.password = data.password;
+    const [patientInfo, addressInfo, userInfo] = data.formArray;
+  
+    this.patient_id = patientInfo.patient_id;
+    this.patient_custom_id = patientInfo.patient_custom_id;
+    this.name = patientInfo.name;
+    this.age = patientInfo.age;
+    this.blood_group = patientInfo.blood_group;
+    this.phone_number = patientInfo.phone_number;
+    this.is_active = patientInfo.is_active;
+  
+    this.address = addressInfo.address;
+    this.city = addressInfo.city;
+    this.state = addressInfo.state;
+    this.zipcode = addressInfo.zipcode;
+  
+    this.user_name = userInfo.user_name;
+    this.email = userInfo.email;
+    this.password = userInfo.password;
+  
     this.doctor_email = '';
     this.selected_hospital = [];
   }
+  
+
+  // constructor(data: any) {
+  //   this.patient_id = data.patient_id;
+  //   this.patient_custom_id = data.patient_custom_id;
+  //   this.name = data.name;
+  //   this.age = data.age;
+  //   this.blood_group = data.blood_group;
+  //   this.phone_number = data.phone_number;
+  //   this.address = data.address;
+  //   this.city = data.city;
+  //   this.state = data.state;
+  //   this.zipcode = data.zipcode;
+  //   this.is_active = data.is_active;
+  //   this.user_name = data.user_name;
+  //   this.email = data.email;
+  //   this.password = data.password;
+  //   this.doctor_email = '';
+  //   this.selected_hospital = [];
+  // }
 }

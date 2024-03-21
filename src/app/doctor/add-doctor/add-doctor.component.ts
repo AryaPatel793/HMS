@@ -113,7 +113,7 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
         null,
         [Validators.required, Validators.pattern(/^\d{10}$/)],
       ],
-      address: ['', Validators.required],
+      address: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(150)]],
       city: ['', Validators.required],
       state: ['', Validators.required],
       zipcode: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]],
@@ -126,6 +126,7 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
           Validators.pattern(
             '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'
           ),
+          Validators.maxLength(20)
         ],
       ],
       password: [
@@ -162,9 +163,10 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
       if (response.code === 201) {
         this.notificationService.successNotification('Doctor added');
         this.router.navigate(['/userDashboard/doctor']);
-      } else if(response.code === 404) {
+      } else if(response.code === 404 || response.code === 704 || response.code === 804) {
         this.notificationService.errorNotification(response.message);
       }
+      
     });
   }
 
