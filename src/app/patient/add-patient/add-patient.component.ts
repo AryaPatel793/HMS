@@ -133,7 +133,7 @@ export class AddPatientComponent implements OnInit, OnDestroy {
             [
               Validators.required,
               Validators.maxLength(150),
-              Validators.minLength(10),
+              Validators.minLength(20),
             ],
           ],
           city: ['', Validators.required],
@@ -147,9 +147,9 @@ export class AddPatientComponent implements OnInit, OnDestroy {
             [
               Validators.required,
               Validators.pattern(
-                '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'
+                '^[a-zA-Z0-9.]+@[a-zA-Z]+\.[a-zA-Z]*$'
               ),
-              Validators.maxLength(20),
+              Validators.maxLength(50),
             ],
           ],
           password: [
@@ -276,4 +276,9 @@ export class AddPatientComponent implements OnInit, OnDestroy {
         ?.touched
     );
   }
+
+  // Check if field has pattern error
+isPatternError(arrayIndex: number, field: string) {
+  return this.patientForm.get('formArray')?.get(arrayIndex.toString())?.get(field)?.errors?.['pattern'];
+}
 }

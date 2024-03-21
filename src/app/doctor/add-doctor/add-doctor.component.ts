@@ -165,7 +165,7 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
             '',
             [
               Validators.required,
-              Validators.minLength(10),
+              Validators.minLength(20),
               Validators.maxLength(150),
             ],
           ],
@@ -180,9 +180,9 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
             [
               Validators.required,
               Validators.pattern(
-                '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'
+                '^[a-zA-Z0-9.]+@[a-zA-Z]+\.[a-zA-Z]*$'
               ),
-              Validators.maxLength(20),
+              Validators.maxLength(50),
             ],
           ],
           password: [
@@ -216,9 +216,9 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
     }
     let doctorData = new Doctor(this.doctorForm.value);
     const [doctorInfo, addressInfo, userInfo] = this.doctorForm.value.formArray;
-      const selectedHospitalIds = doctorInfo.hospitalList.map(
-        (hospital: any) => hospital.hospital_custom_id
-      );
+    const selectedHospitalIds = doctorInfo.hospitalList.map(
+      (hospital: any) => hospital.hospital_custom_id
+    );
     doctorData.selected_hospital = selectedHospitalIds;
     this.doctorService.addDoctor(doctorData).subscribe((response: any) => {
       if (response.code === 201) {
@@ -241,25 +241,25 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
       this.doctorForm.patchValue({
         formArray: [
           {
-        doctor_id: doctor.doctor_id,
-        doctor_custom_id: doctor.doctor_custom_id,
-        doctor_name: doctor.doctor_name,
-        phone_number: doctor.phone_number,
-        is_active: doctor.is_active,
-        hospitalList: doctor.selected_hospital || [],
+            doctor_id: doctor.doctor_id,
+            doctor_custom_id: doctor.doctor_custom_id,
+            doctor_name: doctor.doctor_name,
+            phone_number: doctor.phone_number,
+            is_active: doctor.is_active,
+            hospitalList: doctor.selected_hospital || [],
           },
           {
-        address: doctor.address,
-        city: doctor.city,
-        state: doctor.state,
-        zipcode: doctor.zipcode,
+            address: doctor.address,
+            city: doctor.city,
+            state: doctor.state,
+            zipcode: doctor.zipcode,
           },
           {
-        user_name: doctor.user_name,
-        email: doctor.email,
-        password: doctor.password,
-          }
-        ]
+            user_name: doctor.user_name,
+            email: doctor.email,
+            password: doctor.password,
+          },
+        ],
       });
       this.onStateChange({ target: { value: doctor.state } });
     });
@@ -272,32 +272,16 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
-  // // Invalid field validation
-  // isFieldInvalid(field: string) {
-  //   return (
-  //     this.doctorForm.get(field)?.invalid &&
-  //     (this.doctorForm.get(field)?.touched || this.doctorForm.get(field)?.dirty)
-  //   );
-  // }
 
-  // // Valid field validation
-  // isFieldValid(field: string) {
-  //   return (
-  //     this.doctorForm.get(field)?.valid && this.doctorForm.get(field)?.touched
-  //   );
-  // }
-
-   // Invalid field validation
-   isFieldInvalid(arrayIndex: number, field: string) {
+  // Invalid field validation
+  isFieldInvalid(arrayIndex: number, field: string) {
     return (
       this.doctorForm.get('formArray')?.get(arrayIndex.toString())?.get(field)
         ?.invalid &&
       (this.doctorForm.get('formArray')?.get(arrayIndex.toString())?.get(field)
         ?.touched ||
-        this.doctorForm
-          .get('formArray')
-          ?.get(arrayIndex.toString())
-          ?.get(field)?.dirty)
+        this.doctorForm.get('formArray')?.get(arrayIndex.toString())?.get(field)
+          ?.dirty)
     );
   }
 

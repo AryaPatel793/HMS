@@ -18,22 +18,10 @@
      justify-content: space-between;
   }
 
-  .patient-form {
-    height: 100%; /* Adjust the height as needed */
-    width: 100%; /* Adjust the width as needed */
-}
+  ::ng-deep .dropdown-list {
+    position: fixed !important;
+  }
 
-.form-container {
-  height: 600px; /* Adjust the height as needed */
-    width: 100%; /* or specify a fixed width */
-}
 
-.mat-step{
-  height: 60%;
-}
-
-.mat-horizontal-stepper{
-  height: 70%;
-}
 
 
