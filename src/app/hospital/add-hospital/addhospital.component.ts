@@ -65,14 +65,33 @@ export class AddHospitalComponent implements OnInit, OnDestroy {
     this.hospitalForm = this.formBuilder.group({
       hospital_id: [''],
       hospital_custom_id: [''],
-      name: [null, Validators.required],
-      address: [null, Validators.required],
+      name: [
+        null,
+        [
+          Validators.required,
+          Validators.pattern('^[a-zA-Z ]*$'),
+          Validators.maxLength(20),
+        ],
+      ],
+      address: [
+        null,
+        [
+          Validators.required,
+          Validators.maxLength(150),
+          Validators.minLength(10),
+        ],
+      ],
       city: ['', Validators.required],
       state: ['', Validators.required],
-      zipcode: [null, [
-        Validators.required,
-        Validators.pattern(/^\d{6}$/),
-      ]],
+      zipcode: [
+        null,
+        [
+          Validators.required,
+          Validators.pattern(/^\d+$/),
+          Validators.minLength(6),
+          Validators.maxLength(6),
+        ],
+      ],
       hospital_type: ['', Validators.required],
       is_active: [true, Validators.required],
     });
@@ -80,28 +99,25 @@ export class AddHospitalComponent implements OnInit, OnDestroy {
 
   // Save or update hospital
   saveHospital() {
-    if (this.hospitalForm.invalid){
+    if (this.hospitalForm.invalid) {
       this.hospitalForm.markAllAsTouched();
       this.notificationService.errorNotification(
         'Please fill in all required fields correctly.'
       );
-      return
+      return;
     }
-      let hospitalData = new Hospital(this.hospitalForm.value);
-      this.hospitalService
-        .addHospital(hospitalData)
-        .subscribe((response: any) => {
-          if (response.code === 201) {
-            this.notificationService.successNotification('Hospital added');
-            this.router.navigate(['/userDashboard/hospital']);
-          }else if(response.code === 404){
-            this.notificationService.errorNotification(
-              response.message
-            );
-          }
-        });
-    } 
-  
+    let hospitalData = new Hospital(this.hospitalForm.value);
+    this.hospitalService
+      .addHospital(hospitalData)
+      .subscribe((response: any) => {
+        if (response.code === 201) {
+          this.notificationService.successNotification('Hospital added');
+          this.router.navigate(['/userDashboard/hospital']);
+        } else if (response.code === 404) {
+          this.notificationService.errorNotification(response.message);
+        }
+      });
+  }
 
   // Get hospital by ID
   getHospitalDetailsById(id: any) {
@@ -144,6 +160,29 @@ export class AddHospitalComponent implements OnInit, OnDestroy {
     return (
       this.hospitalForm.get(field)?.valid &&
       this.hospitalForm.get(field)?.touched
+    );
+  }
+
+  // Check if field has pattern error
+  isPatternInvalid(field: string) {
+    return this.hospitalForm.get(field)?.errors?.['pattern'];
+  }
+
+  // Check if field has required error
+  isRequiredInvalid(field: string) {
+    return (
+      this.hospitalForm.get(field)?.errors?.['required'] &&
+      this.hospitalForm.get(field)?.touched
+    );
+  }
+
+  // Check if field has length error
+  isLengthInvalid(field: string) {
+    const fieldControl = this.hospitalForm.get(field);
+    return (
+      fieldControl?.hasError('minlength') ||
+      fieldControl?.hasError('maxlength') ||
+      fieldControl?.hasError('max')
     );
   }
 }

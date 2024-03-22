@@ -6,15 +6,26 @@
                 <label for="Title">Appointment Title</label>
                 <input type="text" class="form-control" [class.is-valid]="isFieldValid('appointment_title')"
                     [class.is-invalid]="isFieldInvalid('appointment_title')" formControlName="appointment_title">
-                <p class="field-validation-error" *ngIf="isFieldInvalid('appointment_title')">Valid appointment title is
-                    required!</p>
+                @if (isRequiredInvalid('appointment_title')) {
+                <p class="field-validation-error">Appointment title is required
+                    !</p>
+                }
+
+                @if (isLengthInvalid('appointment_title')) {
+                <p class="field-validation-error"> title should be of minimum 6 characters</p>
+                }
             </div>
             <div class="col-4">
                 <label for="Date"> Appointment Date</label>
                 <input type="date" class="form-control" [class.is-valid]="isFieldValid('appointment_date')"
                     [class.is-invalid]="isFieldInvalid('appointment_date')" formControlName="appointment_date">
-                <p class="field-validation-error" *ngIf="isFieldInvalid('appointment_date')">Valid appointment Date is
-                    required! Excluding past date and sunday</p>
+                @if (isRequiredInvalid('appointment_date')) {
+                <p class="field-validation-error">Appointment date is required
+                    !</p>
+                }
+                @if (isDateInvalid('appointment_date')) {
+                <p class="field-validation-error">Sunday and past date are not allowed</p>
+                }
             </div>
             <div class="col-4">
                 <label for="time slot">Time Slot</label>
@@ -24,7 +35,10 @@
                     <option value="" disabled>--Select a Time --</option>
                     <option *ngFor="let time of timeSlot" [value]="time">{{time}}</option>
                 </select>
-                <p class="field-validation-error" *ngIf="isFieldInvalid('appointment_time')">Time slot is required!</p>
+                @if (isRequiredInvalid('appointment_time')) {
+                <p class="field-validation-error">Appointment time is required
+                    !</p>
+                }
             </div>
         </div>
         <div class="row">
@@ -33,8 +47,14 @@
                 <textarea class="form-control" [class.is-valid]="isFieldValid('appointment_detail')"
                     [class.is-invalid]="isFieldInvalid('appointment_detail')"
                     formControlName="appointment_detail"></textarea>
-                <p class="field-validation-error" *ngIf="isFieldInvalid('appointment_detail')">Valid details is
-                    required!</p>
+                @if (isRequiredInvalid('appointment_detail')) {
+                <p class="field-validation-error">Appointment detail is required
+                    !</p>
+                }
+
+                @if (isLengthInvalid('appointment_title')) {
+                <p class="field-validation-error"> title should be of minimum 10 characters</p>
+                }
             </div>
         </div>
         <br>

@@ -8,7 +8,19 @@
                   'is-valid': isFieldValid('name'),
                   'is-invalid': isFieldInvalid('name'),
                 }" formControlName="name">
-                <p class="field-validation-error" *ngIf="isFieldInvalid('name')">Valid name is required!</p>
+                @if (isRequiredInvalid('name')) {
+                <p class="field-validation-error">Hospital name is required
+                    !</p>
+                }
+                @if (isPatternInvalid('name')) {
+                <p class="field-validation-error">It should contain only letters and white space
+                </p>
+                }
+                @if (isLengthInvalid('name')) {
+                <p class="field-validation-error">Name should be less than 20 characters
+                    !</p>
+                }
+
             </div>
         </div>
         <div class="row">
@@ -16,7 +28,14 @@
                 <label for="address">Address</label>
                 <textarea class="form-control" [class.is-valid]="isFieldValid('address')"
                     [class.is-invalid]="isFieldInvalid('address')" formControlName="address"></textarea>
-                <p class="field-validation-error" *ngIf="isFieldInvalid('address')">Valid address is required!</p>
+                @if (isRequiredInvalid('address')) {
+                <p class="field-validation-error">Address is required
+                    !</p>
+                }
+                @if (isLengthInvalid('address')) {
+                <p class="field-validation-error">Address should be of minimum 10 characters
+                    !</p>
+                }
             </div>
             <div class="col-4">
                 <label for="state">State</label>
@@ -25,7 +44,9 @@
                     <option value="" disabled>Select a State</option>
                     <option *ngFor="let state of states" [value]="state">{{state}}</option>
                 </select>
-                <p class="field-validation-error" *ngIf="isFieldInvalid('state')">State is required!</p>
+                @if (isRequiredInvalid('state')) {
+                <p class="field-validation-error">State is required!</p>
+                }
             </div>
             <div class="col-4">
                 <label for="city">City</label>
@@ -34,7 +55,10 @@
                     <option value="" disabled>Select a City</option>
                     <option *ngFor="let city of cities" [value]="city">{{city}}</option>
                 </select>
-                <p class="field-validation-error" *ngIf="isFieldInvalid('city')">City is required!</p>
+                @if (isRequiredInvalid('city')) {
+                <p class="field-validation-error">City is required
+                    !</p>
+                }
             </div>
         </div>
         <div class="row">
@@ -42,8 +66,18 @@
                 <label for="zipcode">ZipCode</label>
                 <input type="text" class="form-control" [class.is-valid]="isFieldValid('zipcode')"
                     [class.is-invalid]="isFieldInvalid('zipcode')" formControlName="zipcode">
-                <p class="field-validation-error" *ngIf="isFieldInvalid('zipcode')">Valid 6 digit zipcode is required!
+                @if (isRequiredInvalid('zipcode')) {
+                <p class="field-validation-error">Zipcode is required
+                    !</p>
+                }
+                @if (isPatternInvalid('zipcode')) {
+                <p class="field-validation-error">It should contain only digits
                 </p>
+                }
+                @if (isLengthInvalid('zipcode')) {
+                <p class="field-validation-error">it should be only 6 digits
+                    !</p>
+                }
             </div>
             <div class="col-4">
                 <label for="hospital_type">Hospital Type</label>
@@ -53,8 +87,10 @@
                     <option value="GENERAL">GENERAL</option>
                     <option value="PRIVATE">PRIVATE</option>
                 </select>
-                <p class="field-validation-error" *ngIf="isFieldInvalid('hospital_type')">Valid hospital type is
-                    required!</p>
+                @if (isRequiredInvalid('hospital_type')) {
+                <p class="field-validation-error">Hospital type is required
+                    !</p>
+                }
             </div>
             <div class="col-4">
                 <label for="is_active">Active Status</label>
@@ -63,8 +99,10 @@
                     <option value="true">Active</option>
                     <option value="false">Not Active</option>
                 </select>
-                <p class="field-validation-error" *ngIf="isFieldInvalid('is_active')">Valid active status is required!
-                </p>
+                @if (isRequiredInvalid('is_active')) {
+                <p class="field-validation-error">Active status is required
+                    !</p>
+                }
             </div>
         </div>
         <br>

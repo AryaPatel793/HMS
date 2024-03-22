@@ -1,7 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
+import {
+  FormGroup,
+  FormControl,
+  Validators,
+  FormBuilder,
+} from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { LoginService } from '../Services/Login/login.service';
 import { NgIf } from '@angular/common';
@@ -44,11 +49,27 @@ export class LoginComponent implements OnInit, OnDestroy {
     console.log('ngOnDestroy called');
   }
 
-   // Initializing login form using FormBuilder
-   initForm() {
+  // Initializing login form using FormBuilder
+  initForm() {
     this.loginForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$')]],
-      password: ['', [Validators.required, Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)]]
+      email: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern('^[a-zA-Z0-9.]+@[a-zA-Z]+.[a-zA-Z]*$'),
+          Validators.maxLength(50),
+        ],
+      ],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/
+          ),
+          Validators.minLength(8),
+        ],
+      ],
     });
   }
 
@@ -62,7 +83,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         sessionStorage.setItem('userEmail', response.data.email);
         this.notificationService.successNotification('Login Successfull');
         this.router.navigate(['/userDashboard']);
-      } else if(response.code === 404) {
+      } else if (response.code === 404) {
         this.notificationService.errorNotification(response.message);
       }
     });
@@ -73,6 +94,29 @@ export class LoginComponent implements OnInit, OnDestroy {
     return (
       this.loginForm.get(field)?.invalid &&
       (this.loginForm.get(field)?.touched || this.loginForm.get(field)?.dirty)
+    );
+  }
+
+  // Check if field has pattern error
+  isPatternInvalid(field: string) {
+    return this.loginForm.get(field)?.errors?.['pattern'];
+  }
+
+  // Check if field has required error
+  isRequiredInvalid(field: string) {
+    return (
+      this.loginForm.get(field)?.errors?.['required'] &&
+      this.loginForm.get(field)?.touched
+    );
+  }
+
+  // Check if field has length error
+  isLengthInvalid(field: string) {
+    const fieldControl = this.loginForm.get(field);
+    return (
+      fieldControl?.hasError('minlength') ||
+      fieldControl?.hasError('maxlength') ||
+      fieldControl?.hasError('max')
     );
   }
 }

@@ -12,11 +12,20 @@
       <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="login-form">
         <input type="email" class="form-control" [class.is-valid]="!isFieldValid('email')"
           [class.is-invalid]="isFieldValid('email')" formControlName="email" placeholder="Email">
-        <p class="field-validation-error" *ngIf="isFieldValid('email')">Valid email is required!</p>
-        <input type="password" class="form-control " [class.is-valid]="!isFieldValid('password')"
+        @if (isRequiredInvalid('email')) {
+        <p class="field-validation-error">Email address is required
+          !</p>
+        }
+        <p class="field-validation-error" *ngIf="isPatternInvalid('email')">Enter correct email id</p>
+        <p class="field-validation-error" *ngIf="isLengthInvalid('email')">Enter email id less than 50
+          characters</p> <input type="password" class="form-control " [class.is-valid]="!isFieldValid('password')"
           [class.is-invalid]="isFieldValid('password')" formControlName="password" placeholder="Password">
-        <p class="field-validation-error" *ngIf="isFieldValid('password')">Minimum 6 length password required !</p>
-        <button type="submit" class="btn" [disabled]="loginForm.invalid">Login</button>
+        <p class="field-validation-error" *ngIf="isRequiredInvalid('password')">Password is required !
+        </p>
+        <p class="field-validation-error" *ngIf="isPatternInvalid('password')">-Required atleast one
+          [A-Z],[a-z],[0-9] and a special character</p>
+        <p class="field-validation-error" *ngIf="isLengthInvalid('password')">-Enter password of
+          minimum 8 characters</p> <button type="submit" class="btn" [disabled]="loginForm.invalid">Login</button>
       </form>
     </div>
   </div>

@@ -67,8 +67,22 @@ export class AddAppointmentComponent {
     this.appointmentForm = this.formBuilder.group({
       appointment_id: [''],
       appointment_custom_id: [''],
-      appointment_title: ['', Validators.required],
-      appointment_detail: ['', Validators.required],
+      appointment_title: [
+        '',
+        [
+          Validators.required,
+          Validators.maxLength(30),
+          Validators.minLength(5),
+        ],
+      ],
+      appointment_detail: [
+        '',
+        [
+          Validators.required,
+          Validators.maxLength(150),
+          Validators.minLength(10),
+        ],
+      ],
       appointment_date: [null, [Validators.required, this.validateDate]],
       appointment_time: [null, Validators.required],
     });
@@ -117,23 +131,46 @@ export class AddAppointmentComponent {
       });
   }
 
+  // validateDate(control: FormControl): { [key: string]: any } | null {
+  //   const selectedDate = new Date(control.value);
+  //   const today = new Date();
+  //   today.setHours(0, 0, 0, 0);
+
+  //   // Check if selected date is in the past
+  //   if (selectedDate < today) {
+  //     return { pastDate: true };
+  //   }
+
+  //   // Check if selected date is Sunday
+  //   if (selectedDate.getDay() === 0) {
+  //     return { sundayDate: true };
+  //   }
+
+  //   return null;
+  // }
+
   validateDate(control: FormControl): { [key: string]: any } | null {
+    if (!control.value) {
+      return null;
+    }
+  
     const selectedDate = new Date(control.value);
     const today = new Date();
-    today.setHours(0, 0, 0, 0); 
-
+    today.setHours(0, 0, 0, 0);
+  
     // Check if selected date is in the past
     if (selectedDate < today) {
       return { pastDate: true };
     }
-
+  
     // Check if selected date is Sunday
     if (selectedDate.getDay() === 0) {
       return { sundayDate: true };
     }
-
+  
     return null;
   }
+  
 
   // Invalid field validation
   isFieldInvalid(field: string) {
@@ -147,5 +184,36 @@ export class AddAppointmentComponent {
   // valid field validation
   isFieldValid(field: string) {
     return this.appointmentForm.get(field)?.valid;
+  }
+
+  // // Check if field has pattern error
+  // isDateInvalid(field: string) {
+  //   return this.appointmentForm.get(field)?.errors?.['validateDate'];
+  // }
+
+  // Check if field has date error
+isDateInvalid(field: string) {
+  const fieldErrors = this.appointmentForm.get(field)?.errors;
+  console.log(fieldErrors);
+  return fieldErrors?.['pastDate'] || fieldErrors?.['sundayDate'];
+}
+
+
+  // Check if field has required error
+  isRequiredInvalid(field: string) {
+    return (
+      this.appointmentForm.get(field)?.errors?.['required'] &&
+      this.appointmentForm.get(field)?.touched
+    );
+  }
+
+  // Check if field has length error
+  isLengthInvalid(field: string) {
+    const fieldControl = this.appointmentForm.get(field);
+    return (
+      fieldControl?.hasError('minlength') ||
+      fieldControl?.hasError('maxlength') ||
+      fieldControl?.hasError('max')
+    );
   }
 }

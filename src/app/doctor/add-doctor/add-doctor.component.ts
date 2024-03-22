@@ -106,45 +106,6 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
       });
   }
 
-  // // Intializing doctor form using FormBuilder
-  // private initializeForm() {
-  //   this.doctorForm = this.formBuilder.group({
-  //     doctor_id: [''],
-  //     doctor_custom_id: [''],
-  //     doctor_name: ['', Validators.required],
-  //     phone_number: [
-  //       null,
-  //       [Validators.required, Validators.pattern(/^\d{10}$/)],
-  //     ],
-  //     address: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(150)]],
-  //     city: ['', Validators.required],
-  //     state: ['', Validators.required],
-  //     zipcode: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]],
-  //     is_active: [true, Validators.required],
-  //     user_name: [null, Validators.required],
-  //     email: [
-  //       null,
-  //       [
-  //         Validators.required,
-  //         Validators.pattern(
-  //           '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'
-  //         ),
-  //         Validators.maxLength(20)
-  //       ],
-  //     ],
-  //     password: [
-  //       null,
-  //       [
-  //         Validators.required,
-  //         Validators.pattern(
-  //           /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
-  //         ),
-  //       ],
-  //     ],
-  //     hospitalList: [[], Validators.required],
-  //   });
-  // }
-
   // Intializing doctor form using FormBuilder
   private initializeForm() {
     this.doctorForm = this.formBuilder.group({
@@ -152,10 +113,22 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
         this.formBuilder.group({
           doctor_id: [''],
           doctor_custom_id: [''],
-          doctor_name: ['', Validators.required],
+          doctor_name: [
+            '',
+            [
+              Validators.required,
+              Validators.pattern('^[a-zA-Z ]*$'),
+              Validators.maxLength(20),
+            ],
+          ],
           phone_number: [
             null,
-            [Validators.required, Validators.pattern(/^\d{10}$/)],
+            [
+              Validators.required,
+              Validators.pattern(/^\d+$/),
+              Validators.minLength(10),
+              Validators.maxLength(10),
+            ],
           ],
           is_active: [true, Validators.required],
           hospitalList: [[], Validators.required],
@@ -165,23 +138,36 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
             '',
             [
               Validators.required,
-              Validators.minLength(20),
               Validators.maxLength(150),
+              Validators.minLength(10),
             ],
           ],
           city: ['', Validators.required],
           state: ['', Validators.required],
-          zipcode: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]],
+          zipcode: [
+            '',
+            [
+              Validators.required,
+              Validators.pattern(/^\d+$/),
+              Validators.minLength(6),
+              Validators.maxLength(6),
+            ],
+          ],
         }),
         this.formBuilder.group({
-          user_name: [null, Validators.required],
+          user_name: [
+            null,
+            [
+              Validators.required,
+              Validators.pattern('^[a-zA-Z ]*$'),
+              Validators.maxLength(20),
+            ],
+          ],
           email: [
             null,
             [
               Validators.required,
-              Validators.pattern(
-                '^[a-zA-Z0-9.]+@[a-zA-Z]+\.[a-zA-Z]*$'
-              ),
+              Validators.pattern('^[a-zA-Z0-9.]+@[a-zA-Z]+.[a-zA-Z]*$'),
               Validators.maxLength(50),
             ],
           ],
@@ -190,8 +176,9 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
             [
               Validators.required,
               Validators.pattern(
-                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/
               ),
+              Validators.minLength(8),
             ],
           ],
         }),
@@ -272,7 +259,6 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
-
   // Invalid field validation
   isFieldInvalid(arrayIndex: number, field: string) {
     return (
@@ -292,6 +278,37 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
         ?.valid &&
       this.doctorForm.get('formArray')?.get(arrayIndex.toString())?.get(field)
         ?.touched
+    );
+  }
+
+  // Check if field has pattern error
+  isPatternInvalid(arrayIndex: number, field: string) {
+    return this.doctorForm
+      .get('formArray')
+      ?.get(arrayIndex.toString())
+      ?.get(field)?.errors?.['pattern'];
+  }
+
+  // Check if field has required error
+  isRequiredInvalid(arrayIndex: number, field: string) {
+    return (
+      this.doctorForm.get('formArray')?.get(arrayIndex.toString())?.get(field)
+        ?.errors?.['required'] &&
+      this.doctorForm.get('formArray')?.get(arrayIndex.toString())?.get(field)
+        ?.touched
+    );
+  }
+
+  // Check if field has length error
+  isLengthInvalid(arrayIndex: number, field: string) {
+    const fieldControl = this.doctorForm
+      .get('formArray')
+      ?.get(arrayIndex.toString())
+      ?.get(field);
+    return (
+      fieldControl?.hasError('minlength') ||
+      fieldControl?.hasError('maxlength') ||
+      fieldControl?.hasError('max')
     );
   }
 }

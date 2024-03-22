@@ -22,6 +22,11 @@
     position: fixed !important;
   }
 
+  ::ng-deep .is-invalid .ng-dropdown-panel {
+    border-color: red;
+}
+
+
 
 
 

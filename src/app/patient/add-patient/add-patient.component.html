@@ -1,21 +1,31 @@
 <h2>Patient Detail Form</h2>
-<form [formGroup]="patientForm" (ngSubmit)="savePatient()" >
-    <mat-horizontal-stepper formArrayName="formArray">
+<!-- <form [formGroup]="patientForm" (ngSubmit)="savePatient()"> -->
+    <form [formGroup]="patientForm" >
+    <mat-horizontal-stepper formArrayName="formArray" #stepper>
         <!-- Patient Details Step -->
         <mat-step formGroupName="0" [stepControl]="formArray?.get([0])!" errorMessage="Patient details is required.">
-            <ng-template matStepLabel>Patient Details</ng-template>
+            <ng-template  matStepLabel >
+                <div >Patient Details</div>
+            </ng-template>            
             <div class="row">
                 <div class="col-4">
                     <label for="name">Name</label>
                     <input type="text" class="form-control" [class.is-valid]="isFieldValid(0, 'name')"
                         [class.is-invalid]="isFieldInvalid(0, 'name')" formControlName="name">
-                    <p class="field-validation-error" *ngIf="isFieldInvalid(0, 'name')">Enter your name</p>
+                    <p class="field-validation-error" *ngIf="isRequiredInvalid(0,'name')">Patient name is required !</p>
+                    <p class="field-validation-error" *ngIf="isPatternInvalid(0,'name')">Enter only letter and white
+                        space</p>
+                    <p class="field-validation-error" *ngIf="isLengthInvalid(0,'name')">Name must be more than 2 characters and less than 3o characters
+                        characters</p>
                 </div>
                 <div class="col-4">
                     <label for="name">Age</label>
-                    <input type="text" class="form-control" [class.is-valid]="isFieldValid(0,'age')"
+                    <input type="number" class="form-control" [class.is-valid]="isFieldValid(0,'age')"
                         [class.is-invalid]="isFieldInvalid(0,'age')" formControlName="age">
-                    <p class="field-validation-error" *ngIf="isFieldInvalid(0,'age')">Enter your age</p>
+                    <p class="field-validation-error" *ngIf="isRequiredInvalid(0,'age')">Age is required!
+                    </p>
+                    <p class="field-validation-error" *ngIf="isLengthInvalid(0,'age')">Enter age between 1 to 150 only
+                    </p>
                 </div>
                 <div class="col-4 dropdown-container" *ngIf="isAllowedRole()">
                     <label for="hospitals">Hospitals</label>
@@ -23,19 +33,22 @@
                         [settings]="dropdownSettings" [data]="hospitals" formControlName="hospitalList"
                         [class.is-valid]="isFieldValid(0,'hospitalList')"
                         [class.is-invalid]="isFieldInvalid(0,'hospitalList')"
-                        (change)="getAllHospital()"></ng-multiselect-dropdown>
-                    <p class="field-validation-error" *ngIf="isFieldInvalid(0,'hospitalList')">Please select only one
+                        (change)="getAllHospital()"
+                        ></ng-multiselect-dropdown>
+                    <p class="field-validation-error" *ngIf="isRequiredInvalid(0,'hospitalList')">Please select only one
                         hospital.</p>
                 </div>
-
             </div>
             <div class="row">
                 <div class="col-4">
                     <label for="phoneNumber">Phone No:</label>
                     <input type="text" class="form-control" [class.is-valid]="isFieldValid(0,'phone_number')"
                         [class.is-invalid]="isFieldInvalid(0,'phone_number')" formControlName="phone_number">
-                    <p class="field-validation-error" *ngIf="isFieldInvalid(0,'phone_number')">10 digit phone number is
+                    <p class="field-validation-error" *ngIf="isRequiredInvalid(0,'phone_number')">Phone number is
                         required!</p>
+                    <p class="field-validation-error" *ngIf="isPatternInvalid(0,'phone_number')">Enter only digits </p>
+                    <p class="field-validation-error" *ngIf="isLengthInvalid(0,'phone_number')">10 digit phone number
+                        is required</p>
                 </div>
                 <div class="col-4">
                     <label for="blood group">Blood Group</label>
@@ -45,7 +58,8 @@
                         <option value="" disabled>Select a blood group</option>
                         <option *ngFor="let bloodGroup of bloodGroups" [value]="bloodGroup">{{bloodGroup}}</option>
                     </select>
-                    <p class="field-validation-error" *ngIf="isFieldInvalid(0,'blood_group')">Blood group is required!
+                    <p class="field-validation-error" *ngIf="isRequiredInvalid(0,'blood_group')">Blood group is
+                        required!
                     </p>
                 </div>
                 <div class="col-4">
@@ -61,20 +75,26 @@
                 </div>
             </div>
             <br>
-            <div class="next-btn" >
-                <button mat-button matStepperNext type="button" class="btn btn-light">Next</button>
+            <div class="next-btn">
+                <button mat-button matStepperNext type="button" class="btn btn-light" (click)="onNextStep(0)">Next</button>
             </div>
         </mat-step>
 
         <!-- Address Details Step -->
         <mat-step formGroupName="1" [stepControl]="formArray?.get([1])!" errorMessage="Address details is required.">
-            <ng-template matStepLabel>Address Details</ng-template>
+            <ng-template  matStepLabel >
+                <div (click)="onNextStep(0)">Address Details</div>
+            </ng-template>
             <div class="row">
                 <div class="col-4">
                     <label for="address">Address</label>
                     <textarea class="form-control" [class.is-valid]="isFieldValid(1,'address')"
                         [class.is-invalid]="isFieldInvalid(1,'address')" formControlName="address"></textarea>
-                    <p class="field-validation-error" *ngIf="isFieldInvalid(1,'address')">Enter address of minimum 10 characters</p>
+                    <p class="field-validation-error" *ngIf="isRequiredInvalid(1,'address')">Address is required !</p>
+                    <p class="field-validation-error" *ngIf="isPatternInvalid(1,'address')">Enter proper address
+                    </p>
+                    <p class="field-validation-error" *ngIf="isLengthInvalid(1,'address')">Enter address of 10-150 characters
+                        characters</p>
                 </div>
                 <div class="col-4">
                     <label for="state">State</label>
@@ -83,7 +103,7 @@
                         <option value="" disabled>Select a State</option>
                         <option *ngFor="let state of states" [value]="state">{{state}}</option>
                     </select>
-                    <p class="field-validation-error" *ngIf="isFieldInvalid(1,'state')">Select a state</p>
+                    <p class="field-validation-error" *ngIf="isRequiredInvalid(1,'state')">Select a state</p>
                 </div>
                 <div class="col-4">
                     <label for="city">City</label>
@@ -92,7 +112,7 @@
                         <option value="" disabled>Select a City</option>
                         <option *ngFor="let city of cities" [value]="city">{{city}}</option>
                     </select>
-                    <p class="field-validation-error" *ngIf="isFieldInvalid(1,'city')">Select a city</p>
+                    <p class="field-validation-error" *ngIf="isRequiredInvalid(1,'city')">Select a city</p>
                 </div>
             </div>
             <div class="row">
@@ -100,51 +120,66 @@
                     <label for="zipcode">ZipCode</label>
                     <input type="text" class="form-control" [class.is-valid]="isFieldValid(1,'zipcode')"
                         [class.is-invalid]="isFieldInvalid(1,'zipcode')" formControlName="zipcode">
-                    <p class="field-validation-error" *ngIf="isFieldInvalid(1,'zipcode')">Enter only 6 digit zipcode
+                    <p class="field-validation-error" *ngIf="isRequiredInvalid(1,'zipcode')">Zipcode is required !
+                    </p>
+                    <p class="field-validation-error" *ngIf="isPatternInvalid(1,'zipcode')">Enter only digits
+                    </p>
+                    <p class="field-validation-error" *ngIf="isLengthInvalid(1,'zipcode')">Enter only 6 digits
                     </p>
                 </div>
             </div>
             <br>
             <div class="two-btn-align">
-                <button mat-button matStepperPrevious type="button" class="btn btn-light">Back</button>
-                <button mat-button matStepperNext type="button" class="btn btn-light">Next</button>
+                <button mat-button matStepperPrevious type="button" class="btn btn-light" (click)="onNextStep(1)">Back</button>
+                <button mat-button matStepperNext type="button" class="btn btn-light" (click)="onNextStep(1)">Next</button>
             </div>
         </mat-step>
 
         <!-- User Details Step -->
         <mat-step formGroupName="2" [stepControl]="formArray?.get([2])!" errorMessage="User details is required.">
             <div class="container">
-                <ng-template matStepLabel>User Details</ng-template>
+                <ng-template matStepLabel >
+                    <div (click)="onNextStep(1)">User Details</div>
+                </ng-template>
                 <div class="row">
                     <div class="col-4">
                         <label for="user_name">User Name</label>
                         <input type="text" class="form-control" [class.is-valid]="isFieldValid(2,'user_name')"
                             [class.is-invalid]="isFieldInvalid(2,'user_name')" formControlName="user_name">
-                        <p class="field-validation-error" *ngIf="isFieldInvalid(2,'user_name')">Enter user name
-                        </p>
+                        <p class="field-validation-error" *ngIf="isRequiredInvalid(2,'user_name')">User name is required
+                            !</p>
+                        <p class="field-validation-error" *ngIf="isPatternInvalid(2,'user_name')">Enter only letter and
+                            white space</p>
+                        <p class="field-validation-error" *ngIf="isLengthInvalid(2,'user_name')">Enter user name in less
+                            than 20 characters</p>
                     </div>
                     <div class="col-4">
                         <label for="email">Email</label>
-                        <input type="email" class="form-control" [class.is-valid]="isFieldValid(2,'email')"
+                        <input type="text" class="form-control" [class.is-valid]="isFieldValid(2,'email')"
                             [class.is-invalid]="isFieldInvalid(2,'email')" formControlName="email">
-                        <p class="field-validation-error" *ngIf="isFieldInvalid(2,'email')">Enter your email address
-                        </p>
+                        <p class="field-validation-error" *ngIf="isRequiredInvalid(2,'email')">Email address is required
+                            !</p>
+                        <p class="field-validation-error" *ngIf="isPatternInvalid(2,'email')">Enter correct email id</p>
+                        <p class="field-validation-error" *ngIf="isLengthInvalid(2,'email')">Enter email id less than 50
+                            characters</p>
                     </div>
                     <div class="col-4">
                         <label for="password">Password</label>
                         <input type="password" class="form-control" [class.is-valid]="isFieldValid(2,'password')"
                             [class.is-invalid]="isFieldInvalid(2,'password')" formControlName="password">
-                        <p class="field-validation-error" *ngIf="isFieldInvalid(2,'password')">Password is required !
+                        <p class="field-validation-error" *ngIf="isRequiredInvalid(2,'password')">Password is required !
                         </p>
-                        <p class="field-validation-error" *ngIf="isPatternError(2,'password')">Required atleast One [A-Z],[a-z],[0-9] and a special character
-                        </p>
+                        <p class="field-validation-error" *ngIf="isPatternInvalid(2,'password')">Required atleast one
+                            [A-Z],[a-z],[0-9] and a special character</p>
+                        <p class="field-validation-error" *ngIf="isLengthInvalid(2,'password')">Enter password of
+                            only 8 characters</p>
                     </div>
                 </div>
                 <br>
                 <div class="two-btn-align">
-                <button mat-button matStepperPrevious type="button" class="btn btn-light">Back</button>
-                <button mat-button type="submit" class="btn btn-primary">Submit</button>
-            </div>
+                    <button mat-button matStepperPrevious type="button" class="btn btn-light" (click)="onNextStep(2)">Back</button>
+                    <button mat-button type="button" class="btn btn-primary" (click)="savePatient()" >Submit</button>
+                </div>
             </div>
         </mat-step>
     </mat-horizontal-stepper>

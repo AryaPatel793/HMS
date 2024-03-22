@@ -117,15 +117,28 @@ export class AddPatientComponent implements OnInit, OnDestroy {
         this.formBuilder.group({
           patient_id: [''],
           patient_custom_id: [''],
-          name: ['', Validators.required],
-          age: ['', Validators.required],
+          name: [
+            '',
+            [
+              Validators.required,
+              Validators.pattern('^[a-zA-Z]+( [a-zA-Z]+)*$'),
+              Validators.maxLength(30),
+              Validators.minLength(2)
+            ],
+          ],
+          age: ['', [Validators.required, Validators.max(150), Validators.min(1)]],
           blood_group: ['', Validators.required],
           phone_number: [
             null,
-            [Validators.required, Validators.pattern(/^\d{10}$/)],
+            [
+              Validators.required,
+              Validators.pattern(/^\d+$/),
+              Validators.minLength(10),
+              Validators.maxLength(10),
+            ],
           ],
           is_active: [true, Validators.required],
-          hospitalList: [[], Validators.required],
+          hospitalList: [[], Validators.required,],
         }),
         this.formBuilder.group({
           address: [
@@ -133,22 +146,37 @@ export class AddPatientComponent implements OnInit, OnDestroy {
             [
               Validators.required,
               Validators.maxLength(150),
-              Validators.minLength(20),
+              Validators.minLength(10),
+              Validators.pattern('^[^\\s$#%*&@\'"][^$#%*&@\'"]*(\\s[^\\s$#%*&@\'"]+)*$')
             ],
           ],
           city: ['', Validators.required],
           state: ['', Validators.required],
-          zipcode: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]],
+          zipcode: [
+            '',
+            [
+              Validators.required,
+              Validators.pattern(/^\d+$/),
+              Validators.minLength(6),
+              Validators.maxLength(6),
+            ],
+          ],
         }),
         this.formBuilder.group({
-          user_name: [null, Validators.required],
+          user_name: [
+            null,
+            [
+              Validators.required,
+              Validators.pattern('^[a-zA-Z]+( [a-zA-Z]+)*$'),
+              Validators.maxLength(20),
+              Validators.minLength(2)
+            ],
+          ],
           email: [
             null,
             [
               Validators.required,
-              Validators.pattern(
-                '^[a-zA-Z0-9.]+@[a-zA-Z]+\.[a-zA-Z]*$'
-              ),
+              Validators.pattern('^[a-zA-Z0-9.]+@[a-zA-Z]+.[a-zA-Z]*$'),
               Validators.maxLength(50),
             ],
           ],
@@ -157,8 +185,10 @@ export class AddPatientComponent implements OnInit, OnDestroy {
             [
               Validators.required,
               Validators.pattern(
-                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%#*?&]+$/
               ),
+              Validators.minLength(8),
+              Validators.maxLength(8)
             ],
           ],
         }),
@@ -189,16 +219,17 @@ export class AddPatientComponent implements OnInit, OnDestroy {
     );
     patientData.doctor_email = this.userService.getUserEmail();
     patientData.selected_hospital = selectedHospitalIds;
-    debugger;
     this.patientService.addPatient(patientData).subscribe((response: any) => {
       if (response.code === 201) {
         this.notificationService.successNotification('Patient added');
         this.router.navigate(['/userDashboard/patient']);
-      } else if ( response.code === 404 ||
+      } else if (
+        response.code === 404 ||
         response.code === 704 ||
-        response.code === 804) {
+        response.code === 804
+      ) {
         this.notificationService.errorNotification(response.message);
-      } 
+      }
     });
   }
 
@@ -278,7 +309,49 @@ export class AddPatientComponent implements OnInit, OnDestroy {
   }
 
   // Check if field has pattern error
-isPatternError(arrayIndex: number, field: string) {
-  return this.patientForm.get('formArray')?.get(arrayIndex.toString())?.get(field)?.errors?.['pattern'];
-}
+  isPatternInvalid(arrayIndex: number, field: string) {
+    return this.patientForm
+      .get('formArray')
+      ?.get(arrayIndex.toString())
+      ?.get(field)?.errors?.['pattern'];
+  }
+
+  // Check if field has required error
+  isRequiredInvalid(arrayIndex: number, field: string) {
+    return (
+      this.patientForm.get('formArray')?.get(arrayIndex.toString())?.get(field)
+        ?.errors?.['required'] &&
+      this.patientForm.get('formArray')?.get(arrayIndex.toString())?.get(field)
+        ?.touched
+    );
+  }
+
+  // Check if field has length error
+  isLengthInvalid(arrayIndex: number, field: string) {
+    const fieldControl = this.patientForm
+      .get('formArray')
+      ?.get(arrayIndex.toString())
+      ?.get(field);
+    return ((
+      fieldControl?.hasError('minlength') ||
+      fieldControl?.hasError('maxlength') ||
+      fieldControl?.hasError('max')       ||
+      fieldControl?.hasError('min'))      &&
+      !fieldControl?.errors?.['pattern']
+
+    );
+  }
+
+  onNextStep(arrayIndex: number) {
+    let formArray = this.patientForm.get('formArray') as FormArray;
+    let formGroup = formArray.at(arrayIndex) as FormGroup;
+    this.zone.run(() => {
+    Object.keys(formGroup.controls).forEach(key => {
+      formGroup.controls[key].markAsTouched();
+    });
+  });
+  }
+  
+  
+  
 }
