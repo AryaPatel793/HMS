@@ -18,13 +18,24 @@
      justify-content: space-between;
   }
 
+  /* Custom CSS for invalid dropdown */
+::ng-deep .multiselect-dropdown {
+  border-color: #8a010f !important;
+}
+
   ::ng-deep .dropdown-list {
     position: fixed !important;
   }
-
-  ::ng-deep .is-invalid .ng-dropdown-panel {
-    border-color: red;
+  
+  .is-invalid {
+    border: 1px solid red; /* Example: setting border color to red */
+    /* Add any other styling for invalid state */
 }
+
+
+
+
+
 
 
 

@@ -23,6 +23,11 @@
   position: relative !important ;
 }
 
+.is-invalid {
+  border: 1px solid red; /* Example: setting border color to red */
+  /* Add any other styling for invalid state */
+}
+
 
 
 

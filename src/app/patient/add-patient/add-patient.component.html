@@ -1,12 +1,12 @@
 <h2>Patient Detail Form</h2>
 <!-- <form [formGroup]="patientForm" (ngSubmit)="savePatient()"> -->
-    <form [formGroup]="patientForm" >
+<form [formGroup]="patientForm">
     <mat-horizontal-stepper formArrayName="formArray" #stepper>
         <!-- Patient Details Step -->
         <mat-step formGroupName="0" [stepControl]="formArray?.get([0])!" errorMessage="Patient details is required.">
-            <ng-template  matStepLabel >
-                <div >Patient Details</div>
-            </ng-template>            
+            <ng-template matStepLabel>
+                <div>Patient Details</div>
+            </ng-template>
             <div class="row">
                 <div class="col-4">
                     <label for="name">Name</label>
@@ -15,8 +15,8 @@
                     <p class="field-validation-error" *ngIf="isRequiredInvalid(0,'name')">Patient name is required !</p>
                     <p class="field-validation-error" *ngIf="isPatternInvalid(0,'name')">Enter only letter and white
                         space</p>
-                    <p class="field-validation-error" *ngIf="isLengthInvalid(0,'name')">Name must be more than 2 characters and less than 3o characters
-                        characters</p>
+                    <p class="field-validation-error" *ngIf="isLengthInvalid(0,'name')">Name must be more than 2
+                        characters and less than 30 characters</p>
                 </div>
                 <div class="col-4">
                     <label for="name">Age</label>
@@ -27,14 +27,15 @@
                     <p class="field-validation-error" *ngIf="isLengthInvalid(0,'age')">Enter age between 1 to 150 only
                     </p>
                 </div>
-                <div class="col-4 dropdown-container" *ngIf="isAllowedRole()">
+                <div class="col-4 dropdown-container" *ngIf="isAllowedRole()" >
                     <label for="hospitals">Hospitals</label>
-                    <ng-multiselect-dropdown #multiSelect [placeholder]="'Select One Hospital'"
-                        [settings]="dropdownSettings" [data]="hospitals" formControlName="hospitalList"
-                        [class.is-valid]="isFieldValid(0,'hospitalList')"
-                        [class.is-invalid]="isFieldInvalid(0,'hospitalList')"
-                        (change)="getAllHospital()"
-                        ></ng-multiselect-dropdown>
+                    <div  [ngClass]="{'is-invalid': isFieldInvalid(0,'hospitalList')}">
+                        <ng-multiselect-dropdown #multiSelect [placeholder]="'Select One Hospital'"
+                            [settings]="dropdownSettings" [data]="hospitals" formControlName="hospitalList"
+                            (change)="getAllHospital()"
+                            >
+                        </ng-multiselect-dropdown>
+                    </div>
                     <p class="field-validation-error" *ngIf="isRequiredInvalid(0,'hospitalList')">Please select only one
                         hospital.</p>
                 </div>
@@ -76,13 +77,14 @@
             </div>
             <br>
             <div class="next-btn">
-                <button mat-button matStepperNext type="button" class="btn btn-light" (click)="onNextStep(0)">Next</button>
+                <button mat-button matStepperNext type="button" class="btn btn-light"
+                    (click)="onNextStep(0)">Next</button>
             </div>
         </mat-step>
 
         <!-- Address Details Step -->
         <mat-step formGroupName="1" [stepControl]="formArray?.get([1])!" errorMessage="Address details is required.">
-            <ng-template  matStepLabel >
+            <ng-template matStepLabel>
                 <div (click)="onNextStep(0)">Address Details</div>
             </ng-template>
             <div class="row">
@@ -93,8 +95,8 @@
                     <p class="field-validation-error" *ngIf="isRequiredInvalid(1,'address')">Address is required !</p>
                     <p class="field-validation-error" *ngIf="isPatternInvalid(1,'address')">Enter proper address
                     </p>
-                    <p class="field-validation-error" *ngIf="isLengthInvalid(1,'address')">Enter address of 10-150 characters
-                        characters</p>
+                    <p class="field-validation-error" *ngIf="isLengthInvalid(1,'address')">Enter address of 10-150
+                        character</p>
                 </div>
                 <div class="col-4">
                     <label for="state">State</label>
@@ -130,15 +132,17 @@
             </div>
             <br>
             <div class="two-btn-align">
-                <button mat-button matStepperPrevious type="button" class="btn btn-light" (click)="onNextStep(1)">Back</button>
-                <button mat-button matStepperNext type="button" class="btn btn-light" (click)="onNextStep(1)">Next</button>
+                <button mat-button matStepperPrevious type="button" class="btn btn-light"
+                    (click)="onNextStep(1)">Back</button>
+                <button mat-button matStepperNext type="button" class="btn btn-light"
+                    (click)="onNextStep(1)">Next</button>
             </div>
         </mat-step>
 
         <!-- User Details Step -->
         <mat-step formGroupName="2" [stepControl]="formArray?.get([2])!" errorMessage="User details is required.">
             <div class="container">
-                <ng-template matStepLabel >
+                <ng-template matStepLabel>
                     <div (click)="onNextStep(1)">User Details</div>
                 </ng-template>
                 <div class="row">
@@ -177,8 +181,9 @@
                 </div>
                 <br>
                 <div class="two-btn-align">
-                    <button mat-button matStepperPrevious type="button" class="btn btn-light" (click)="onNextStep(2)">Back</button>
-                    <button mat-button type="button" class="btn btn-primary" (click)="savePatient()" >Submit</button>
+                    <button mat-button matStepperPrevious type="button" class="btn btn-light"
+                        (click)="onNextStep(2)">Back</button>
+                    <button mat-button type="button" class="btn btn-primary" (click)="savePatient()">Submit</button>
                 </div>
             </div>
         </mat-step>

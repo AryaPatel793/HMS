@@ -147,7 +147,7 @@ export class AddPatientComponent implements OnInit, OnDestroy {
               Validators.required,
               Validators.maxLength(150),
               Validators.minLength(10),
-              Validators.pattern('^[^\\s$#%*&@\'"][^$#%*&@\'"]*(\\s[^\\s$#%*&@\'"]+)*$')
+              Validators.pattern(/^[^@!#%^&;*\s]+(?:\s[^@!#%;^&*\s]+)*[^,\s]$/)
             ],
           ],
           city: ['', Validators.required],
@@ -335,23 +335,23 @@ export class AddPatientComponent implements OnInit, OnDestroy {
     return ((
       fieldControl?.hasError('minlength') ||
       fieldControl?.hasError('maxlength') ||
-      fieldControl?.hasError('max')       ||
-      fieldControl?.hasError('min'))      &&
+      fieldControl?.hasError('max') ||
+      fieldControl?.hasError('min')) &&
       !fieldControl?.errors?.['pattern']
 
     );
   }
 
   onNextStep(arrayIndex: number) {
-    let formArray = this.patientForm.get('formArray') as FormArray;
-    let formGroup = formArray.at(arrayIndex) as FormGroup;
     this.zone.run(() => {
-    Object.keys(formGroup.controls).forEach(key => {
-      formGroup.controls[key].markAsTouched();
+      let formArray = this.patientForm.get('formArray') as FormArray;
+      let formGroup = formArray.at(arrayIndex) as FormGroup;
+      Object.keys(formGroup.controls).forEach(key => {
+        formGroup.controls[key].markAsTouched();
+      });
     });
-  });
   }
-  
-  
-  
+
+
+
 }

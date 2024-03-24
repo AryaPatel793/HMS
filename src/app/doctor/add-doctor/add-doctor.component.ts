@@ -117,8 +117,9 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
             '',
             [
               Validators.required,
-              Validators.pattern('^[a-zA-Z ]*$'),
-              Validators.maxLength(20),
+              Validators.pattern('^[a-zA-Z]+( [a-zA-Z]+)*$'),
+              Validators.maxLength(30),
+              Validators.minLength(2)
             ],
           ],
           phone_number: [
@@ -140,6 +141,7 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
               Validators.required,
               Validators.maxLength(150),
               Validators.minLength(10),
+              Validators.pattern(/^[^@!#%^&;*\s]+(?:\s[^@!#%;^&*\s]+)*[^,\s]$/)
             ],
           ],
           city: ['', Validators.required],
@@ -159,8 +161,9 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
             null,
             [
               Validators.required,
-              Validators.pattern('^[a-zA-Z ]*$'),
+              Validators.pattern('^[a-zA-Z]+( [a-zA-Z]+)*$'),
               Validators.maxLength(20),
+              Validators.minLength(2)
             ],
           ],
           email: [
@@ -176,9 +179,10 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
             [
               Validators.required,
               Validators.pattern(
-                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%#*?&]+$/
               ),
               Validators.minLength(8),
+              Validators.maxLength(8)
             ],
           ],
         }),
@@ -305,10 +309,24 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
       .get('formArray')
       ?.get(arrayIndex.toString())
       ?.get(field);
-    return (
+    return ((
       fieldControl?.hasError('minlength') ||
       fieldControl?.hasError('maxlength') ||
-      fieldControl?.hasError('max')
+      fieldControl?.hasError('max') ||
+      fieldControl?.hasError('min')) &&
+      !fieldControl?.errors?.['pattern']
+
     );
+  }
+
+ // Validating all fields of previous step
+  onNextStep(arrayIndex: number) {
+    this.zone.run(() => {
+      let formArray = this.doctorForm.get('formArray') as FormArray;
+      let formGroup = formArray.at(arrayIndex) as FormGroup;
+      Object.keys(formGroup.controls).forEach(key => {
+        formGroup.controls[key].markAsTouched();
+      });
+    });
   }
 }
