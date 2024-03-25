@@ -20,6 +20,7 @@ import { Constant } from '../../Services/constant/Constant';
 import { UserService } from '../../Services/User/user.service';
 import { NgZone } from '@angular/core';
 import { HospitalService } from '../../Services/Hospital/hospital.service';
+import { ValidationService } from '../../Services/Validation/validation.service';
 import { MatStepperModule } from '@angular/material/stepper';
 import {
   IDropdownSettings,
@@ -74,7 +75,8 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
     private cdr: ChangeDetectorRef,
     private zone: NgZone,
     private hospitalService: HospitalService,
-    public userService: UserService
+    public userService: UserService,
+    public validateService: ValidationService
   ) {
     console.log('AddDoctorComponent constructor');
     this.route.params.subscribe((params) => {
@@ -115,21 +117,11 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
           doctor_custom_id: [''],
           doctor_name: [
             '',
-            [
-              Validators.required,
-              Validators.pattern('^[a-zA-Z]+( [a-zA-Z]+)*$'),
-              Validators.maxLength(30),
-              Validators.minLength(2)
-            ],
+            this.validateService.getUserNameValidators(),
           ],
           phone_number: [
             null,
-            [
-              Validators.required,
-              Validators.pattern(/^\d+$/),
-              Validators.minLength(10),
-              Validators.maxLength(10),
-            ],
+            this.validateService.getPhoneValidators(),
           ],
           is_active: [true, Validators.required],
           hospitalList: [[], Validators.required],
@@ -137,53 +129,27 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
         this.formBuilder.group({
           address: [
             '',
-            [
-              Validators.required,
-              Validators.maxLength(150),
-              Validators.minLength(10),
-              Validators.pattern(/^[^@!#%^&;*\s]+(?:\s[^@!#%;^&*\s]+)*[^,\s]$/)
-            ],
+            this.validateService.getAddressValidators(),
           ],
           city: ['', Validators.required],
           state: ['', Validators.required],
           zipcode: [
             '',
-            [
-              Validators.required,
-              Validators.pattern(/^\d+$/),
-              Validators.minLength(6),
-              Validators.maxLength(6),
-            ],
+            this.validateService.getZipCodeValidators(),
           ],
         }),
         this.formBuilder.group({
           user_name: [
             null,
-            [
-              Validators.required,
-              Validators.pattern('^[a-zA-Z]+( [a-zA-Z]+)*$'),
-              Validators.maxLength(20),
-              Validators.minLength(2)
-            ],
+            this.validateService.getUserNameValidators(),
           ],
           email: [
             null,
-            [
-              Validators.required,
-              Validators.pattern('^[a-zA-Z0-9.]+@[a-zA-Z]+.[a-zA-Z]*$'),
-              Validators.maxLength(50),
-            ],
+            this.validateService.getEmailValidators(),
           ],
           password: [
             null,
-            [
-              Validators.required,
-              Validators.pattern(
-                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%#*?&]+$/
-              ),
-              Validators.minLength(8),
-              Validators.maxLength(8)
-            ],
+            this.validateService.getPasswordValidators(),
           ],
         }),
       ]),
@@ -314,12 +280,12 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
       fieldControl?.hasError('maxlength') ||
       fieldControl?.hasError('max') ||
       fieldControl?.hasError('min')) &&
-      !fieldControl?.errors?.['pattern']
+      !fieldControl?.hasError?.('pattern')
 
     );
   }
 
- // Validating all fields of previous step
+  // Validating all fields of previous step
   onNextStep(arrayIndex: number) {
     this.zone.run(() => {
       let formArray = this.doctorForm.get('formArray') as FormArray;

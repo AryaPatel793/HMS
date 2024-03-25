@@ -14,6 +14,7 @@ import { NotificationService } from '../Services/notification/notification.servi
 import { Login } from '../model/Login';
 import { isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID, Inject } from '@angular/core';
+import { ValidationService } from '../Services/Validation/validation.service';
 
 @Component({
   selector: 'app-login',
@@ -32,7 +33,8 @@ export class LoginComponent implements OnInit, OnDestroy {
     private loginService: LoginService,
     private formBuilder: FormBuilder,
     @Inject(PLATFORM_ID) private platformId: any,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private validateService: ValidationService
   ) {
     this.initForm();
   }
@@ -54,11 +56,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.loginForm = this.formBuilder.group({
       email: [
         '',
-        [
-          Validators.required,
-          Validators.pattern('^[a-zA-Z0-9.]+@[a-zA-Z]+.[a-zA-Z]*$'),
-          Validators.maxLength(50),
-        ],
+        this.validateService.getEmailValidators(),
       ],
       password: [
         '',
@@ -113,10 +111,11 @@ export class LoginComponent implements OnInit, OnDestroy {
   // Check if field has length error
   isLengthInvalid(field: string) {
     const fieldControl = this.loginForm.get(field);
-    return (
+    return ((
       fieldControl?.hasError('minlength') ||
       fieldControl?.hasError('maxlength') ||
-      fieldControl?.hasError('max')
+      fieldControl?.hasError('max')) &&
+      !fieldControl?.errors?.['pattern']
     );
   }
 }

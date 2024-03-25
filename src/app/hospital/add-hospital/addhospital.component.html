@@ -17,7 +17,7 @@
                 </p>
                 }
                 @if (isLengthInvalid('name')) {
-                <p class="field-validation-error">Name should be less than 20 characters
+                <p class="field-validation-error">Name should be of 2-20 characters
                     !</p>
                 }
 
@@ -32,8 +32,12 @@
                 <p class="field-validation-error">Address is required
                     !</p>
                 }
+                @if(isPatternInvalid('address'))
+                {
+                <p class="field-validation-error">Enter proper address</p>
+                }
                 @if (isLengthInvalid('address')) {
-                <p class="field-validation-error">Address should be of minimum 10 characters
+                <p class="field-validation-error">Address should be of 10-150 characters
                     !</p>
                 }
             </div>

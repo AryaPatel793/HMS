@@ -20,12 +20,15 @@ import { HospitalService } from '../../Services/Hospital/hospital.service';
 import { PLATFORM_ID, Inject } from '@angular/core';
 import { Patient } from '../../model/Patient';
 import { PatientService } from '../../Services/Patient/patient.service';
+import { ValidationService } from '../../Services/Validation/validation.service';
 import { UserService } from '../../Services/User/user.service';
 import { MatStepperModule } from '@angular/material/stepper';
 import {
   IDropdownSettings,
   NgMultiSelectDropDownModule,
 } from 'ng-multiselect-dropdown';
+import { DocumentPopUpComponent } from '../../document-pop-up/document-pop-up.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-add-patient',
@@ -42,6 +45,9 @@ import {
   styleUrl: './add-patient.component.css',
 })
 export class AddPatientComponent implements OnInit, OnDestroy {
+  openDocumentUploadDialog() {
+    console.log("Document add dialog box")
+  }
   //Required attributes
   patientForm!: FormGroup;
 
@@ -78,7 +84,10 @@ export class AddPatientComponent implements OnInit, OnDestroy {
     private zone: NgZone,
     @Inject(PLATFORM_ID) private platformId: any,
     private hospitalService: HospitalService,
-    public userService: UserService
+    public userService: UserService,
+    private validateService: ValidationService,
+    private dialog: MatDialog
+
   ) {
     console.log('AddpatientComponent constructor');
     this.route.params.subscribe((params) => {
@@ -119,23 +128,13 @@ export class AddPatientComponent implements OnInit, OnDestroy {
           patient_custom_id: [''],
           name: [
             '',
-            [
-              Validators.required,
-              Validators.pattern('^[a-zA-Z]+( [a-zA-Z]+)*$'),
-              Validators.maxLength(30),
-              Validators.minLength(2)
-            ],
+            this.validateService.getUserNameValidators(),
           ],
-          age: ['', [Validators.required, Validators.max(150), Validators.min(1)]],
+          age: ['', this.validateService.getAgeValidators()],
           blood_group: ['', Validators.required],
           phone_number: [
             null,
-            [
-              Validators.required,
-              Validators.pattern(/^\d+$/),
-              Validators.minLength(10),
-              Validators.maxLength(10),
-            ],
+            this.validateService.getPhoneValidators(),
           ],
           is_active: [true, Validators.required],
           hospitalList: [[], Validators.required,],
@@ -143,53 +142,27 @@ export class AddPatientComponent implements OnInit, OnDestroy {
         this.formBuilder.group({
           address: [
             '',
-            [
-              Validators.required,
-              Validators.maxLength(150),
-              Validators.minLength(10),
-              Validators.pattern(/^[^@!#%^&;*\s]+(?:\s[^@!#%;^&*\s]+)*[^,\s]$/)
-            ],
+            this.validateService.getAddressValidators(),
           ],
           city: ['', Validators.required],
           state: ['', Validators.required],
           zipcode: [
             '',
-            [
-              Validators.required,
-              Validators.pattern(/^\d+$/),
-              Validators.minLength(6),
-              Validators.maxLength(6),
-            ],
+            this.validateService.getZipCodeValidators(),
           ],
         }),
         this.formBuilder.group({
           user_name: [
             null,
-            [
-              Validators.required,
-              Validators.pattern('^[a-zA-Z]+( [a-zA-Z]+)*$'),
-              Validators.maxLength(20),
-              Validators.minLength(2)
-            ],
+            this.validateService.getUserNameValidators(),
           ],
           email: [
             null,
-            [
-              Validators.required,
-              Validators.pattern('^[a-zA-Z0-9.]+@[a-zA-Z]+.[a-zA-Z]*$'),
-              Validators.maxLength(50),
-            ],
+            this.validateService.getEmailValidators(),
           ],
           password: [
             null,
-            [
-              Validators.required,
-              Validators.pattern(
-                /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%#*?&]+$/
-              ),
-              Validators.minLength(8),
-              Validators.maxLength(8)
-            ],
+            this.validateService.getPasswordValidators(),
           ],
         }),
       ]),
@@ -284,6 +257,18 @@ export class AddPatientComponent implements OnInit, OnDestroy {
     );
   }
 
+  onDocumentClick(){
+    this.zone.run(() => {
+      const dialogRef = this.dialog.open(DocumentPopUpComponent, {
+        width: '1000px',
+        data: {
+          message: "Patient document here",
+        },
+      });
+    });
+
+  }
+
   // Invalid field validation
   isFieldInvalid(arrayIndex: number, field: string) {
     return (
@@ -337,7 +322,7 @@ export class AddPatientComponent implements OnInit, OnDestroy {
       fieldControl?.hasError('maxlength') ||
       fieldControl?.hasError('max') ||
       fieldControl?.hasError('min')) &&
-      !fieldControl?.errors?.['pattern']
+      !fieldControl?.hasError?.('pattern')
 
     );
   }

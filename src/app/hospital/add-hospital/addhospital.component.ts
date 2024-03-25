@@ -15,6 +15,7 @@ import { NgIf } from '@angular/common';
 import { ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Constant } from '../../Services/constant/Constant';
+import { ValidationService } from '../../Services/Validation/validation.service';
 
 @Component({
   selector: 'app-hospitalform',
@@ -38,7 +39,8 @@ export class AddHospitalComponent implements OnInit, OnDestroy {
     private notificationService: NotificationService,
     private router: Router,
     private route: ActivatedRoute,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private validateService : ValidationService
   ) {
     console.log('HospitalformComponent constructor');
     this.route.params.subscribe((params) => {
@@ -67,30 +69,17 @@ export class AddHospitalComponent implements OnInit, OnDestroy {
       hospital_custom_id: [''],
       name: [
         null,
-        [
-          Validators.required,
-          Validators.pattern('^[a-zA-Z ]*$'),
-          Validators.maxLength(20),
-        ],
+        this.validateService.getUserNameValidators(),
       ],
       address: [
         null,
-        [
-          Validators.required,
-          Validators.maxLength(150),
-          Validators.minLength(10),
-        ],
+        this.validateService.getAddressValidators(),
       ],
       city: ['', Validators.required],
       state: ['', Validators.required],
       zipcode: [
         null,
-        [
-          Validators.required,
-          Validators.pattern(/^\d+$/),
-          Validators.minLength(6),
-          Validators.maxLength(6),
-        ],
+        this.validateService.getZipCodeValidators(),
       ],
       hospital_type: ['', Validators.required],
       is_active: [true, Validators.required],
@@ -176,13 +165,14 @@ export class AddHospitalComponent implements OnInit, OnDestroy {
     );
   }
 
-  // Check if field has length error
-  isLengthInvalid(field: string) {
+   // Check if field has length error
+   isLengthInvalid(field: string) {
     const fieldControl = this.hospitalForm.get(field);
-    return (
+    return ((
       fieldControl?.hasError('minlength') ||
       fieldControl?.hasError('maxlength') ||
-      fieldControl?.hasError('max')
+      fieldControl?.hasError('max')) &&
+      !fieldControl?.errors?.['pattern']
     );
   }
 }
