@@ -59,8 +59,7 @@ export class ValidationService {
       Validators.required,
       Validators.maxLength(150),
       Validators.minLength(10),
-      Validators.pattern(/^[^@!#%^&;*\s]+(?:\s[^@!#%;^&*\s]+)*[^,\s]$/)
-    ]
+      Validators.pattern(/^[^@!#%^&;*\s]+(?:\s[^@!#%;^&*\s]+)*\s?[\w\d]$/)    ]
   }
 
   // Email Validation

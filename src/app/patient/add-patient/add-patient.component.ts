@@ -46,7 +46,7 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class AddPatientComponent implements OnInit, OnDestroy {
   openDocumentUploadDialog() {
-    console.log("Document add dialog box")
+    console.log('Document add dialog box');
   }
   //Required attributes
   patientForm!: FormGroup;
@@ -57,9 +57,15 @@ export class AddPatientComponent implements OnInit, OnDestroy {
 
   cities: string[] = [];
 
+  isDocumentPresent!: boolean;
+
+  patientDocuments: any[] = [];
+
   bloodGroups: string[] = Constant.bloodGroup;
 
   allowedRoles: string[] = [Constant.DOCTOR];
+
+  patientRole :string = Constant.PATIENT;
 
   // Dropdown settings
   public dropdownSettings: IDropdownSettings = {
@@ -87,7 +93,6 @@ export class AddPatientComponent implements OnInit, OnDestroy {
     public userService: UserService,
     private validateService: ValidationService,
     private dialog: MatDialog
-
   ) {
     console.log('AddpatientComponent constructor');
     this.route.params.subscribe((params) => {
@@ -126,44 +131,24 @@ export class AddPatientComponent implements OnInit, OnDestroy {
         this.formBuilder.group({
           patient_id: [''],
           patient_custom_id: [''],
-          name: [
-            '',
-            this.validateService.getUserNameValidators(),
-          ],
+          name: ['', this.validateService.getUserNameValidators()],
           age: ['', this.validateService.getAgeValidators()],
           blood_group: ['', Validators.required],
-          phone_number: [
-            null,
-            this.validateService.getPhoneValidators(),
-          ],
+          phone_number: [null, this.validateService.getPhoneValidators()],
           is_active: [true, Validators.required],
-          hospitalList: [[], Validators.required,],
+          hospitalList: [[], Validators.required],
+          ...(!this.isAllowedRole() ? {documents: [[], Validators.required]} : {}),
         }),
         this.formBuilder.group({
-          address: [
-            '',
-            this.validateService.getAddressValidators(),
-          ],
+          address: ['', this.validateService.getAddressValidators()],
           city: ['', Validators.required],
           state: ['', Validators.required],
-          zipcode: [
-            '',
-            this.validateService.getZipCodeValidators(),
-          ],
+          zipcode: ['', this.validateService.getZipCodeValidators()],
         }),
         this.formBuilder.group({
-          user_name: [
-            null,
-            this.validateService.getUserNameValidators(),
-          ],
-          email: [
-            null,
-            this.validateService.getEmailValidators(),
-          ],
-          password: [
-            null,
-            this.validateService.getPasswordValidators(),
-          ],
+          user_name: [null, this.validateService.getUserNameValidators()],
+          email: [null, this.validateService.getEmailValidators()],
+          password: [null, this.validateService.getPasswordValidators()],
         }),
       ]),
     });
@@ -202,6 +187,9 @@ export class AddPatientComponent implements OnInit, OnDestroy {
         response.code === 804
       ) {
         this.notificationService.errorNotification(response.message);
+      } else if (response.code === 202) {
+        this.notificationService.successNotification('Patient updated');
+        this.router.navigate(['/userDashboard/patient']);
       }
     });
   }
@@ -221,6 +209,7 @@ export class AddPatientComponent implements OnInit, OnDestroy {
             phone_number: patient.phone_number,
             is_active: patient.is_active,
             hospitalList: patient.selected_hospital || [],
+            documents: patient.documents,
           },
           {
             address: patient.address,
@@ -235,7 +224,11 @@ export class AddPatientComponent implements OnInit, OnDestroy {
           },
         ],
       });
-
+      this.patientDocuments = patient.documents;
+      if(this.patientDocuments)
+      {
+        this.isDocumentPresent= true
+      }
       this.onStateChange({ target: { value: patient.state } });
     });
   }
@@ -257,16 +250,26 @@ export class AddPatientComponent implements OnInit, OnDestroy {
     );
   }
 
-  onDocumentClick(){
+  // upload document click
+  onDocumentClick() {
+    const dialogRef = this.dialog.open(DocumentPopUpComponent, {
+      width: '1200px',
+      data: {
+        message: 'Patient document here',
+        presentDocument: this.patientDocuments,
+      },
+    });
     this.zone.run(() => {
-      const dialogRef = this.dialog.open(DocumentPopUpComponent, {
-        width: '1000px',
-        data: {
-          message: "Patient document here",
-        },
+      dialogRef.afterClosed().subscribe((documents: any[]) => {
+        if (documents && documents.length > 0) {
+          // Set documents array in patient form
+          const documentFormArray = this.patientForm
+            .get('formArray')
+            ?.get([0, 'documents']);
+          documentFormArray?.setValue(documents);
+        }
       });
     });
-
   }
 
   // Invalid field validation
@@ -317,26 +320,23 @@ export class AddPatientComponent implements OnInit, OnDestroy {
       .get('formArray')
       ?.get(arrayIndex.toString())
       ?.get(field);
-    return ((
-      fieldControl?.hasError('minlength') ||
-      fieldControl?.hasError('maxlength') ||
-      fieldControl?.hasError('max') ||
-      fieldControl?.hasError('min')) &&
+    return (
+      (fieldControl?.hasError('minlength') ||
+        fieldControl?.hasError('maxlength') ||
+        fieldControl?.hasError('max') ||
+        fieldControl?.hasError('min')) &&
       !fieldControl?.hasError?.('pattern')
-
     );
   }
 
+  // Validating all fields of formarray
   onNextStep(arrayIndex: number) {
     this.zone.run(() => {
       let formArray = this.patientForm.get('formArray') as FormArray;
       let formGroup = formArray.at(arrayIndex) as FormGroup;
-      Object.keys(formGroup.controls).forEach(key => {
+      Object.keys(formGroup.controls).forEach((key) => {
         formGroup.controls[key].markAsTouched();
       });
     });
   }
-
-
-
 }

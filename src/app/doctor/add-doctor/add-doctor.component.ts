@@ -187,6 +187,9 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
         response.code === 804
       ) {
         this.notificationService.errorNotification(response.message);
+      } else if (response.code === 202) {
+        this.notificationService.successNotification('Doctor updated');
+        this.router.navigate(['/userDashboard/doctor']);
       }
     });
   }

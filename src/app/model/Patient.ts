@@ -15,6 +15,7 @@ export class Patient {
   password: string;
   doctor_email: string | null;
   selected_hospital: any[];
+  documents : any[];
 
 
 
@@ -41,6 +42,7 @@ export class Patient {
   
     this.doctor_email = '';
     this.selected_hospital = [];
+    this.documents = patientInfo.documents
   }
   
 }

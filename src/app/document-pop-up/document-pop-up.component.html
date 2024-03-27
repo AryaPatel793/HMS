@@ -1,6 +1,55 @@
 <h2 mat-dialog-title>Patient Documents</h2>
 <mat-dialog-content>
-  {{data.message}}
-</mat-dialog-content><mat-dialog-actions style="display: flex; justify-content: center;">
-    <button mat-button mat-dialog-close class="btn btn-light" (click)="onClose()">Close</button>
-  </mat-dialog-actions>
+  <div>
+    <form [formGroup]="documentForm">
+      <div formArrayName="documents">
+        <div *ngFor="let document of documents().controls; let i=index">
+          <div [formGroupName]="i" class="row align-items-center">
+            <div class="col-3 d-flex align-items-center">
+              <!-- <label for="file category">Document</label> -->
+              <select class="form-control form-select" formControlName="file_category">
+                <option value="" disabled>Document Category</option>
+                <option *ngFor="let category of fileCategory" [value]="category">{{category}}</option>
+              </select>
+              @if (isRequiredInvalid('file_category',i)) {
+                <span class="field-validation-error" >Required!</span>
+                }
+            </div>
+              
+            <div class="col-2 d-flex align-items-center">
+              <label [for]="'fileInput' + i"><b>File Name:</b> {{ documents().at(i).get('file_name')?.value }}</label>
+            </div>
+            <!-- <div class="col-2 d-flex align-items-center">
+              <label [for]="'fileInput' + i"><b>File date:</b> {{ documents().at(i).get('file_date')?.value }}</label>
+            </div> -->
+            <div class="col-2 d-flex align-items-center">
+              <label [for]="'fileInput' + i"><b>File size:</b> {{ documents().at(i).get('file_size')?.value }} MB</label>
+            </div>
+            <div class="col-2 d-flex align-items-center">
+              <input type="file" [id]="'fileInput' + i" class="form-control file-input" style="display: none;"
+                placeholder="Select a file" [accept]="accpetedDocuments" (change)="onDocumentSelection($event, i)"
+                formControlName="document_file" />
+              <label [for]="'fileInput' + i" class="btn btn-primary">Choose File</label>
+              @if (isRequiredInvalid('file_name', i)) {
+                <p class="field-validation-error d-flex">Required!</p>
+                }
+            </div>
+            <div class="col-2 d-flex align-items-center">
+              <button type="button" class="btn btn-primary rounded-circle" (click)="addMoreDocument()">➕</button>
+              @if(i !== 0){
+              <button mat-button class="btn btn-light rounded-circle" (click)="removeDocument(i)">➖</button>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+      <br />
+
+    </form>
+    <br />
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions style="display: flex; justify-content: center;">
+  <button type="button" class="btn btn-primary" (click)="onDocumentSubmit()">Save</button>
+  <button mat-button mat-dialog-close class="btn btn-light" (click)="onClose()">Close</button>
+</mat-dialog-actions>
