@@ -12,8 +12,8 @@ export class DoctorService {
 
   constructor(private http: HttpClient) {}
 
-  getDoctor(userName: any): Observable<any> {
-    return this.http.get(`${DoctorService.ALL_DOCTOR}/${userName}`);
+  getDoctor(): Observable<any> {
+    return this.http.get(`${DoctorService.ALL_DOCTOR}`);
   }
 
   addDoctor(data: any): Observable<any> {

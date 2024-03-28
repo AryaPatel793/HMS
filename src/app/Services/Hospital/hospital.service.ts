@@ -12,8 +12,8 @@ export class HospitalService {
 
   constructor(private http: HttpClient) {}
 
-  getHospital(userEmail: any): Observable<any> {
-    return this.http.get(`${HospitalService.ALL_HOSPITAL}/${userEmail}`);
+  getHospital(): Observable<any> {
+    return this.http.get(`${HospitalService.ALL_HOSPITAL}`);
   }
 
   addHospital(data: any): Observable<any> {

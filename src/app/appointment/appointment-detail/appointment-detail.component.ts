@@ -157,7 +157,7 @@ export class AppointmentDetailComponent implements OnInit, OnDestroy {
   // Get all apointment
   getAllAppointment() {
     this.appointmentService
-      .getAllAppointment(this.userService.getUserEmail())
+      .getAllAppointment()
       .subscribe((response: any) => {
         this.appointmentList = response.data;
       });

@@ -6,15 +6,17 @@ import { Injectable } from '@angular/core';
 export class UserService {
   constructor() {}
 
-  getUsername(): string | null {
-    return sessionStorage.getItem('username');
+  getUsername(): string {
+    const userName = sessionStorage.getItem('username');
+    return userName ? userName : '';
   }
 
-  getUserRole(): string | null {
-    return sessionStorage.getItem('role');
+  public getUserRole(): string {
+    const userRole = sessionStorage.getItem('role');
+    return userRole ? userRole : '';
   }
-
-  getUserEmail(): string | null {
-    return sessionStorage.getItem('userEmail')
+  public getUserEmail(): string {
+    const userEmail = sessionStorage.getItem('userEmail');
+    return userEmail ? userEmail : '';
   }
 }

@@ -30,6 +30,7 @@ import { AddressPopUpComponent } from '../../address-pop-up/address-pop-up.compo
   ],
   templateUrl: './patient-detail.component.html',
   styleUrl: './patient-detail.component.css',
+  
 })
 export class PatientDetailComponent implements OnInit, OnDestroy {
   // Required attributes
@@ -149,7 +150,7 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
   // Get all patient
   getAllPatient() {
     this.patientService
-      .getPatient(this.userService.getUserEmail())
+      .getPatient()
       .subscribe((response: any) => {
         this.patientList = response.data;
       });
