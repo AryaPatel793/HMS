@@ -10,6 +10,8 @@ export class LoginService {
   private userName: string | undefined;
 
   private static LOGIN_ENDPOINT = `${Constant.BASE_URL}loginUser/login`;
+  private static PASSWORD_ENDPOINT = `${Constant.BASE_URL}loginUser/setPassword`;
+
 
   constructor(private http: HttpClient) {}
 
@@ -23,5 +25,9 @@ export class LoginService {
 
   setUserName(user: string): void {
     this.userName = user;
+  }
+
+  setPassword(credentials :any){
+    return this.http.post(LoginService.PASSWORD_ENDPOINT, credentials);
   }
 }

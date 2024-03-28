@@ -36,7 +36,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     private notificationService: NotificationService,
     private validateService: ValidationService
   ) {
-    this.initForm();
+    this.initializeForm();
   }
 
   // Initializing component
@@ -52,7 +52,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   // Initializing login form using FormBuilder
-  initForm() {
+  initializeForm() {
     this.loginForm = this.formBuilder.group({
       email: [
         '',

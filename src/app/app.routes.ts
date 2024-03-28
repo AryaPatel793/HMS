@@ -13,6 +13,7 @@ import { PatientDetailComponent } from './patient/patient-detail/patient-detail.
 import { AddPatientComponent } from './patient/add-patient/add-patient.component';
 import { AppointmentDetailComponent } from './appointment/appointment-detail/appointment-detail.component';
 import { AddAppointmentComponent } from './appointment/add-appointment/add-appointment.component';
+import { SetPasswordComponent } from './set-password/set-password.component';
 
 export const routes: Routes = [
   {
@@ -23,6 +24,11 @@ export const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
+  },
+  {
+    path:'set-password',
+    component: SetPasswordComponent
+
   },
   {
     path: 'userDashboard',
