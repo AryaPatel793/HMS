@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import {
   FormGroup,
   FormControl,
@@ -19,7 +19,7 @@ import { ValidationService } from '../Services/Validation/validation.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  imports: [HttpClientModule, ReactiveFormsModule, NgIf],
+  imports: [HttpClientModule, ReactiveFormsModule, NgIf,RouterOutlet, RouterModule,],
   standalone: true,
   styleUrls: ['./login.component.css'],
 })
@@ -36,7 +36,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     private notificationService: NotificationService,
     private validateService: ValidationService
   ) {
-    this.initializeForm();
   }
 
   // Initializing component
@@ -44,6 +43,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     if (isPlatformBrowser(this.platformId)) {
       console.log('ngOnInit called');
     }
+    this.initializeForm();
   }
 
   //Destroying the component

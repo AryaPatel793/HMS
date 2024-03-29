@@ -1,0 +1,24 @@
+<body>
+    <div class="verify-email-page">
+      <div class="form">
+        <div class="verify-email">
+          <div class="verify-email-header">
+            <h3>Verify your email</h3>
+            <p>Please enter your email to verify.</p>
+          </div>
+        </div>
+        <form [formGroup]="verifyEmailForm" class="verify-email-form">
+          <input type="email" class="form-control" [class.is-valid]="!isFieldValid('email')"
+            [class.is-invalid]="isFieldValid('email')" formControlName="email" placeholder="Email">
+          @if (isRequiredInvalid('email')) {
+          <p class="field-validation-error">Email address is required
+            !</p>
+          }
+          <p class="field-validation-error" *ngIf="isPatternInvalid('email')">Enter correct email id</p>
+          <p class="field-validation-error" *ngIf="isLengthInvalid('email')">Enter email id less than 50
+            characters</p> 
+            <button type="button" (click)="onSubmitEmail()" class="btn" >Verify Email</button>
+        </form>
+      </div>
+    </div>
+  </body>

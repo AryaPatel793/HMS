@@ -10,13 +10,13 @@ header a img {
   margin-top: 4px;
 }
 
-.login-page {
+.verify-email-page {
   width: 360px;
   padding: 8% 0 0;
   margin: auto;
 }
 
-.login-page .form .login {
+.verify-email-page .form .verify-email {
   margin-top: -31px;
   margin-bottom: 26px;
 }
@@ -88,18 +88,6 @@ body {
 
 .field-validation-error {
   color: #C1372A !important;
-  display: block;
-  font-weight: normal !important;
-  margin-top: -15px;
-  margin-bottom: 10px;
-  font-size: 12px; /* Set font size smaller than normal */
-  font-style: italic; /* Apply italics */
-  text-align: left; /* Align to the left */
-}
-
-
-.forgot-password {
-  color: #0e66eb !important;
   display: block;
   font-weight: normal !important;
   margin-top: -15px;

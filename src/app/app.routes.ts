@@ -14,6 +14,8 @@ import { AddPatientComponent } from './patient/add-patient/add-patient.component
 import { AppointmentDetailComponent } from './appointment/appointment-detail/appointment-detail.component';
 import { AddAppointmentComponent } from './appointment/add-appointment/add-appointment.component';
 import { SetPasswordComponent } from './set-password/set-password.component';
+import { VerifyEmailComponent } from './verify-email/verify-email.component';
+import { VerfiyOtpComponent } from './verfiy-otp/verfiy-otp.component';
 
 export const routes: Routes = [
   {
@@ -26,9 +28,17 @@ export const routes: Routes = [
     component: LoginComponent,
   },
   {
-    path:'set-password',
+    path:'setPassword',
     component: SetPasswordComponent
 
+  },
+  {
+    path: 'verifyEmail',
+    component:VerifyEmailComponent
+  },
+  {
+    path:'verifyOtp',
+    component: VerfiyOtpComponent
   },
   {
     path: 'userDashboard',

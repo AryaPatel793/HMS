@@ -10,13 +10,13 @@ header a img {
   margin-top: 4px;
 }
 
-.login-page {
+.verify-otp-page {
   width: 360px;
   padding: 8% 0 0;
   margin: auto;
 }
 
-.login-page .form .login {
+.verify-otp-page .form .verify-otp {
   margin-top: -31px;
   margin-bottom: 26px;
 }
@@ -97,16 +97,8 @@ body {
   text-align: left; /* Align to the left */
 }
 
-
-.forgot-password {
-  color: #0e66eb !important;
-  display: block;
-  font-weight: normal !important;
-  margin-top: -15px;
-  margin-bottom: 10px;
-  font-size: 12px; /* Set font size smaller than normal */
-  font-style: italic; /* Apply italics */
-  text-align: left; /* Align to the left */
+.resend-btn{
+  color:  #b3b3b3;
 }
 
 
