@@ -87,11 +87,11 @@ export class SetPasswordComponent implements OnInit, OnDestroy {
   onSubmitPassword() {
     let setPasswordFormValue = this.setPasswordForm.value;
     let password = new Password(setPasswordFormValue);
-    debugger
+    
     this.resetPasswordService.setPassword(password).subscribe((response: any) => {
-      if (response.code === 301) {
+      if (response.code === 201) {
         this.notificationService.successNotification(
-          response.message
+          "Password set successfully"
         );
         this.zone.run(() => {
         this.router.navigate(['/login']);

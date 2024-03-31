@@ -73,7 +73,7 @@ export class VerfiyOtpComponent implements OnInit, OnDestroy {
     const otp = this.verifyOtpForm.value;
     this.resetPasswordService.verifyOTP(otp).subscribe((response: any) => {
       if (response.code === 301) {
-        this.notificationService.successNotification(response.message);
+        this.notificationService.successNotification("Valid OTP");
         this.zone.run(() => {
         this.router.navigate(['/setPassword']);
       });
@@ -88,7 +88,7 @@ export class VerfiyOtpComponent implements OnInit, OnDestroy {
     this.resetPasswordService.resendOtp().subscribe((response:any)=>{
       if(response.code === 200)
       {
-        this.notificationService.successNotification(response.message);
+        this.notificationService.successNotification("New OTP sent");
       }else if (response.code === 404) {
         this.notificationService.errorNotification(response.message);
       }

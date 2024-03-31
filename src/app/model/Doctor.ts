@@ -10,7 +10,6 @@ export class Doctor {
   doctor_custom_id: string;
   user_name: string;
   email: string;
-  password: string;
   selected_hospital: any[];
 
   constructor(data: any) {
@@ -27,7 +26,6 @@ export class Doctor {
     this.zipcode = addressInfo.zipcode;
     this.user_name = userInfo.user_name;
     this.email = userInfo.email;
-    this.password = userInfo.password;
     this.selected_hospital = [];
   }
 }

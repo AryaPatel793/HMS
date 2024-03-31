@@ -148,7 +148,6 @@ export class AddPatientComponent implements OnInit, OnDestroy {
         this.formBuilder.group({
           user_name: [null, this.validateService.getUserNameValidators()],
           email: [null, this.validateService.getEmailValidators()],
-          password: [null, this.validateService.getPasswordValidators()],
         }),
       ]),
     });
@@ -220,7 +219,6 @@ export class AddPatientComponent implements OnInit, OnDestroy {
           {
             user_name: patient.user_name,
             email: patient.email,
-            password: patient.password,
           },
         ],
       });

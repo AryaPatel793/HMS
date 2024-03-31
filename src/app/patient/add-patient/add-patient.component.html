@@ -180,17 +180,6 @@
                         <p class="field-validation-error" *ngIf="isLengthInvalid(2,'email')">Enter email id less than 50
                             characters</p>
                     </div>
-                    <div class="col-4">
-                        <label for="password">Password</label>
-                        <input type="password" class="form-control" [class.is-valid]="isFieldValid(2,'password')"
-                            [class.is-invalid]="isFieldInvalid(2,'password')" formControlName="password">
-                        <p class="field-validation-error" *ngIf="isRequiredInvalid(2,'password')">Password is required !
-                        </p>
-                        <p class="field-validation-error" *ngIf="isPatternInvalid(2,'password')">Required atleast one
-                            [A-Z],[a-z],[0-9] and a special character</p>
-                        <p class="field-validation-error" *ngIf="isLengthInvalid(2,'password')">Enter password of
-                            only 8 characters</p>
-                    </div>
                 </div>
                 <br>
                 <div class="two-btn-align">

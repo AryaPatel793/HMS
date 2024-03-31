@@ -64,8 +64,7 @@ export class VerifyEmailComponent {
     const email = this.verifyEmailForm.value;
     this.resetPasswordService.verifyEmail(email).subscribe((response: any) => {
       if (response.code === 301) {
-        this.notificationService.successNotification(response.message);
-        this.notificationService.successNotification('OTP sent to your email');
+        this.notificationService.successNotification('OTP sent to your email for verification');
         sessionStorage.setItem('userEmail', this.verifyEmailForm.value.email);
         this.router.navigate(['/verifyOtp']);
       } else if (response.code === 404) {

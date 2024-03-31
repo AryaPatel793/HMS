@@ -147,10 +147,6 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
             null,
             this.validateService.getEmailValidators(),
           ],
-          password: [
-            null,
-            this.validateService.getPasswordValidators(),
-          ],
         }),
       ]),
     });
@@ -217,7 +213,6 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
           {
             user_name: doctor.user_name,
             email: doctor.email,
-            password: doctor.password,
           },
         ],
       });
