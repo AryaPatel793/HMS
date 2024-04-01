@@ -16,6 +16,7 @@ import { AddAppointmentComponent } from './appointment/add-appointment/add-appoi
 import { SetPasswordComponent } from './set-password/set-password.component';
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
 import { VerfiyOtpComponent } from './verfiy-otp/verfiy-otp.component';
+import { UpdateUserComponent } from './update-user/update-user.component';
 
 export const routes: Routes = [
   {
@@ -116,6 +117,10 @@ export const routes: Routes = [
           },
         ],
       },
+      {
+        path:'updateUser',
+        component : UpdateUserComponent
+      }
     ],
   },
 ];
