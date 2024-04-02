@@ -8,7 +8,7 @@
         <div class="collapse navbar-collapse " id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0 profile-menu">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page">{{ username }}</a>
+                    <a class="nav-link active" aria-current="page">{{this.userService.getUsername()}}</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -19,7 +19,7 @@
                         </div>
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" routerLink="./updateUser"><i class="fas fa-sliders-h fa-fw"></i> Edit
+                        <li><a class="dropdown-item" routerLink="./editUser"><i class="fas fa-sliders-h fa-fw"></i> Edit
                                 Profile</a></li>
                         <li>
                             <hr class="dropdown-divider">
@@ -30,7 +30,7 @@
                         </li>
                     </ul>
                 </li>
-            </ul>
+            </ul>   
         </div>
     </div>
 </nav>

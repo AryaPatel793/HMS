@@ -5,13 +5,14 @@ import { PLATFORM_ID, Inject } from '@angular/core';
 import { UserService } from '../Services/User/user.service';
 import { HeaderComponent } from '../header/header.component';
 import { SideBarComponent } from '../side-bar/side-bar.component';
+import { FooterComponent } from "../footer/footer.component";
 
 @Component({
-  selector: 'app-admin-page',
-  standalone: true,
-  imports: [RouterOutlet, RouterModule, HeaderComponent, SideBarComponent],
-  templateUrl: './layout-page.component.html',
-  styleUrl: './layout-page.component.css',
+    selector: 'app-admin-page',
+    standalone: true,
+    templateUrl: './layout-page.component.html',
+    styleUrl: './layout-page.component.css',
+    imports: [RouterOutlet, RouterModule, HeaderComponent, SideBarComponent, FooterComponent]
 })
 export class LayoutPageComponent implements OnInit, OnDestroy {
   // Required attributes

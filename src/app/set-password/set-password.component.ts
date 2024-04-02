@@ -85,8 +85,7 @@ export class SetPasswordComponent implements OnInit, OnDestroy {
 
   // Checking valid credentials
   onSubmitPassword() {
-    let setPasswordFormValue = this.setPasswordForm.value;
-    let password = new Password(setPasswordFormValue);
+    let password = new Password(this.setPasswordForm.value);
     
     this.resetPasswordService.setPassword(password).subscribe((response: any) => {
       if (response.code === 201) {

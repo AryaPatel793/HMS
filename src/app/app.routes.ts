@@ -16,7 +16,8 @@ import { AddAppointmentComponent } from './appointment/add-appointment/add-appoi
 import { SetPasswordComponent } from './set-password/set-password.component';
 import { VerifyEmailComponent } from './verify-email/verify-email.component';
 import { VerfiyOtpComponent } from './verfiy-otp/verfiy-otp.component';
-import { UpdateUserComponent } from './update-user/update-user.component';
+import { EditUserComponent } from './edit-user/edit-user.component';
+import { ChartAnalysisComponent } from './chart-analysis/chart-analysis.component';
 
 export const routes: Routes = [
   {
@@ -45,6 +46,15 @@ export const routes: Routes = [
     path: 'userDashboard',
     component: LayoutPageComponent,
     children: [
+      {
+        path:'',
+        component:ChartAnalysisComponent,
+        pathMatch: 'full'
+      },
+      {
+        path:'home',
+        component:ChartAnalysisComponent
+      },
       {
         path: 'hospital',
         component: HospitalComponent,
@@ -118,8 +128,8 @@ export const routes: Routes = [
         ],
       },
       {
-        path:'updateUser',
-        component : UpdateUserComponent
+        path:'editUser',
+        component : EditUserComponent
       }
     ],
   },

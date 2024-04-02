@@ -131,24 +131,7 @@ export class AddAppointmentComponent {
       });
   }
 
-  // validateDate(control: FormControl): { [key: string]: any } | null {
-  //   const selectedDate = new Date(control.value);
-  //   const today = new Date();
-  //   today.setHours(0, 0, 0, 0);
-
-  //   // Check if selected date is in the past
-  //   if (selectedDate < today) {
-  //     return { pastDate: true };
-  //   }
-
-  //   // Check if selected date is Sunday
-  //   if (selectedDate.getDay() === 0) {
-  //     return { sundayDate: true };
-  //   }
-
-  //   return null;
-  // }
-
+ 
   validateDate(control: FormControl): { [key: string]: any } | null {
     if (!control.value) {
       return null;
@@ -186,11 +169,7 @@ export class AddAppointmentComponent {
     return this.appointmentForm.get(field)?.valid;
   }
 
-  // // Check if field has pattern error
-  // isDateInvalid(field: string) {
-  //   return this.appointmentForm.get(field)?.errors?.['validateDate'];
-  // }
-
+ 
   // Check if field has date error
 isDateInvalid(field: string) {
   const fieldErrors = this.appointmentForm.get(field)?.errors;

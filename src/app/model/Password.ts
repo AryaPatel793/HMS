@@ -1,9 +1,9 @@
 export class Password {
-    email: string;
-    password: string;
+    current_password: string;
+    new_password: string;
   
     constructor(userData: any) {
-      this.email = ''
-      this.password =  userData.password
+      this.current_password = userData.current_password
+      this.new_password =  userData.password
     }
   }

@@ -17,7 +17,7 @@ export class HeaderComponent {
     // Initializing required services
     constructor(
       @Inject(PLATFORM_ID) private platformId: any,
-      private userService: UserService
+      public userService: UserService
     ) {}
   
     // Initializing the component

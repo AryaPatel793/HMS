@@ -36,14 +36,7 @@
     overflow-y: auto;
 }
 
-#content {
-    margin-left: 240px; /* Adjust this value based on your sidebar width */
-    padding: 15px;
+.hide-sidebar {
+    display: none;
 }
 
-/* Adjusted styling for smaller screens */
-@media (max-width: 991.98px) {
-    #content {
-        margin-left: 0;
-    }
-}

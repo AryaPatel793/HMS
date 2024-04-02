@@ -7,6 +7,7 @@ import { provideToastr } from 'ngx-toastr';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { AuthorizationInterceptor } from './Services/Interceptor/authorization-interceptor';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -18,6 +19,7 @@ export const appConfig: ApplicationConfig = {
       provide: STEPPER_GLOBAL_OPTIONS,
       useValue: { showError: true }
     },
-    provideHttpClient(withInterceptors([AuthorizationInterceptor]))
+    provideHttpClient(withInterceptors([AuthorizationInterceptor])),
+    provideCharts(withDefaultRegisterables())
   ],
 };

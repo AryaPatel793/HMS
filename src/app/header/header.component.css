@@ -3,7 +3,10 @@
  .navbar {
     z-index: 1000; /* Set a higher z-index for the navbar */
     background-color: #343a40; /* Add a background color to the navbar */
+    position: fixed; /* Add this line */
+    width: 100%; /* Add this line */
 }
+
 
 .navbar-brand {
     position: relative;
