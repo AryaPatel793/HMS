@@ -10,7 +10,7 @@ import { UserService } from '../Services/User/user.service';
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit, OnDestroy {
     // Required attributes
     username: string | null = null;
 
@@ -31,6 +31,10 @@ export class HeaderComponent {
     //Destroying the component
     ngOnDestroy(): void {
       console.log('Header Component Destroyed');
+    }
+
+    onLogout(){
+      this.userService.logoutUser()
     }
 
 }

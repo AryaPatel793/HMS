@@ -73,7 +73,13 @@ export class ChartAnalysisComponent implements OnInit, OnDestroy {
   // Pie chart options
   public pieChartOptions: ChartOptions<'pie'> = {
     responsive: true,
+    plugins: {
+      legend: {
+        position: 'bottom',
+      },
+    },
   };
+  
 
   // Get hospital patients
   getHospitalPatient() {

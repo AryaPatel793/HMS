@@ -1,117 +1,130 @@
 <h2>User Detail Form</h2>
 <mat-tab-group>
-    <mat-tab label="Profile Details">
-<div class="container">
-    <form [formGroup]="userForm" >
+  <mat-tab label="Profile Details">
+    <div class="container">
+      <form [formGroup]="userForm">
         <div class="row">
-            <div class="col-6">
-                <label for="name">Name</label>
-                <input type="text" class="form-control" [ngClass]="{
+          <div class="col-6">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" [ngClass]="{
                   'is-valid': isFieldValid('user_name', userForm),
                   'is-invalid': isFieldInvalid('user_name', userForm),
                 }" formControlName="user_name">
-                @if (isRequiredInvalid('user_name', userForm)) {
-                <p class="field-validation-error">User name is required
-                    !</p>
-                }
-                @if (isPatternInvalid('user_name',userForm)) {
-                <p class="field-validation-error">It should contain only letters and white space
-                </p>
-                }
-                @if (isLengthInvalid('user_name',userForm)) {
-                <p class="field-validation-error">Name should be of 2-20 characters
-                    !</p>
-                }
-            </div>
-            <div class="col-6">
-                <label for="email">Email</label>
-                <input type="email" class="form-control" [class.is-valid]="isFieldValid('email',userForm)"
-                    [class.is-invalid]="isFieldInvalid('email',userForm)" formControlName="email">
-                <p class="field-validation-error" *ngIf="isRequiredInvalid('email', userForm)">Email address is required
-                    !</p>
-                <p class="field-validation-error" *ngIf="isPatternInvalid('email', userForm)">Enter correct email id</p>
-                <p class="field-validation-error" *ngIf="isLengthInvalid('email',userForm)">Enter email id less than 50
-                    characters</p>
-            </div>
+            @if (isRequiredInvalid('user_name', userForm)) {
+            <p class="field-validation-error">User name is required
+              !</p>
+            }
+            @if (isPatternInvalid('user_name',userForm)) {
+            <p class="field-validation-error">It should contain only letters and white space
+            </p>
+            }
+            @if (isLengthInvalid('user_name',userForm)) {
+            <p class="field-validation-error">Name should be of 2-20 characters
+              !</p>
+            }
+          </div>
+          <div class="col-6">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" [class.is-valid]="isFieldValid('email',userForm)"
+              [class.is-invalid]="isFieldInvalid('email',userForm)" formControlName="email">
+            <p class="field-validation-error" *ngIf="isRequiredInvalid('email', userForm)">Email address is required
+              !</p>
+            <p class="field-validation-error" *ngIf="isPatternInvalid('email', userForm)">Enter correct email id</p>
+            <p class="field-validation-error" *ngIf="isLengthInvalid('email',userForm)">Enter email id less than 50
+              characters</p>
+          </div>
         </div>
         <br>
         <div class="row">
-            <div class="col-6">
-                <button type="button" (click)="saveUser()" class="btn btn-success">Save</button>
-            </div>
+          <div class="col-6">
+            <button type="button" (click)="saveUser()" class="btn btn-success">Save</button>
+          </div>
         </div>
-    </form>
-</div>
-</mat-tab>
-<mat-tab label="Change Password">
-    <div class="col-10" style="display: flex; justify-content: center;">
-    <form [formGroup]="passwordFrom">
-      <h2>Change your password</h2>
-      <br>
-        <p>
-    <mat-form-field>
-        <mat-label>Enter current password</mat-label>
-        <input matInput [type]="hideCurrent ? 'password' : 'text'"  formControlName="current_password">
-        <button mat-icon-button matSuffix (click)="hideCurrent = !hideCurrent" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hideCurrent">
-          <mat-icon>{{hideCurrent ? 'visibility_off' : 'visibility'}}</mat-icon>
-        </button>
-        <mat-hint align="end">Enter only 8 characters</mat-hint>
-        @if (isRequiredInvalid('current_password', passwordFrom)) {
-            <mat-error>Password is required</mat-error>
-          }
-        @if (isPatternInvalid('current_password', passwordFrom)) {
-            <mat-error>Atleast one [A-Z],[a-z],[0-9],sp.character</mat-error>
-          }
-          @if (isLengthInvalid('current_password', passwordFrom)) {
-            <mat-error>Enter password of only 8 characters</mat-error>
-          }
-      </mat-form-field>
-    </p>
-    <p>
-      <mat-form-field>
-        <mat-label>Enter new password</mat-label>
-        <input matInput [type]="hideNew ? 'password' : 'text'"  formControlName="password">
-        <button mat-icon-button matSuffix (click)="hideNew = !hideNew" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hideNew">
-          <mat-icon>{{hideNew ? 'visibility_off' : 'visibility'}}</mat-icon>
-        </button>
-        <mat-hint align="end">Enter only 8 characters</mat-hint>
-        @if (isRequiredInvalid('password', passwordFrom)) {
-            <mat-error>Password is required</mat-error>
-          }
-        @if (isPatternInvalid('password', passwordFrom)) {
-            <mat-error>Atleast one [A-Z],[a-z],[0-9],sp.character</mat-error>
-          }
-          @if (isLengthInvalid('password', passwordFrom)) {
-            <mat-error>Enter password of only 8 characters</mat-error>
-          }
-        </mat-form-field>
-    </p>
-    <p>
-      <mat-form-field>
-        <mat-label>Re-enter new password</mat-label>
-        <input matInput [type]="hideConfirm ? 'password' : 'text'"  formControlName="confirm_password">
-        <button mat-icon-button matSuffix (click)="hideConfirm = !hideConfirm" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hideConfirm">
-          <mat-icon>{{hideConfirm ? 'visibility_off' : 'visibility'}}</mat-icon>
-        </button>
-        <mat-hint align="end">Enter only 8 characters</mat-hint>
-        @if (isRequiredInvalid('confirm_password', passwordFrom)) {
-            <mat-error>Password is required</mat-error>
-          }
-        @if (isPatternInvalid('confirm_password', passwordFrom)) {
-            <mat-error>Atleast one [A-Z],[a-z],[0-9], sp.character</mat-error>
-          }
-          @if (isLengthInvalid('confirm_password', passwordFrom)) {
-            <mat-error>Enter password of only 8 characters</mat-error>
-          }
-          @if (isMismatchInvalid('confirm_password')) {
-            <mat-error>Password does not match with above</mat-error>
-          }
-      </mat-form-field>
-    </p>
-      <button mat-raised-button color="primary" (click)="updatePassword()">Update Password</button>
-  </form>
-</div>
-</mat-tab>
+      </form>
+    </div>
+  </mat-tab>
+  <mat-tab label="Change Password">
+    <div class="container">
+      <form [formGroup]="passwordFrom">
+        <div class="row">
+          <div class="col-6">
+            <label for="current_password">Enter current password</label>
+            <div style="display: flex;">
+              <input [type]="hideCurrent ? 'password' : 'text'" class="form-control" [ngClass]="{
+                      'is-valid': isFieldValid('current_password', passwordFrom),
+                      'is-invalid': isFieldInvalid('current_password', passwordFrom),
+                    }" formControlName="current_password" style="flex-grow: 1;">
+              <button mat-icon-button matSuffix (click)="hideCurrent = !hideCurrent" [attr.aria-label]="'Hide password'"
+                [attr.aria-pressed]="hideCurrent">
+                <mat-icon>{{hideCurrent ? 'visibility_off' : 'visibility'}}</mat-icon>
+              </button>
+            </div>
+            <p class="field-validation-error" *ngIf="isRequiredInvalid('current_password', passwordFrom)">Password is
+              required</p>
+            <p class="field-validation-error" *ngIf="isPatternInvalid('current_password', passwordFrom)">Atleast one
+              [A-Z],[a-z],[0-9],sp.character</p>
+            <p class="field-validation-error" *ngIf="isLengthInvalid('current_password', passwordFrom)">Enter password
+              of only 8 characters</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-6">
+            <label for="password">Enter new password</label>
+            <div style="display: flex;">
+              <input [type]="hideNew ? 'password' : 'text'" class="form-control" [ngClass]="{
+                'is-valid': isFieldValid('password', passwordFrom),
+                'is-invalid': isFieldInvalid('password', passwordFrom),
+              }" formControlName="password" style="flex-grow: 1;">
+              <button mat-icon-button matSuffix (click)="hideNew = !hideNew" [attr.aria-label]="'Hide password'"
+                [attr.aria-pressed]="hideNew">
+                <mat-icon>{{hideNew ? 'visibility_off' : 'visibility'}}</mat-icon>
+              </button>
+            </div>
+
+            <p class="field-validation-error" *ngIf="isRequiredInvalid('password', passwordFrom)">Password is required
+            </p>
+            <p class="field-validation-error" *ngIf="isPatternInvalid('password', passwordFrom)">Atleast one
+              [A-Z],[a-z],[0-9],sp.character</p>
+            <p class="field-validation-error" *ngIf="isLengthInvalid('password', passwordFrom)">Enter password of only 8
+              characters</p>
+            <p class="field-validation-error" *ngIf="isNewPasswordInvalid('password')">It should not match current
+              password</p>
+          </div>
+          <div class="col-6">
+            <label for="confirm_password">Re-enter new password</label>
+            <div style="display: flex;">
+              <input [type]="hideConfirm ? 'password' : 'text'" class="form-control" [ngClass]="{
+                    'is-valid': isFieldValid('confirm_password', passwordFrom),
+                    'is-invalid': isFieldInvalid('confirm_password', passwordFrom),
+                  }" formControlName="confirm_password" style="flex-grow: 1;">
+              <button mat-icon-button matSuffix (click)="hideConfirm = !hideConfirm" [attr.aria-label]="'Hide password'"
+                [attr.aria-pressed]="hideConfirm">
+                <mat-icon>{{hideConfirm ? 'visibility_off' : 'visibility'}}</mat-icon>
+              </button>
+            </div>
+
+            <p class="field-validation-error" *ngIf="isRequiredInvalid('confirm_password', passwordFrom)">Password is
+              required</p>
+            <p class="field-validation-error" *ngIf="isPatternInvalid('confirm_password', passwordFrom)">Atleast one
+              [A-Z],[a-z],[0-9],sp.character</p>
+            <p class="field-validation-error" *ngIf="isLengthInvalid('confirm_password', passwordFrom)">Enter password
+              of only 8 characters</p>
+            <p class="field-validation-error" *ngIf="isMismatchInvalid('confirm_password')">This password does not match
+              with
+              new password</p>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-6">
+            <button type="button" (click)="updatePassword()" class="btn btn-success">Update Password</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </mat-tab>
+
+
 
 </mat-tab-group>
 
@@ -123,67 +136,76 @@
 
 
 
+<!-- <mat-tab label="Change Password">
+  <div class="col-10" style="display: flex; justify-content: center;">
+  <form [formGroup]="passwordFrom">
+    <h2>Change your password</h2>
+    <br>
+      <p>
+  <mat-form-field>
+      <mat-label>Enter current password</mat-label>
+      <input matInput [type]="hideCurrent ? 'password' : 'text'"  formControlName="current_password">
+      <button mat-icon-button matSuffix (click)="hideCurrent = !hideCurrent" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hideCurrent">
+        <mat-icon>{{hideCurrent ? 'visibility_off' : 'visibility'}}</mat-icon>
+      </button>
+      <mat-hint align="end">Enter only 8 characters</mat-hint>
+      @if (isRequiredInvalid('current_password', passwordFrom)) {
+          <mat-error>Password is required</mat-error>
+        }
+      @if (isPatternInvalid('current_password', passwordFrom)) {
+          <mat-error>Atleast one [A-Z],[a-z],[0-9],sp.character</mat-error>
+        }
+        @if (isLengthInvalid('current_password', passwordFrom)) {
+          <mat-error>Enter password of only 8 characters</mat-error>
+        }
+    </mat-form-field>
+  </p>
+  <p>
+    <mat-form-field>
+      <mat-label>Enter new password</mat-label>
+      <input matInput [type]="hideNew ? 'password' : 'text'"  formControlName="password">
+      <button mat-icon-button matSuffix (click)="hideNew = !hideNew" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hideNew">
+        <mat-icon>{{hideNew ? 'visibility_off' : 'visibility'}}</mat-icon>
+      </button>
+      <mat-hint align="end">Enter only 8 characters</mat-hint>
+      @if (isRequiredInvalid('password', passwordFrom)) {
+          <mat-error>Password is required</mat-error>
+        }
+      @if (isPatternInvalid('password', passwordFrom)) {
+          <mat-error>Atleast one [A-Z],[a-z],[0-9],sp.character</mat-error>
+        }
+        @if (isLengthInvalid('password', passwordFrom)) {
+          <mat-error>Enter password of only 8 characters</mat-error>
+        }
+        @if (isNewPasswordInvalid('password')) {
+          <mat-error>It should not match current password</mat-error>
+        }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- <h2>User Detail Form</h2>
-<div class="container">
-    <form [formGroup]="userForm" >
-        <div class="row">
-            <div class="col-6">
-                <label for="name">Name</label>
-                <input type="text" class="form-control" [ngClass]="{
-                  'is-valid': isFieldValid('user_name'),
-                  'is-invalid': isFieldInvalid('user_name'),
-                }" formControlName="user_name">
-                @if (isRequiredInvalid('user_name')) {
-                <p class="field-validation-error">User name is required
-                    !</p>
-                }
-                @if (isPatternInvalid('user_name')) {
-                <p class="field-validation-error">It should contain only letters and white space
-                </p>
-                }
-                @if (isLengthInvalid('user_name')) {
-                <p class="field-validation-error">Name should be of 2-20 characters
-                    !</p>
-                }
-            </div>
-            <div class="col-6">
-                <label for="email">Email</label>
-                <input type="email" class="form-control" [class.is-valid]="isFieldValid('email')"
-                    [class.is-invalid]="isFieldInvalid('email')" formControlName="email">
-                <p class="field-validation-error" *ngIf="isRequiredInvalid('email')">Email address is required
-                    !</p>
-                <p class="field-validation-error" *ngIf="isPatternInvalid('email')">Enter correct email id</p>
-                <p class="field-validation-error" *ngIf="isLengthInvalid('email')">Enter email id less than 50
-                    characters</p>
-            </div>
-        </div>
-        <br>
-        <div class="row">
-            <div class="col-6">
-                <button type="button" (click)="saveUser()" class="btn btn-success">Save</button>
-            </div>
-        </div>
-    </form>
-</div> -->
+      </mat-form-field>
+  </p>
+  <p>
+    <mat-form-field>
+      <mat-label>Re-enter new password</mat-label>
+      <input matInput [type]="hideConfirm ? 'password' : 'text'"  formControlName="confirm_password">
+      <button mat-icon-button matSuffix (click)="hideConfirm = !hideConfirm" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hideConfirm">
+        <mat-icon>{{hideConfirm ? 'visibility_off' : 'visibility'}}</mat-icon>
+      </button>
+      <mat-hint align="end">Enter only 8 characters</mat-hint>
+      @if (isRequiredInvalid('confirm_password', passwordFrom)) {
+          <mat-error>Password is required</mat-error>
+        }
+      @if (isPatternInvalid('confirm_password', passwordFrom)) {
+          <mat-error>Atleast one [A-Z],[a-z],[0-9], sp.character</mat-error>
+        }
+        @if (isLengthInvalid('confirm_password', passwordFrom)) {
+          <mat-error>Enter password of only 8 characters</mat-error>
+        }
+        @if (isMismatchInvalid('confirm_password')) {
+          <mat-error>Password does not match with above</mat-error>
+        }
+    </mat-form-field>
+  </p>
+    <button mat-raised-button color="primary" (click)="updatePassword()">Update Password</button>
+</form>
+</div>
+</mat-tab> -->

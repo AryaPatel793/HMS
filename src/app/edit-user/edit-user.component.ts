@@ -1,6 +1,6 @@
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { NotificationService } from '../Services/notification/notification.service';
@@ -17,6 +17,7 @@ import {
   ShowOnDirtyErrorStateMatcher,
 } from '@angular/material/core';
 import { Password } from '../model/Password';
+import { UserService } from '../Services/User/user.service';
 
 @Component({
   selector: 'app-update-user',
@@ -52,7 +53,10 @@ export class EditUserComponent implements OnInit, OnDestroy {
     private router: Router,
     private validateService: ValidationService,
     private updateUserService: EditUserService,
-    private zone: NgZone
+    private zone: NgZone,
+    private route: ActivatedRoute,
+    private userService : UserService
+
   ) {
     console.log('Update User Component constructor');
     this.getUserDetails();
@@ -87,15 +91,29 @@ export class EditUserComponent implements OnInit, OnDestroy {
         password: [null, this.validateService.getPasswordValidators()],
         confirm_password: [null, this.validateService.getPasswordValidators()],
       },
-      { validator: this.passwordMatchValidator }
+      { validator: this.combinedValidator.bind(this) },
     );
   }
 
-  passwordMatchValidator(formGroup: FormGroup) {
+  private combinedValidator(formGroup: FormGroup) {
+    this.newPasswordMatchValidator(formGroup);
+    this.currentPasswordMatchValidator(formGroup);
+  }
+  
+
+  newPasswordMatchValidator(formGroup: FormGroup) {
     const password = formGroup.get('password')?.value;
     const confirmPassword = formGroup.get('confirm_password')?.value;
     if (password !== confirmPassword) {
       formGroup.get('confirm_password')?.setErrors({ mismatch: true });
+    }
+  }
+
+  currentPasswordMatchValidator(formGroup: FormGroup) {
+    const currentPassword = formGroup.get('current_password')?.value;
+    const newPassword = formGroup.get('password')?.value;
+    if (currentPassword === newPassword) {
+      formGroup.get('password')?.setErrors({ match: true });
     }
   }
 
@@ -151,6 +169,12 @@ export class EditUserComponent implements OnInit, OnDestroy {
             'Password set successfully'
           );
           this.passwordFrom.reset();
+          this.zone.run(() => {
+          this.userService.logoutUser()
+          this.router.navigate(['/login'], {
+            relativeTo: this.route,
+          });
+        });
         } else if (response.code === 404) {
           this.notificationService.errorNotification(response.message);
         }
@@ -199,6 +223,14 @@ export class EditUserComponent implements OnInit, OnDestroy {
   isMismatchInvalid(field: string) {
     return (
       this.passwordFrom.get(field)?.errors?.['mismatch'] &&
+      this.passwordFrom.get(field)?.touched
+    );
+  }
+
+  // Validate new password
+  isNewPasswordInvalid(field: string) {
+    return (
+      this.passwordFrom.get(field)?.errors?.['match'] &&
       this.passwordFrom.get(field)?.touched
     );
   }

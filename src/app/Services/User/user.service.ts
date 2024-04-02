@@ -19,4 +19,10 @@ export class UserService {
     const userEmail = sessionStorage.getItem('userEmail');
     return userEmail ? userEmail : '';
   }
+
+  public logoutUser(){
+    sessionStorage.removeItem('username')
+    sessionStorage.removeItem('role')
+    sessionStorage.removeItem('userEmail')
+  }
 }
