@@ -7,8 +7,8 @@ import { Constant } from '../constant/Constant';
   providedIn: 'root',
 })
 export class ChartAnalysisService {
-  private static GET_HOSPITAL_PATIENT_ENDPOINT = `${Constant.BASE_URL}chartAnalysis/getHospitalPatient`;
-  private static GET_HOSPITAL_DOCTOR_ENDPOINT = `${Constant.BASE_URL}chartAnalysis/getHospitalDoctor`;
+  private static GET_HOSPITAL_PATIENT_ENDPOINT = `${Constant.BASE_URL}hospitals/getHospitalPatient`;
+  private static GET_HOSPITAL_DOCTOR_ENDPOINT = `${Constant.BASE_URL}hospitals/getHospitalDoctor`;
 
   constructor(private http: HttpClient) {}
 

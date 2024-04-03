@@ -18,11 +18,6 @@ export class ChartAnalysisComponent implements OnInit, OnDestroy {
   public pieChartLegend = true;
   public pieChartPlugins = [];
 
-  doctorCount: any[] = [];
-  patientCount: any[] = [];
-  patientHospitalName: any[] = [];
-  doctorHospitalName: any[] = [];
-
   constructor(
     private chartAnalysisService: ChartAnalysisService,
     private zone: NgZone
@@ -41,8 +36,8 @@ export class ChartAnalysisComponent implements OnInit, OnDestroy {
 
   // Bar chart configuration
   public barChartData: ChartConfiguration<'bar'>['data'] = {
-    labels: this.patientHospitalName,
-    datasets: [{ data: this.patientCount, label: 'Patient' }],
+    labels: [],
+    datasets: [],
   };
 
   // Bar chart x and y label
@@ -66,8 +61,8 @@ export class ChartAnalysisComponent implements OnInit, OnDestroy {
 
   // Pie chart configuration
   public pieChartData: ChartConfiguration<'pie'>['data'] = {
-    labels: this.doctorHospitalName,
-    datasets: [{ data: this.doctorCount, label: 'Doctor' }],
+    labels: [],
+    datasets: [],
   };
 
   // Pie chart options
@@ -79,36 +74,38 @@ export class ChartAnalysisComponent implements OnInit, OnDestroy {
       },
     },
   };
-  
 
-  // Get hospital patients
-  getHospitalPatient() {
-    this.chartAnalysisService
-      .getHospitalPatient()
-      .subscribe((response: any) => {
-        this.patientHospitalName = response.data.hospital_name;
-        this.patientCount = response.data.total_patient_count;
-        this.barChartData = {
-          labels: this.patientHospitalName,
-          datasets: [{ data: this.patientCount, label: 'Patient' }],
-        };
-      });
-  }
 
-  // Get hospital doctors
-  getHospitalDoctor() {
-    this.chartAnalysisService.getHospitalDoctor().subscribe((response: any) => {
-      this.doctorHospitalName = response.data.hospital_name;
-      this.doctorCount = response.data.total_doctor_count;
-      this.pieChartData = {
-        labels: this.doctorHospitalName,
-        datasets: [
-          {
-            data: this.doctorCount,
-            label: 'Doctor',
-          },
-        ],
-      };
-    });
+
+// Get hospital-patient data
+getHospitalPatient() {
+  this.chartAnalysisService.getHospitalPatient().subscribe((response: any) => {
+    if(response.code === 200){
+    let responseData = response.data;
+    this.barChartData = {
+      labels: Object.keys(responseData),
+      datasets: [{ data: Object.values(responseData), label: 'Patient' }],
+    };
   }
+  });
+}
+
+// Get hospital-doctor data
+getHospitalDoctor() {
+  this.chartAnalysisService.getHospitalDoctor().subscribe((response: any) => {
+    if(response.code === 200){
+    let responseData = response.data;
+    this.pieChartData = {
+      labels: Object.keys(responseData),
+      datasets: [
+        {
+          data: Object.values(responseData),
+          label: 'Doctor',
+        },
+      ],
+    };
+    }
+  });
+}
+
 }
