@@ -1,14 +1,14 @@
 .footer {
-    z-index: 1000; /* Set a higher z-index for the footer */
-    background-color: #343a40; /* Add a background color to the footer */
-    width: 100%; /* Add this line */
-    position: relative;
-    bottom: 0; /* Position the footer at the bottom of the page */
-    color: white; /* Set the text color */
-    text-align: center; /* Center the text */
-    padding: 10px 0; /* Add some padding */
+  z-index: 1000; /* Set a higher z-index for the footer */
+  background-color: #343a40; /* Add a background color to the footer */
+  width: 100%; /* Add this line */
+  position: relative;
+  bottom: 0; /* Position the footer at the bottom of the page */
+  color: white; /* Set the text color */
+  text-align: center; /* Center the text */
+  padding: 10px 0; /* Add some padding */
 }
 
-.hms{
-    color: white;
+.hms {
+  color: white;
 }

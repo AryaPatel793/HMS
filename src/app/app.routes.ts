@@ -30,30 +30,29 @@ export const routes: Routes = [
     component: LoginComponent,
   },
   {
-    path:'setPassword',
-    component: SetPasswordComponent
-
+    path: 'setPassword',
+    component: SetPasswordComponent,
   },
   {
     path: 'verifyEmail',
-    component:VerifyEmailComponent
+    component: VerifyEmailComponent,
   },
   {
-    path:'verifyOtp',
-    component: VerfiyOtpComponent
+    path: 'verifyOtp',
+    component: VerfiyOtpComponent,
   },
   {
     path: 'userDashboard',
     component: LayoutPageComponent,
     children: [
       {
-        path:'',
-        component:ChartAnalysisComponent,
-        pathMatch: 'full'
+        path: '',
+        component: ChartAnalysisComponent,
+        pathMatch: 'full',
       },
       {
-        path:'home',
-        component:ChartAnalysisComponent
+        path: 'home',
+        component: ChartAnalysisComponent,
       },
       {
         path: 'hospital',
@@ -128,9 +127,9 @@ export const routes: Routes = [
         ],
       },
       {
-        path:'editUser',
-        component : EditUserComponent
-      }
+        path: 'editUser',
+        component: EditUserComponent,
+      },
     ],
   },
 ];

@@ -3,6 +3,8 @@ import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration } from 'chart.js';
 import { ChartAnalysisService } from '../Services/chart-analysis/chart-analysis.service';
 import { ChartOptions } from 'chart.js';
+import { Constant } from '../Services/constant/Constant';
+import { UserService } from '../Services/user/user.service';
 
 @Component({
   selector: 'app-chart-analysis',
@@ -18,18 +20,27 @@ export class ChartAnalysisComponent implements OnInit, OnDestroy {
   public pieChartLegend = true;
   public pieChartPlugins = [];
 
+  allowedRoles: string[] = [Constant.ADMIN, Constant.DOCTOR];
+  userRole = this.userService.getUserRole();
+
+  // To initialize service
   constructor(
     private chartAnalysisService: ChartAnalysisService,
-    private zone: NgZone
+    private zone: NgZone,
+    private userService: UserService
   ) {}
 
+  // Intializing component
   ngOnInit(): void {
-    this.zone.run(() => {
-      this.getHospitalPatient();
-      this.getHospitalDoctor();
-    });
+    if (this.allowedRoles.includes(this.userRole)) {
+      this.zone.run(() => {
+        this.getHospitalPatient();
+        this.getHospitalDoctor();
+      });
+    }
     console.log('Chart Analysis Onint');
   }
+  // Destroying the component
   ngOnDestroy(): void {
     console.log('Chart Analysis OnDestroy');
   }
@@ -75,37 +86,36 @@ export class ChartAnalysisComponent implements OnInit, OnDestroy {
     },
   };
 
-
-
-// Get hospital-patient data
-getHospitalPatient() {
-  this.chartAnalysisService.getHospitalPatient().subscribe((response: any) => {
-    if(response.code === 200){
-    let responseData = response.data;
-    this.barChartData = {
-      labels: Object.keys(responseData),
-      datasets: [{ data: Object.values(responseData), label: 'Patient' }],
-    };
+  // Get hospital-patient data
+  getHospitalPatient() {
+    this.chartAnalysisService
+      .getHospitalPatient()
+      .subscribe((response: any) => {
+        if (response.code === 200) {
+          let responseData = response.data;
+          this.barChartData = {
+            labels: Object.keys(responseData),
+            datasets: [{ data: Object.values(responseData), label: 'Patient' }],
+          };
+        }
+      });
   }
-  });
-}
 
-// Get hospital-doctor data
-getHospitalDoctor() {
-  this.chartAnalysisService.getHospitalDoctor().subscribe((response: any) => {
-    if(response.code === 200){
-    let responseData = response.data;
-    this.pieChartData = {
-      labels: Object.keys(responseData),
-      datasets: [
-        {
-          data: Object.values(responseData),
-          label: 'Doctor',
-        },
-      ],
-    };
-    }
-  });
-}
-
+  // Get hospital-doctor data
+  getHospitalDoctor() {
+    this.chartAnalysisService.getHospitalDoctor().subscribe((response: any) => {
+      if (response.code === 200) {
+        let responseData = response.data;
+        this.pieChartData = {
+          labels: Object.keys(responseData),
+          datasets: [
+            {
+              data: Object.values(responseData),
+              label: 'Doctor',
+            },
+          ],
+        };
+      }
+    });
+  }
 }

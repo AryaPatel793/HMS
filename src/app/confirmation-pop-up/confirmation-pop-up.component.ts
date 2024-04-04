@@ -2,7 +2,6 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import {
   MatDialogRef,
   MAT_DIALOG_DATA,
-  MatDialog,
   MatDialogActions,
   MatDialogClose,
   MatDialogContent,
@@ -25,7 +24,7 @@ export class ConfirmationPopUpComponent implements OnInit, OnDestroy {
   // Initializing component
   ngOnInit(): void {
     console.log('Popup Component Onint');
-    console.log(this.data); 
+    console.log(this.data);
   }
 
   // Destroying component

@@ -1,119 +1,139 @@
 <h2>Hospital Detail Form</h2>
 <div class="container">
-    <form [formGroup]="hospitalForm" (ngSubmit)="saveHospital()">
-        <div class="row">
-            <div class="col-4">
-                <label for="name">Name</label>
-                <input type="text" class="form-control" [ngClass]="{
+  <form [formGroup]="hospitalForm" (ngSubmit)="saveHospital()">
+    <div class="row">
+      <div class="col-4">
+        <label for="name">Name</label>
+        <input
+          type="text"
+          class="form-control"
+          [ngClass]="{
                   'is-valid': isFieldValid('name'),
                   'is-invalid': isFieldInvalid('name'),
-                }" formControlName="name">
-                @if (isRequiredInvalid('name')) {
-                <p class="field-validation-error">Hospital name is required
-                    !</p>
-                }
-                @if (isPatternInvalid('name')) {
-                <p class="field-validation-error">It should contain only letters and white space
-                </p>
-                }
-                @if (isLengthInvalid('name')) {
-                <p class="field-validation-error">Name should be of 2-20 characters
-                    !</p>
-                }
-
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-4">
-                <label for="address">Address</label>
-                <textarea class="form-control" [class.is-valid]="isFieldValid('address')"
-                    [class.is-invalid]="isFieldInvalid('address')" formControlName="address"></textarea>
-                @if (isRequiredInvalid('address')) {
-                <p class="field-validation-error">Address is required
-                    !</p>
-                }
-                @if(isPatternInvalid('address'))
-                {
-                <p class="field-validation-error">Enter proper address</p>
-                }
-                @if (isLengthInvalid('address')) {
-                <p class="field-validation-error">Address should be of 10-150 characters
-                    !</p>
-                }
-            </div>
-            <div class="col-4">
-                <label for="state">State</label>
-                <select class="form-control form-select" formControlName="state" (change)="onStateChange($event)"
-                    [class.is-valid]="isFieldValid('state')" [class.is-invalid]="isFieldInvalid('state')">
-                    <option value="" disabled>Select a State</option>
-                    <option *ngFor="let state of states" [value]="state">{{state}}</option>
-                </select>
-                @if (isRequiredInvalid('state')) {
-                <p class="field-validation-error">State is required!</p>
-                }
-            </div>
-            <div class="col-4">
-                <label for="city">City</label>
-                <select class="form-control form-select" formControlName="city" [class.is-valid]="isFieldValid('city')"
-                    [class.is-invalid]="isFieldInvalid('city')">
-                    <option value="" disabled>Select a City</option>
-                    <option *ngFor="let city of cities" [value]="city">{{city}}</option>
-                </select>
-                @if (isRequiredInvalid('city')) {
-                <p class="field-validation-error">City is required
-                    !</p>
-                }
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-4">
-                <label for="zipcode">ZipCode</label>
-                <input type="text" class="form-control" [class.is-valid]="isFieldValid('zipcode')"
-                    [class.is-invalid]="isFieldInvalid('zipcode')" formControlName="zipcode">
-                @if (isRequiredInvalid('zipcode')) {
-                <p class="field-validation-error">Zipcode is required
-                    !</p>
-                }
-                @if (isPatternInvalid('zipcode')) {
-                <p class="field-validation-error">It should contain only digits
-                </p>
-                }
-                @if (isLengthInvalid('zipcode')) {
-                <p class="field-validation-error">it should be only 6 digits
-                    !</p>
-                }
-            </div>
-            <div class="col-4">
-                <label for="hospital_type">Hospital Type</label>
-                <select class="form-control form-select" [class.is-valid]="isFieldValid('hospital_type')"
-                    [class.is-invalid]="isFieldInvalid('hospital_type')" formControlName="hospital_type">
-                    <option value="" disabled>Select a hospital type</option>
-                    <option value="GENERAL">GENERAL</option>
-                    <option value="PRIVATE">PRIVATE</option>
-                </select>
-                @if (isRequiredInvalid('hospital_type')) {
-                <p class="field-validation-error">Hospital type is required
-                    !</p>
-                }
-            </div>
-            <div class="col-4">
-                <label for="is_active">Active Status</label>
-                <select class="form-control form-select" formControlName="is_active"
-                    [class.is-valid]="isFieldValid('is_active')" [class.is-invalid]="isFieldInvalid('is_active')">
-                    <option value="true">Active</option>
-                    <option value="false">Not Active</option>
-                </select>
-                @if (isRequiredInvalid('is_active')) {
-                <p class="field-validation-error">Active status is required
-                    !</p>
-                }
-            </div>
-        </div>
-        <br>
-        <div class="row">
-            <div class="col-6">
-                <button type="submit" class="btn btn-success"> Save Hospital</button>
-            </div>
-        </div>
-    </form>
+                }"
+          formControlName="name"
+        />
+        @if (isRequiredInvalid('name')) {
+        <p class="field-validation-error">Hospital name is required !</p>
+        } @if (isPatternInvalid('name')) {
+        <p class="field-validation-error">
+          It should contain only letters and white space
+        </p>
+        } @if (isLengthInvalid('name')) {
+        <p class="field-validation-error">
+          Name should be of 2-20 characters !
+        </p>
+        }
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-4">
+        <label for="address">Address</label>
+        <textarea
+          class="form-control"
+          [class.is-valid]="isFieldValid('address')"
+          [class.is-invalid]="isFieldInvalid('address')"
+          formControlName="address"
+        ></textarea>
+        @if (isRequiredInvalid('address')) {
+        <p class="field-validation-error">Address is required !</p>
+        } @if(isPatternInvalid('address')) {
+        <p class="field-validation-error">Enter proper address</p>
+        } @if (isLengthInvalid('address')) {
+        <p class="field-validation-error">
+          Address should be of 10-150 characters !
+        </p>
+        }
+      </div>
+      <div class="col-4">
+        <label for="state">State</label>
+        <select
+          class="form-control form-select"
+          formControlName="state"
+          (change)="onStateChange($event)"
+          [class.is-valid]="isFieldValid('state')"
+          [class.is-invalid]="isFieldInvalid('state')"
+        >
+          <option value="" disabled>Select a State</option>
+          <option *ngFor="let state of states" [value]="state">
+            {{ state }}
+          </option>
+        </select>
+        @if (isRequiredInvalid('state')) {
+        <p class="field-validation-error">State is required!</p>
+        }
+      </div>
+      <div class="col-4">
+        <label for="city">City</label>
+        <select
+          class="form-control form-select"
+          formControlName="city"
+          [class.is-valid]="isFieldValid('city')"
+          [class.is-invalid]="isFieldInvalid('city')"
+        >
+          <option value="" disabled>Select a City</option>
+          <option *ngFor="let city of cities" [value]="city">{{ city }}</option>
+        </select>
+        @if (isRequiredInvalid('city')) {
+        <p class="field-validation-error">City is required !</p>
+        }
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-4">
+        <label for="zipcode">ZipCode</label>
+        <input
+          type="text"
+          class="form-control"
+          [class.is-valid]="isFieldValid('zipcode')"
+          [class.is-invalid]="isFieldInvalid('zipcode')"
+          formControlName="zipcode"
+        />
+        @if (isRequiredInvalid('zipcode')) {
+        <p class="field-validation-error">Zipcode is required !</p>
+        } @if (isPatternInvalid('zipcode')) {
+        <p class="field-validation-error">It should contain only digits</p>
+        } @if (isLengthInvalid('zipcode')) {
+        <p class="field-validation-error">it should be only 6 digits !</p>
+        }
+      </div>
+      <div class="col-4">
+        <label for="hospital_type">Hospital Type</label>
+        <select
+          class="form-control form-select"
+          [class.is-valid]="isFieldValid('hospital_type')"
+          [class.is-invalid]="isFieldInvalid('hospital_type')"
+          formControlName="hospital_type"
+        >
+          <option value="" disabled>Select a hospital type</option>
+          <option value="GENERAL">GENERAL</option>
+          <option value="PRIVATE">PRIVATE</option>
+        </select>
+        @if (isRequiredInvalid('hospital_type')) {
+        <p class="field-validation-error">Hospital type is required !</p>
+        }
+      </div>
+      <div class="col-4">
+        <label for="is_active">Active Status</label>
+        <select
+          class="form-control form-select"
+          formControlName="is_active"
+          [class.is-valid]="isFieldValid('is_active')"
+          [class.is-invalid]="isFieldInvalid('is_active')"
+        >
+          <option value="true">Active</option>
+          <option value="false">Not Active</option>
+        </select>
+        @if (isRequiredInvalid('is_active')) {
+        <p class="field-validation-error">Active status is required !</p>
+        }
+      </div>
+    </div>
+    <br />
+    <div class="row">
+      <div class="col-6">
+        <button type="submit" class="btn btn-success">Save Hospital</button>
+      </div>
+    </div>
+  </form>
 </div>

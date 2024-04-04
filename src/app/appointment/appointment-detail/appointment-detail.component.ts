@@ -10,12 +10,12 @@ import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { AgGridModule } from 'ag-grid-angular';
 import { NgZone } from '@angular/core';
-import { AppointmentService } from '../../Services/Appointment/appointment.service';
+import { AppointmentService } from '../../Services/appointment/appointment.service';
 import { NotificationService } from '../../Services/notification/notification.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationPopUpComponent } from '../../confirmation-pop-up/confirmation-pop-up.component';
 import { Constant } from '../../Services/constant/Constant';
-import { UserService } from '../../Services/User/user.service';
+import { UserService } from '../../Services/user/user.service';
 
 @Component({
   selector: 'app-appointment-detail',
@@ -58,7 +58,7 @@ export class AppointmentDetailComponent implements OnInit, OnDestroy {
         const approveButton = document.createElement('button');
         approveButton.className = 'btn btn-success';
         approveButton.innerText = 'Approve';
-        approveButton.style.marginRight = '5px'; 
+        approveButton.style.marginRight = '5px';
         approveButton.addEventListener('click', () => {
           console.log(params.data);
           this.approveAppointment(params.data.appointment_id);
@@ -108,14 +108,6 @@ export class AppointmentDetailComponent implements OnInit, OnDestroy {
       minWidth: 200,
       cellRenderer: this.statusCellRenderer,
     },
-    // {   Code required for deletion
-    //   headerName: 'Actions',
-    //   cellRenderer: 'editButtonRenderer',
-    //   width: 100,
-    //   cellRendererParams: {
-    //     onClick: this.onEditButtonClick.bind(this),
-    //   },
-    // },
   ];
 
   //Constructor to initialize services
@@ -156,11 +148,11 @@ export class AppointmentDetailComponent implements OnInit, OnDestroy {
 
   // Get all apointment
   getAllAppointment() {
-    this.appointmentService
-      .getAllAppointment()
-      .subscribe((response: any) => {
+    this.appointmentService.getAllAppointment().subscribe((response: any) => {
+      if (response.code === 200) {
         this.appointmentList = response.data;
-      });
+      }
+    });
   }
 
   // AG grid ready event
@@ -171,9 +163,12 @@ export class AppointmentDetailComponent implements OnInit, OnDestroy {
   // Checking if the user's role is allowed
   isAllowedRole(): boolean {
     const userRole = this.userService.getUserRole();
-    return userRole !== null && userRole !== undefined && this.allowedRoles.includes(userRole);
+    return (
+      userRole !== null &&
+      userRole !== undefined &&
+      this.allowedRoles.includes(userRole)
+    );
   }
-  
 
   // Approving the appointment
   onApproveClick() {
@@ -187,6 +182,12 @@ export class AppointmentDetailComponent implements OnInit, OnDestroy {
         this.zone.run(() => {
           if (response.code === 200) {
             this.getAllAppointment();
+          } else if (
+            response.code === 504 ||
+            response.code === 104 ||
+            response.code === 404
+          ) {
+            this.notificationService.errorNotification(response.message);
           }
         });
       });

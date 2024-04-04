@@ -14,14 +14,11 @@ export class Patient {
   email: string;
   doctor_email: string | null;
   selected_hospital: any[];
-  documents : any[];
-
-
-
+  documents: any[];
 
   constructor(data: any) {
     const [patientInfo, addressInfo, userInfo] = data.formArray;
-  
+
     this.patient_id = patientInfo.patient_id;
     this.patient_custom_id = patientInfo.patient_custom_id;
     this.name = patientInfo.name;
@@ -29,18 +26,17 @@ export class Patient {
     this.blood_group = patientInfo.blood_group;
     this.phone_number = patientInfo.phone_number;
     this.is_active = patientInfo.is_active;
-  
+
     this.address = addressInfo.address;
     this.city = addressInfo.city;
     this.state = addressInfo.state;
     this.zipcode = addressInfo.zipcode;
-  
+
     this.user_name = userInfo.user_name;
     this.email = userInfo.email;
-  
+
     this.doctor_email = '';
     this.selected_hospital = [];
-    this.documents = patientInfo.documents
+    this.documents = patientInfo.documents;
   }
-  
 }

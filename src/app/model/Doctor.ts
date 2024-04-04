@@ -19,7 +19,6 @@ export class Doctor {
     this.doctor_name = doctorInfo.doctor_name;
     this.phone_number = doctorInfo.phone_number;
     this.is_active = doctorInfo.is_active;
-
     this.address = addressInfo.address;
     this.city = addressInfo.city;
     this.state = addressInfo.state;

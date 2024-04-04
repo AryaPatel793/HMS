@@ -3,23 +3,28 @@ import { HttpClientModule } from '@angular/common/http';
 import { Router, RouterModule, RouterOutlet } from '@angular/router';
 import {
   FormGroup,
-  FormControl,
   Validators,
   FormBuilder,
 } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import { LoginService } from '../Services/Login/login.service';
+import { LoginService } from '../Services/login/login.service';
 import { NgIf } from '@angular/common';
 import { NotificationService } from '../Services/notification/notification.service';
 import { Login } from '../model/Login';
 import { isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID, Inject } from '@angular/core';
-import { ValidationService } from '../Services/Validation/validation.service';
+import { ValidationService } from '../Services/validation/validation.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  imports: [HttpClientModule, ReactiveFormsModule, NgIf,RouterOutlet, RouterModule,],
+  imports: [
+    HttpClientModule,
+    ReactiveFormsModule,
+    NgIf,
+    RouterOutlet,
+    RouterModule,
+  ],
   standalone: true,
   styleUrls: ['./login.component.css'],
 })
@@ -35,8 +40,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     @Inject(PLATFORM_ID) private platformId: any,
     private notificationService: NotificationService,
     private validateService: ValidationService
-  ) {
-  }
+  ) {}
 
   // Initializing component
   ngOnInit() {
@@ -54,10 +58,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   // Initializing login form using FormBuilder
   initializeForm() {
     this.loginForm = this.formBuilder.group({
-      email: [
-        '',
-        this.validateService.getEmailValidators(),
-      ],
+      email: ['', this.validateService.getEmailValidators()],
       password: [
         '',
         [
@@ -81,7 +82,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         sessionStorage.setItem('userEmail', response.data.email);
         this.notificationService.successNotification('Login Successfull');
         this.router.navigate(['/userDashboard']);
-      } else if (response.code === 404) {
+      } else if (response.code === 104 || response.code === 404) {
         this.notificationService.errorNotification(response.message);
       }
     });
@@ -111,10 +112,10 @@ export class LoginComponent implements OnInit, OnDestroy {
   // Check if field has length error
   isLengthInvalid(field: string) {
     const fieldControl = this.loginForm.get(field);
-    return ((
-      fieldControl?.hasError('minlength') ||
-      fieldControl?.hasError('maxlength') ||
-      fieldControl?.hasError('max')) &&
+    return (
+      (fieldControl?.hasError('minlength') ||
+        fieldControl?.hasError('maxlength') ||
+        fieldControl?.hasError('max')) &&
       !fieldControl?.errors?.['pattern']
     );
   }

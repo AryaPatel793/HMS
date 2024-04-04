@@ -5,14 +5,14 @@ import { NgIf, isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID, Inject } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { HospitalService } from '../../Services/Hospital/hospital.service';
+import { HospitalService } from '../../Services/hospital/hospital.service';
 import { GridOptions } from 'ag-grid-community';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { AgGridModule } from 'ag-grid-angular';
 import { NgZone } from '@angular/core';
 import { Constant } from '../../Services/constant/Constant';
-import { UserService } from '../../Services/User/user.service';
+import { UserService } from '../../Services/user/user.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AddressPopUpComponent } from '../../address-pop-up/address-pop-up.component';
 
@@ -84,14 +84,6 @@ export class HospitalDetailComponent implements OnInit, OnDestroy {
       headerName: 'Status',
       cellRenderer: this.activeCellRenderer,
     },
-    // {
-    //   headerName: 'Actions',
-    //   cellRenderer: 'editButtonRenderer',
-    //   width: 100,
-    //   cellRendererParams: {
-    //     onClick: this.onEditButtonClick.bind(this),
-    //   },
-    // },
   ];
 
   // Initialize required services
@@ -133,11 +125,11 @@ export class HospitalDetailComponent implements OnInit, OnDestroy {
   // Get all hospital
   getAllHospital() {
     console.log(this.userService.getUserEmail());
-    this.hospitalService
-      .getHospital()
-      .subscribe((response: any) => {
+    this.hospitalService.getHospital().subscribe((response: any) => {
+      if (response.code === 200) {
         this.hospitalList = response.data;
-      });
+      }
+    });
   }
 
   // Gridd ready event
@@ -164,28 +156,3 @@ export class HospitalDetailComponent implements OnInit, OnDestroy {
     });
   }
 }
-
-// Required for deletion
-// onEditButtonClick(rowData: any) {
-//   // Get the selected hospital ID and navigate to the hospital form
-//   const hospitalId = rowData.id;
-//   this.router.navigate(['../addHospital', hospitalId], { relativeTo: this.route });
-// }
-
-// frameworkComponents: any = {
-//   editButtonRenderer: this.editButtonRenderer,
-// };
-
-// editButtonRenderer(params: any) {
-//   const button = document.createElement('button');
-//   button.innerHTML = 'Edit';
-//   button.className = 'btn btn-info';
-//   button.addEventListener('click', () => {
-//     params.onClick(params.data);
-//   });
-//   return button;
-// }
-
-// [components]="frameworkComponents" in html file
-
-// changes

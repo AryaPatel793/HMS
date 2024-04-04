@@ -1,10 +1,14 @@
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { NotificationService } from '../Services/notification/notification.service';
-import { ValidationService } from '../Services/Validation/validation.service';
+import { ValidationService } from '../Services/validation/validation.service';
 import { User } from '../model/user';
 import { EditUserService } from '../Services/edit-user/edit-user.service';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -17,7 +21,7 @@ import {
   ShowOnDirtyErrorStateMatcher,
 } from '@angular/material/core';
 import { Password } from '../model/Password';
-import { UserService } from '../Services/User/user.service';
+import { UserService } from '../Services/user/user.service';
 
 @Component({
   selector: 'app-update-user',
@@ -41,11 +45,11 @@ import { UserService } from '../Services/User/user.service';
 export class EditUserComponent implements OnInit, OnDestroy {
   // Required Attributes
   userForm!: FormGroup;
-
   passwordFrom!: FormGroup;
   hideCurrent = true;
   hideNew = true;
   hideConfirm = true;
+
   // Initialize required services
   constructor(
     private formBuilder: FormBuilder,
@@ -55,8 +59,7 @@ export class EditUserComponent implements OnInit, OnDestroy {
     private updateUserService: EditUserService,
     private zone: NgZone,
     private route: ActivatedRoute,
-    private userService : UserService
-
+    private userService: UserService
   ) {
     console.log('Update User Component constructor');
     this.getUserDetails();
@@ -91,16 +94,17 @@ export class EditUserComponent implements OnInit, OnDestroy {
         password: [null, this.validateService.getPasswordValidators()],
         confirm_password: [null, this.validateService.getPasswordValidators()],
       },
-      { validator: this.combinedValidator.bind(this) },
+      { validator: this.combinedValidator.bind(this) }
     );
   }
 
+  // Validator combination method
   private combinedValidator(formGroup: FormGroup) {
     this.newPasswordMatchValidator(formGroup);
     this.currentPasswordMatchValidator(formGroup);
   }
-  
 
+  //new and confirm password match validation
   newPasswordMatchValidator(formGroup: FormGroup) {
     const password = formGroup.get('password')?.value;
     const confirmPassword = formGroup.get('confirm_password')?.value;
@@ -109,6 +113,7 @@ export class EditUserComponent implements OnInit, OnDestroy {
     }
   }
 
+  //old and new password match
   currentPasswordMatchValidator(formGroup: FormGroup) {
     const currentPassword = formGroup.get('current_password')?.value;
     const newPassword = formGroup.get('password')?.value;
@@ -133,7 +138,7 @@ export class EditUserComponent implements OnInit, OnDestroy {
         sessionStorage.setItem('username', userData.user_name);
         sessionStorage.setItem('userEmail', userData.email);
         this.router.navigate(['/userDashboard/hospital']);
-      } else if (response.code === 404) {
+      } else if (response.code === 104 || response.code === 404) {
         this.notificationService.errorNotification(response.message);
       }
     });
@@ -142,12 +147,16 @@ export class EditUserComponent implements OnInit, OnDestroy {
   // Get user
   getUserDetails() {
     this.updateUserService.getUser().subscribe((response: any) => {
-      const user = response.data;
-      this.userForm.patchValue({
-        user_id: user.user_id,
-        user_name: user.user_name,
-        email: user.email,
-      });
+      if (response.code === 200) {
+        const user = response.data;
+        this.userForm.patchValue({
+          user_id: user.user_id,
+          user_name: user.user_name,
+          email: user.email,
+        });
+      } else if (response.code === 104) {
+        this.notificationService.errorNotification(response.message);
+      }
     });
   }
 
@@ -155,6 +164,7 @@ export class EditUserComponent implements OnInit, OnDestroy {
   updatePassword() {
     if (this.passwordFrom.invalid) {
       this.passwordFrom.markAllAsTouched();
+      this.passwordFrom.reset();
       this.notificationService.errorNotification(
         'Please fill in all required fields correctly.'
       );
@@ -170,12 +180,12 @@ export class EditUserComponent implements OnInit, OnDestroy {
           );
           this.passwordFrom.reset();
           this.zone.run(() => {
-          this.userService.logoutUser()
-          this.router.navigate(['/login'], {
-            relativeTo: this.route,
+            this.userService.logoutUser();
+            this.router.navigate(['/login'], {
+              relativeTo: this.route,
+            });
           });
-        });
-        } else if (response.code === 404) {
+        } else if (response.code === 104 || response.code === 404) {
           this.notificationService.errorNotification(response.message);
         }
       });

@@ -1,14 +1,15 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { NotificationService } from '../Services/notification/notification.service';
 import { isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID, Inject } from '@angular/core';
 import { Password } from '../model/Password';
-import { ResetPasswordService } from '../Services/ResetPassword/reset-password.service';
+import { ResetPasswordService } from '../Services/reset-password/reset-password.service';
+import { ValidationService } from '../Services/validation/validation.service';
 @Component({
   selector: 'app-set-password',
   standalone: true,
@@ -26,9 +27,9 @@ export class SetPasswordComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     @Inject(PLATFORM_ID) private platformId: any,
     private notificationService: NotificationService,
-    private route: ActivatedRoute,
-    private resetPasswordService : ResetPasswordService,
+    private resetPasswordService: ResetPasswordService,
     private zone: NgZone,
+    private validationService: ValidationService
   ) {}
 
   // Initializing component
@@ -46,59 +47,33 @@ export class SetPasswordComponent implements OnInit, OnDestroy {
 
   // Initializing Password form using FormBuilder
   initializeForm() {
-   this.setPasswordForm = this.formBuilder.group(
+    this.setPasswordForm = this.formBuilder.group(
       {
-        password: [
-          '',
-          [
-            Validators.required,
-            Validators.pattern(
-              /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/
-            ),
-            Validators.maxLength(8),
-            Validators.minLength(8),
-          ],
-        ],
-        confirm_password: [
-          '',
-          [
-            Validators.required,
-            Validators.pattern(
-              /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/
-            ),
-            Validators.maxLength(8),
-            Validators.minLength(8),
-          ],
-        ],
+        password: ['', this.validationService.getPasswordValidators()],
+        confirm_password: ['', this.validationService.getPasswordValidators()],
       },
       { validator: this.passwordMatchValidator }
     );
   }
 
-  passwordMatchValidator(formGroup: FormGroup) {
-    const password = formGroup.get('password')?.value;
-    const confirmPassword = formGroup.get('confirm_password')?.value;
-    if (password !== confirmPassword) {
-      formGroup.get('confirm_password')?.setErrors({ mismatch: true });
-    }
-  }
-
   // Checking valid credentials
   onSubmitPassword() {
     let password = new Password(this.setPasswordForm.value);
-    
-    this.resetPasswordService.setPassword(password).subscribe((response: any) => {
-      if (response.code === 201) {
-        this.notificationService.successNotification(
-          "Password set successfully"
-        );
-        this.zone.run(() => {
-        this.router.navigate(['/login']);
+
+    this.resetPasswordService
+      .setPassword(password)
+      .subscribe((response: any) => {
+        if (response.code === 201) {
+          this.notificationService.successNotification(
+            'Password set successfully'
+          );
+          this.zone.run(() => {
+            this.router.navigate(['/login']);
+          });
+        } else if (response.code === 104 || response.code === 404) {
+          this.notificationService.errorNotification(response.message);
+        }
       });
-      } else if (response.code === 404) {
-        this.notificationService.errorNotification(response.message);
-      }
-    });
   }
 
   // Valid field validation
@@ -134,7 +109,20 @@ export class SetPasswordComponent implements OnInit, OnDestroy {
     );
   }
 
+  // password match validator
+  passwordMatchValidator(formGroup: FormGroup) {
+    const password = formGroup.get('password')?.value;
+    const confirmPassword = formGroup.get('confirm_password')?.value;
+    if (password !== confirmPassword) {
+      formGroup.get('confirm_password')?.setErrors({ mismatch: true });
+    }
+  }
+
+  // password mismatch validation
   isMismatchInvalid(field: string) {
-    return this.setPasswordForm.get(field)?.errors?.['mismatch'] && this.setPasswordForm.get(field)?.touched ;
+    return (
+      this.setPasswordForm.get(field)?.errors?.['mismatch'] &&
+      this.setPasswordForm.get(field)?.touched
+    );
   }
 }

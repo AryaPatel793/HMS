@@ -1,13 +1,13 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-import {  Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { NotificationService } from '../Services/notification/notification.service';
 import { isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID, Inject } from '@angular/core';
-import { ResetPasswordService } from '../Services/ResetPassword/reset-password.service';
+import { ResetPasswordService } from '../Services/reset-password/reset-password.service';
 
 @Component({
   selector: 'app-verfiy-otp',
@@ -17,7 +17,6 @@ import { ResetPasswordService } from '../Services/ResetPassword/reset-password.s
   styleUrl: './verfiy-otp.component.css',
 })
 export class VerfiyOtpComponent implements OnInit, OnDestroy {
-
   //Required attributes
   verifyOtpForm!: FormGroup;
 
@@ -28,8 +27,7 @@ export class VerfiyOtpComponent implements OnInit, OnDestroy {
     @Inject(PLATFORM_ID) private platformId: any,
     private notificationService: NotificationService,
     private resetPasswordService: ResetPasswordService,
-    private zone: NgZone,
-
+    private zone: NgZone
   ) {}
 
   // Initializing component
@@ -72,12 +70,16 @@ export class VerfiyOtpComponent implements OnInit, OnDestroy {
 
     const otp = this.verifyOtpForm.value;
     this.resetPasswordService.verifyOTP(otp).subscribe((response: any) => {
-      if (response.code === 301) {
-        this.notificationService.successNotification("Valid OTP");
+      if (response.code === 202) {
+        this.notificationService.successNotification('Valid OTP');
         this.zone.run(() => {
-        this.router.navigate(['/setPassword']);
-      });
-      } else if (response.code === 404) {
+          this.router.navigate(['/setPassword']);
+        });
+      } else if (
+        response.code === 104 ||
+        response.code === 904 ||
+        response.code === 404
+      ) {
         this.notificationService.errorNotification(response.message);
       }
     });
@@ -85,15 +87,14 @@ export class VerfiyOtpComponent implements OnInit, OnDestroy {
 
   //Resending the OTP
   onResendOtpClick() {
-    this.resetPasswordService.resendOtp().subscribe((response:any)=>{
-      if(response.code === 200)
-      {
-        this.notificationService.successNotification("New OTP sent");
-      }else if (response.code === 404) {
+    this.resetPasswordService.resendOtp().subscribe((response: any) => {
+      if (response.code === 200) {
+        this.notificationService.successNotification('New OTP sent');
+      } else if (response.code === 404) {
         this.notificationService.errorNotification(response.message);
       }
-    })
-    }
+    });
+  }
 
   // Valid field validation
   isFieldValid(field: string) {

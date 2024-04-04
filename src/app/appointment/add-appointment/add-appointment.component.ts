@@ -16,8 +16,8 @@ import { Constant } from '../../Services/constant/Constant';
 import { NgZone } from '@angular/core';
 import { PLATFORM_ID, Inject } from '@angular/core';
 import { Appointment } from '../../model/Appointment';
-import { AppointmentService } from '../../Services/Appointment/appointment.service';
-import { UserService } from '../../Services/User/user.service';
+import { AppointmentService } from '../../Services/appointment/appointment.service';
+import { UserService } from '../../Services/user/user.service';
 @Component({
   selector: 'app-add-appointment',
   standalone: true,
@@ -108,7 +108,7 @@ export class AddAppointmentComponent {
           this.notificationService.successNotification('Appointment created');
           this.router.navigate(['/userDashboard/appointment']);
           this.initializeForm();
-        } else if (response.code === 404) {
+        } else if (response.code === 404 || response.code === 504 || response.code === 104) {
           this.notificationService.errorNotification(response.message);
         }
       });
@@ -119,41 +119,44 @@ export class AddAppointmentComponent {
     this.appointmentService
       .getAppointmentById(id)
       .subscribe((response: any) => {
-        const appointment = response.data;
-        this.appointmentForm.patchValue({
-          appointment_id: appointment.appointment_id,
-          appointment_custom_id: appointment.appointment_custom_id,
-          appointment_title: appointment.appointment_title,
-          appointment_detail: appointment.appointment_detail,
-          appointment_date: appointment.appointment_date,
-          appointment_time: appointment.appointment_time,
-        });
+        if (response.code === 200) {
+          const appointment = response.data;
+          this.appointmentForm.patchValue({
+            appointment_id: appointment.appointment_id,
+            appointment_custom_id: appointment.appointment_custom_id,
+            appointment_title: appointment.appointment_title,
+            appointment_detail: appointment.appointment_detail,
+            appointment_date: appointment.appointment_date,
+            appointment_time: appointment.appointment_time,
+          });
+        } else if (response.code === 404 || response.code === 504 || response.code === 104) {
+          this.notificationService.errorNotification(response.message);
+        }
       });
   }
 
- 
+  // Validation of date
   validateDate(control: FormControl): { [key: string]: any } | null {
     if (!control.value) {
       return null;
     }
-  
+
     const selectedDate = new Date(control.value);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-  
+
     // Check if selected date is in the past
     if (selectedDate < today) {
       return { pastDate: true };
     }
-  
+
     // Check if selected date is Sunday
     if (selectedDate.getDay() === 0) {
       return { sundayDate: true };
     }
-  
+
     return null;
   }
-  
 
   // Invalid field validation
   isFieldInvalid(field: string) {
@@ -169,14 +172,12 @@ export class AddAppointmentComponent {
     return this.appointmentForm.get(field)?.valid;
   }
 
- 
   // Check if field has date error
-isDateInvalid(field: string) {
-  const fieldErrors = this.appointmentForm.get(field)?.errors;
-  console.log(fieldErrors);
-  return fieldErrors?.['pastDate'] || fieldErrors?.['sundayDate'];
-}
-
+  isDateInvalid(field: string) {
+    const fieldErrors = this.appointmentForm.get(field)?.errors;
+    console.log(fieldErrors);
+    return fieldErrors?.['pastDate'] || fieldErrors?.['sundayDate'];
+  }
 
   // Check if field has required error
   isRequiredInvalid(field: string) {

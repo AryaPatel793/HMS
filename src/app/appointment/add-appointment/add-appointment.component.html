@@ -5,26 +5,23 @@
             <div class="col-4">
                 <label for="Title">Appointment Title</label>
                 <input type="text" class="form-control" [class.is-valid]="isFieldValid('appointment_title')"
-                    [class.is-invalid]="isFieldInvalid('appointment_title')" formControlName="appointment_title">
+                    [class.is-invalid]="isFieldInvalid('appointment_title')" formControlName="appointment_title" />
                 @if (isRequiredInvalid('appointment_title')) {
-                <p class="field-validation-error">Appointment title is required
-                    !</p>
-                }
-
-                @if (isLengthInvalid('appointment_title')) {
-                <p class="field-validation-error"> Title should be of 5-30 characters</p>
+                <p class="field-validation-error">Appointment title is required !</p>
+                } @if (isLengthInvalid('appointment_title')) {
+                <p class="field-validation-error">Title should be of 5-30 characters</p>
                 }
             </div>
             <div class="col-4">
                 <label for="Date"> Appointment Date</label>
                 <input type="date" class="form-control" [class.is-valid]="isFieldValid('appointment_date')"
-                    [class.is-invalid]="isFieldInvalid('appointment_date')" formControlName="appointment_date">
+                    [class.is-invalid]="isFieldInvalid('appointment_date')" formControlName="appointment_date" />
                 @if (isRequiredInvalid('appointment_date')) {
-                <p class="field-validation-error">Appointment date is required
-                    !</p>
-                }
-                @if (isDateInvalid('appointment_date')) {
-                <p class="field-validation-error">Sunday and past date are not allowed</p>
+                <p class="field-validation-error">Appointment date is required !</p>
+                } @if (isDateInvalid('appointment_date')) {
+                <p class="field-validation-error">
+                    Sunday and past date are not allowed
+                </p>
                 }
             </div>
             <div class="col-4">
@@ -33,11 +30,12 @@
                     [class.is-valid]="isFieldValid('appointment_time')"
                     [class.is-invalid]="isFieldInvalid('appointment_time')">
                     <option value="" disabled>--Select a Time --</option>
-                    <option *ngFor="let time of timeSlot" [value]="time">{{time}}</option>
+                    <option *ngFor="let time of timeSlot" [value]="time">
+                        {{ time }}
+                    </option>
                 </select>
                 @if (isRequiredInvalid('appointment_time')) {
-                <p class="field-validation-error">Appointment time is required
-                    !</p>
+                <p class="field-validation-error">Appointment time is required !</p>
                 }
             </div>
         </div>
@@ -48,19 +46,18 @@
                     [class.is-invalid]="isFieldInvalid('appointment_detail')"
                     formControlName="appointment_detail"></textarea>
                 @if (isRequiredInvalid('appointment_detail')) {
-                <p class="field-validation-error">Appointment detail is required
-                    !</p>
-                }
-
-                @if (isLengthInvalid('appointment_detail')) {
-                <p class="field-validation-error"> Details should be of 10-150 characters</p>
+                <p class="field-validation-error">Appointment detail is required !</p>
+                } @if (isLengthInvalid('appointment_detail')) {
+                <p class="field-validation-error">
+                    Details should be of 10-150 characters
+                </p>
                 }
             </div>
         </div>
-        <br>
+        <br />
         <div class="row">
             <div class="col-6">
-                <button type="submit" class="btn btn-success"> Book Appointment</button>
+                <button type="submit" class="btn btn-success">Book Appointment</button>
             </div>
         </div>
     </form>

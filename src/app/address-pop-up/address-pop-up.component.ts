@@ -2,7 +2,6 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import {
   MatDialogRef,
   MAT_DIALOG_DATA,
-  MatDialog,
   MatDialogActions,
   MatDialogClose,
   MatDialogContent,
@@ -13,12 +12,11 @@ import {
   standalone: true,
   imports: [MatDialogActions, MatDialogClose, MatDialogTitle, MatDialogContent],
   templateUrl: './address-pop-up.component.html',
-  styleUrl: './address-pop-up.component.css'
+  styleUrl: './address-pop-up.component.css',
 })
-export class AddressPopUpComponent {
-
-   // Initialize services
-   constructor(
+export class AddressPopUpComponent implements OnInit,OnDestroy{
+  // Initialize services
+  constructor(
     public dialogRef: MatDialogRef<AddressPopUpComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
@@ -35,7 +33,6 @@ export class AddressPopUpComponent {
 
   // Closing the dialog box
   onClose(): void {
-    this.dialogRef.close(false); 
+    this.dialogRef.close(false);
   }
-
 }

@@ -8,18 +8,35 @@
         </div>
       </div>
       <form [formGroup]="verifyOtpForm" class="verify-otp-form">
-        <input type="text" class="form-control" [class.is-valid]="!isFieldValid('otp')"
-          [class.is-invalid]="isFieldValid('otp')" formControlName="otp" placeholder="Enter Otp">
+        <input
+          type="text"
+          class="form-control"
+          [class.is-valid]="!isFieldValid('otp')"
+          [class.is-invalid]="isFieldValid('otp')"
+          formControlName="otp"
+          placeholder="Enter Otp"
+        />
         @if (isRequiredInvalid('otp')) {
-        <p class="field-validation-error">OTP is required
-          !</p>
+        <p class="field-validation-error">OTP is required !</p>
         }
-        <p class="field-validation-error" *ngIf="isPatternInvalid('otp')">Enter only digits</p>
-        <p class="field-validation-error" *ngIf="isLengthInvalid('otp')">OTP should be of only 6 digits</p>
-        <button type="button" (click)="onSubmitOtp()" class="btn">Verify OTP</button>
+        <p class="field-validation-error" *ngIf="isPatternInvalid('otp')">
+          Enter only digits
+        </p>
+        <p class="field-validation-error" *ngIf="isLengthInvalid('otp')">
+          OTP should be of only 6 digits
+        </p>
+        <button type="button" (click)="onSubmitOtp()" class="btn">
+          Verify OTP
+        </button>
       </form>
-      <br>
-         <button type="button" (click)="onResendOtpClick()" class="btn btn-success resend-btn">Resend OTP</button>
+      <br />
+      <button
+        type="button"
+        (click)="onResendOtpClick()"
+        class="btn btn-success resend-btn"
+      >
+        Resend OTP
+      </button>
     </div>
   </div>
 </body>

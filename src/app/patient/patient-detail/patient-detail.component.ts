@@ -10,9 +10,9 @@ import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { AgGridModule } from 'ag-grid-angular';
 import { NgZone } from '@angular/core';
-import { PatientService } from '../../Services/Patient/patient.service';
+import { PatientService } from '../../Services/patient/patient.service';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { UserService } from '../../Services/User/user.service';
+import { UserService } from '../../Services/user/user.service';
 import { Constant } from '../../Services/constant/Constant';
 import { MatDialog } from '@angular/material/dialog';
 import { AddressPopUpComponent } from '../../address-pop-up/address-pop-up.component';
@@ -30,7 +30,6 @@ import { AddressPopUpComponent } from '../../address-pop-up/address-pop-up.compo
   ],
   templateUrl: './patient-detail.component.html',
   styleUrl: './patient-detail.component.css',
-  
 })
 export class PatientDetailComponent implements OnInit, OnDestroy {
   // Required attributes
@@ -46,7 +45,8 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
   allowedRoles: string[] = [Constant.ADMIN, Constant.DOCTOR, Constant.PATIENT];
 
   doctorRole: string = Constant.DOCTOR;
-  
+
+  // Cell renderer to get particular patient
   patientIdCellRenderer = (params: any) => {
     const anchor = document.createElement('a');
     anchor.innerText = params.value;
@@ -101,15 +101,6 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
     { field: 'doctor_name', headerName: 'Doctor Name', filter: true },
     { field: 'hospital_custom_id', headerName: 'Hospital Id', filter: true },
     { field: 'hospital_name', headerName: 'Hospital Name', filter: true },
-
-    // { Required for deletion
-    //   headerName: 'Actions',
-    //   cellRenderer: 'editButtonRenderer',
-    //   width: 100,
-    //   cellRendererParams: {
-    //     onClick: this.onEditButtonClick.bind(this),
-    //   },
-    // },
   ];
 
   // Initialize required services
@@ -149,11 +140,9 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
 
   // Get all patient
   getAllPatient() {
-    this.patientService
-      .getPatient()
-      .subscribe((response: any) => {
-        this.patientList = response.data;
-      });
+    this.patientService.getPatient().subscribe((response: any) => {
+      this.patientList = response.data;
+    });
   }
 
   // Grid ready event

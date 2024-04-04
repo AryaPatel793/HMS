@@ -5,17 +5,16 @@ import { NgIf, isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID, Inject } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { DoctorService } from '../../Services/Doctor/doctor.service';
+import { DoctorService } from '../../Services/doctor/doctor.service';
 import { GridOptions } from 'ag-grid-community';
 import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { AgGridModule } from 'ag-grid-angular';
 import { NgZone } from '@angular/core';
 import { Constant } from '../../Services/constant/Constant';
-import { UserService } from '../../Services/User/user.service';
+import { UserService } from '../../Services/user/user.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AddressPopUpComponent } from '../../address-pop-up/address-pop-up.component';
-
 
 @Component({
   selector: 'app-doctor-detail',
@@ -36,7 +35,7 @@ export class DoctorDetailComponent implements OnInit, OnDestroy {
   };
 
   allowedRoles: string[] = [Constant.ADMIN, Constant.DOCTOR];
-  adminRole : any = Constant.ADMIN;
+  adminRole: any = Constant.ADMIN;
 
   // Add a new property to the class for the cell renderer function
   doctorIdCellRenderer = (params: any) => {
@@ -55,10 +54,10 @@ export class DoctorDetailComponent implements OnInit, OnDestroy {
   addressIdCellRenderer = (params: any) => {
     const anchor = document.createElement('a');
     anchor.innerText = params.value;
-      anchor.href = 'javascript:void(0);';
-      anchor.addEventListener('click', () => {
-        this.onAddressClick(params.data);
-      });
+    anchor.href = 'javascript:void(0);';
+    anchor.addEventListener('click', () => {
+      this.onAddressClick(params.data);
+    });
     return anchor;
   };
 
@@ -72,10 +71,11 @@ export class DoctorDetailComponent implements OnInit, OnDestroy {
     },
     { field: 'doctor_name', filter: true },
     { field: 'phone_number', filter: true },
-    { field: 'address',
-    headerName: 'Address',
-    filter: true,
-    cellRenderer: this.addressIdCellRenderer,
+    {
+      field: 'address',
+      headerName: 'Address',
+      filter: true,
+      cellRenderer: this.addressIdCellRenderer,
     },
     { field: 'city', filter: true },
     { field: 'state', filter: true },
@@ -86,14 +86,6 @@ export class DoctorDetailComponent implements OnInit, OnDestroy {
       filter: true,
       cellRenderer: this.activeCellRenderer,
     },
-    // {  Required for deletion
-    //   headerName: 'Actions',
-    //   cellRenderer: 'editButtonRenderer',
-    //   width: 100,
-    //   cellRendererParams: {
-    //     onClick: this.onEditButtonClick.bind(this),
-    //   },
-    // },
   ];
 
   // To initialize required services
@@ -105,8 +97,7 @@ export class DoctorDetailComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private zone: NgZone,
     public userService: UserService,
-    private dialog: MatDialog,
-
+    private dialog: MatDialog
   ) {}
 
   // Initialzing component
@@ -134,11 +125,11 @@ export class DoctorDetailComponent implements OnInit, OnDestroy {
 
   // Get all doctors
   getAllDoctor() {
-    this.doctorService
-      .getDoctor()
-      .subscribe((response: any) => {
-        this.doctorList = response.data;
-      });
+    this.doctorService.getDoctor().subscribe((response: any) => {
+      if(response.code === 200){
+      this.doctorList = response.data;
+    }
+    });
   }
 
   // Grid ready event
@@ -164,15 +155,14 @@ export class DoctorDetailComponent implements OnInit, OnDestroy {
   //Address dialog box
   onAddressClick(rowData: any) {
     const address = rowData.address;
-    console.log(address)
+    console.log(address);
     this.zone.run(() => {
-    const dialogRef = this.dialog.open(AddressPopUpComponent, {
-      width: '500px',
-      data: {
-        message: address,
-      },
+      const dialogRef = this.dialog.open(AddressPopUpComponent, {
+        width: '500px',
+        data: {
+          message: address,
+        },
+      });
     });
-  });
-
-}
+  }
 }

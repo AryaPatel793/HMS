@@ -1,14 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { NotificationService } from '../Services/notification/notification.service';
 import { isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID, Inject } from '@angular/core';
-import { ValidationService } from '../Services/Validation/validation.service';
-import { ResetPasswordService } from '../Services/ResetPassword/reset-password.service';
+import { ValidationService } from '../Services/validation/validation.service';
+import { ResetPasswordService } from '../Services/reset-password/reset-password.service';
 
 @Component({
   selector: 'app-verify-email',
@@ -17,7 +17,7 @@ import { ResetPasswordService } from '../Services/ResetPassword/reset-password.s
   templateUrl: './verify-email.component.html',
   styleUrl: './verify-email.component.css',
 })
-export class VerifyEmailComponent {
+export class VerifyEmailComponent implements OnInit, OnDestroy {
   //Required attributes
   verifyEmailForm!: FormGroup;
 
@@ -63,11 +63,13 @@ export class VerifyEmailComponent {
     }
     const email = this.verifyEmailForm.value;
     this.resetPasswordService.verifyEmail(email).subscribe((response: any) => {
-      if (response.code === 301) {
-        this.notificationService.successNotification('OTP sent to your email for verification');
+      if (response.code === 202) {
+        this.notificationService.successNotification(
+          'OTP sent to your email for verification'
+        );
         sessionStorage.setItem('userEmail', this.verifyEmailForm.value.email);
         this.router.navigate(['/verifyOtp']);
-      } else if (response.code === 404) {
+      } else if (response.code === 104 || response.code === 404) {
         this.notificationService.errorNotification(response.message);
       }
     });

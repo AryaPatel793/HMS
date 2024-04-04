@@ -9,7 +9,7 @@ import {
   AbstractControl,
 } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { DoctorService } from '../../Services/Doctor/doctor.service';
+import { DoctorService } from '../../Services/doctor/doctor.service';
 import { NotificationService } from '../../Services/notification/notification.service';
 import { Router } from '@angular/router';
 import { Doctor } from '../../model/Doctor';
@@ -17,10 +17,10 @@ import { NgIf } from '@angular/common';
 import { ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Constant } from '../../Services/constant/Constant';
-import { UserService } from '../../Services/User/user.service';
+import { UserService } from '../../Services/user/user.service';
 import { NgZone } from '@angular/core';
-import { HospitalService } from '../../Services/Hospital/hospital.service';
-import { ValidationService } from '../../Services/Validation/validation.service';
+import { HospitalService } from '../../Services/hospital/hospital.service';
+import { ValidationService } from '../../Services/validation/validation.service';
 import { MatStepperModule } from '@angular/material/stepper';
 import {
   IDropdownSettings,
@@ -101,11 +101,11 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
 
   // Get all hospitals
   getAllHospital() {
-    this.hospitalService
-      .getHospital()
-      .subscribe((response: any) => {
+    this.hospitalService.getHospital().subscribe((response: any) => {
+      if (response.code === 200) {
         this.hospitals = response.data;
-      });
+      }
+    });
   }
 
   // Intializing doctor form using FormBuilder
@@ -115,38 +115,20 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
         this.formBuilder.group({
           doctor_id: [''],
           doctor_custom_id: [''],
-          doctor_name: [
-            '',
-            this.validateService.getUserNameValidators(),
-          ],
-          phone_number: [
-            null,
-            this.validateService.getPhoneValidators(),
-          ],
+          doctor_name: ['', this.validateService.getUserNameValidators()],
+          phone_number: [null, this.validateService.getPhoneValidators()],
           is_active: [true, Validators.required],
           hospitalList: [[], Validators.required],
         }),
         this.formBuilder.group({
-          address: [
-            '',
-            this.validateService.getAddressValidators(),
-          ],
+          address: ['', this.validateService.getAddressValidators()],
           city: ['', Validators.required],
           state: ['', Validators.required],
-          zipcode: [
-            '',
-            this.validateService.getZipCodeValidators(),
-          ],
+          zipcode: ['', this.validateService.getZipCodeValidators()],
         }),
         this.formBuilder.group({
-          user_name: [
-            null,
-            this.validateService.getUserNameValidators(),
-          ],
-          email: [
-            null,
-            this.validateService.getEmailValidators(),
-          ],
+          user_name: [null, this.validateService.getUserNameValidators()],
+          email: [null, this.validateService.getEmailValidators()],
         }),
       ]),
     });
@@ -178,9 +160,12 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
         this.notificationService.successNotification('Doctor added');
         this.router.navigate(['/userDashboard/doctor']);
       } else if (
+        response.code === 104 ||
+        response.code === 105 ||
+        response.code === 106 ||
         response.code === 404 ||
         response.code === 704 ||
-        response.code === 804
+        response.code === 804 
       ) {
         this.notificationService.errorNotification(response.message);
       } else if (response.code === 202) {
@@ -193,30 +178,32 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
   // Get doctor by ID
   getDoctorDetailsById(id: any) {
     this.doctorService.getDoctorById(id).subscribe((response: any) => {
-      const doctor = response.data;
-      this.doctorForm.patchValue({
-        formArray: [
-          {
-            doctor_id: doctor.doctor_id,
-            doctor_custom_id: doctor.doctor_custom_id,
-            doctor_name: doctor.doctor_name,
-            phone_number: doctor.phone_number,
-            is_active: doctor.is_active,
-            hospitalList: doctor.selected_hospital || [],
-          },
-          {
-            address: doctor.address,
-            city: doctor.city,
-            state: doctor.state,
-            zipcode: doctor.zipcode,
-          },
-          {
-            user_name: doctor.user_name,
-            email: doctor.email,
-          },
-        ],
-      });
-      this.onStateChange({ target: { value: doctor.state } });
+      if (response.code === 200) {
+        const doctor = response.data;
+        this.doctorForm.patchValue({
+          formArray: [
+            {
+              doctor_id: doctor.doctor_id,
+              doctor_custom_id: doctor.doctor_custom_id,
+              doctor_name: doctor.doctor_name,
+              phone_number: doctor.phone_number,
+              is_active: doctor.is_active,
+              hospitalList: doctor.selected_hospital || [],
+            },
+            {
+              address: doctor.address,
+              city: doctor.city,
+              state: doctor.state,
+              zipcode: doctor.zipcode,
+            },
+            {
+              user_name: doctor.user_name,
+              email: doctor.email,
+            },
+          ],
+        });
+        this.onStateChange({ target: { value: doctor.state } });
+      }
     });
   }
 
@@ -273,13 +260,12 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
       .get('formArray')
       ?.get(arrayIndex.toString())
       ?.get(field);
-    return ((
-      fieldControl?.hasError('minlength') ||
-      fieldControl?.hasError('maxlength') ||
-      fieldControl?.hasError('max') ||
-      fieldControl?.hasError('min')) &&
+    return (
+      (fieldControl?.hasError('minlength') ||
+        fieldControl?.hasError('maxlength') ||
+        fieldControl?.hasError('max') ||
+        fieldControl?.hasError('min')) &&
       !fieldControl?.hasError?.('pattern')
-
     );
   }
 
@@ -288,7 +274,7 @@ export class AddDoctorComponent implements OnInit, OnDestroy {
     this.zone.run(() => {
       let formArray = this.doctorForm.get('formArray') as FormArray;
       let formGroup = formArray.at(arrayIndex) as FormGroup;
-      Object.keys(formGroup.controls).forEach(key => {
+      Object.keys(formGroup.controls).forEach((key) => {
         formGroup.controls[key].markAsTouched();
       });
     });

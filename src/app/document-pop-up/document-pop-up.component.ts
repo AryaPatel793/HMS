@@ -1,5 +1,9 @@
-import { Component, Inject, Input, OnDestroy, OnInit } from '@angular/core';
-import { ReactiveFormsModule, UntypedFormGroup, Validators } from '@angular/forms';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import {
+  ReactiveFormsModule,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { NgZone } from '@angular/core';
 import { NgFor } from '@angular/common';
@@ -45,7 +49,7 @@ export class DocumentPopUpComponent implements OnInit, OnDestroy {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private formBuilder: FormBuilder,
     private zone: NgZone,
-    private notificationService : NotificationService
+    private notificationService: NotificationService
   ) {
     this.presentDocument = data.presentDocument;
   }
@@ -70,7 +74,6 @@ export class DocumentPopUpComponent implements OnInit, OnDestroy {
       documents: new FormArray([]),
     });
     this.addMoreDocument(); // Add at least one document row
-
   }
 
   // To get form array 'document'
@@ -82,20 +85,20 @@ export class DocumentPopUpComponent implements OnInit, OnDestroy {
   public newDocument(): UntypedFormGroup {
     return this.formBuilder.group({
       document_file: [''],
-      file_category: ['',[Validators.required]],
-      file_name: ['',[Validators.required]],
+      file_category: ['', [Validators.required]],
+      file_name: ['', [Validators.required]],
       file_type: [''],
       file_size: [''],
       file_date: [''],
     });
   }
 
-// Get document of patient
+  // Get document of patient
   public getDocumentFromPatient(existingDocuments: any[]) {
     existingDocuments.forEach((document: any, index: number) => {
       // Ensure FormGroup exists at the index
       // while (this.documents().length <= index) {
-        this.documents().push(this.newDocument());
+      this.documents().push(this.newDocument());
       // }
       // Now we can safely patch the value
       this.documents().at(index).patchValue({
@@ -119,11 +122,11 @@ export class DocumentPopUpComponent implements OnInit, OnDestroy {
       ); // Extract file extension from file name
       if (!this.accpetedDocuments.includes('.' + fileExtension)) {
         this.notificationService.errorNotification(
-          '.'+fileExtension+' this file is not supported'
+          '.' + fileExtension + ' this file is not supported'
         );
         return;
       }
-      const fileSize = file.size; 
+      const fileSize = file.size;
       const fileSizeMB = (fileSize / 1000000).toFixed(2); // Convert to string and keep only two digits after the decimal
       const fileDate = new Date(file.lastModified); // File last modified date
       // const fileDateOnly = fileDate.toLocaleDateString();
@@ -139,32 +142,20 @@ export class DocumentPopUpComponent implements OnInit, OnDestroy {
   public addMoreDocument(): void {
     if (this.documents().length < this.maxFileControls) {
       this.documents().push(this.newDocument());
-    }  }
+    }
+  }
 
   // remove document
   public removeDocument(i: number): void {
     this.documents().removeAt(i);
   }
 
-  // //On file change
-  // onFileChange() {
-  //   this.documentForm.valueChanges.subscribe((files: any) => {
-  //     if (!Array.isArray(files)) {
-  //       this.uploadedDocuments = [files];
-  //     } else {
-  //       this.uploadedDocuments = files;
-  //     }
-  //   });
-  // }
-
   //Documents submit
   onDocumentSubmit() {
     if (this.documentForm.invalid) {
       this.zone.run(() => {
         this.documentForm.markAllAsTouched();
-        this.notificationService.errorNotification(
-          'File is required'
-        );
+        this.notificationService.errorNotification('File is required');
       });
       return;
     }
@@ -172,7 +163,7 @@ export class DocumentPopUpComponent implements OnInit, OnDestroy {
     const categories: string[] = [];
     let duplicateFound = false;
 
-    this.documents().controls.forEach(control => {
+    this.documents().controls.forEach((control) => {
       const category = control.get('file_category')?.value;
       if (categories.includes(category)) {
         duplicateFound = true;
@@ -182,10 +173,11 @@ export class DocumentPopUpComponent implements OnInit, OnDestroy {
     });
 
     if (duplicateFound) {
-      this.notificationService.errorNotification('Duplicate file categories are not allowed');
+      this.notificationService.errorNotification(
+        'Duplicate file categories are not allowed'
+      );
       return;
     }
-
 
     const documents = this.documentForm.value.documents;
     console.log(documents);
@@ -197,10 +189,11 @@ export class DocumentPopUpComponent implements OnInit, OnDestroy {
     this.dialogRef.close(false);
   }
 
- // Check if field has required error
-isRequiredInvalid(field: string, index: number) {
-  return (this.documents().at(index).get(field)?.errors?.['required'] 
-  && this.documents().at(index).get(field)?.touched);
-}
-
+  // Check if field has required error
+  isRequiredInvalid(field: string, index: number) {
+    return (
+      this.documents().at(index).get(field)?.errors?.['required'] &&
+      this.documents().at(index).get(field)?.touched
+    );
+  }
 }

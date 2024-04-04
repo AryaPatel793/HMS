@@ -16,12 +16,12 @@ import { ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Constant } from '../../Services/constant/Constant';
 import { NgZone } from '@angular/core';
-import { HospitalService } from '../../Services/Hospital/hospital.service';
+import { HospitalService } from '../../Services/hospital/hospital.service';
 import { PLATFORM_ID, Inject } from '@angular/core';
 import { Patient } from '../../model/Patient';
-import { PatientService } from '../../Services/Patient/patient.service';
-import { ValidationService } from '../../Services/Validation/validation.service';
-import { UserService } from '../../Services/User/user.service';
+import { PatientService } from '../../Services/patient/patient.service';
+import { ValidationService } from '../../Services/validation/validation.service';
+import { UserService } from '../../Services/user/user.service';
 import { MatStepperModule } from '@angular/material/stepper';
 import {
   IDropdownSettings,
@@ -65,7 +65,7 @@ export class AddPatientComponent implements OnInit, OnDestroy {
 
   allowedRoles: string[] = [Constant.DOCTOR];
 
-  patientRole :string = Constant.PATIENT;
+  patientRole: string = Constant.PATIENT;
 
   // Dropdown settings
   public dropdownSettings: IDropdownSettings = {
@@ -117,11 +117,11 @@ export class AddPatientComponent implements OnInit, OnDestroy {
 
   // Get all hospital
   getAllHospital() {
-    this.hospitalService
-      .getHospital()
-      .subscribe((response: any) => {
-        this.hospitals = response.data;
-      });
+    this.hospitalService.getHospital().subscribe((response: any) => {
+      if(response.code === 200){
+      this.hospitals = response.data;
+      }
+    });
   }
 
   // Initialize patient form
@@ -137,7 +137,9 @@ export class AddPatientComponent implements OnInit, OnDestroy {
           phone_number: [null, this.validateService.getPhoneValidators()],
           is_active: [true, Validators.required],
           hospitalList: [[], Validators.required],
-          ...(!this.isAllowedRole() ? {documents: [[], Validators.required]} : {}),
+          ...(!this.isAllowedRole()
+            ? { documents: [[], Validators.required] }
+            : {}),
         }),
         this.formBuilder.group({
           address: ['', this.validateService.getAddressValidators()],
@@ -181,9 +183,12 @@ export class AddPatientComponent implements OnInit, OnDestroy {
         this.notificationService.successNotification('Patient added');
         this.router.navigate(['/userDashboard/patient']);
       } else if (
+        response.code === 104 ||
+        response.code === 105 ||
+        response.code === 107 ||
         response.code === 404 ||
         response.code === 704 ||
-        response.code === 804
+        response.code === 804 
       ) {
         this.notificationService.errorNotification(response.message);
       } else if (response.code === 202) {
@@ -196,6 +201,7 @@ export class AddPatientComponent implements OnInit, OnDestroy {
   // Get patient by ID
   getPatientDetailsById(id: any) {
     this.patientService.getPatientById(id).subscribe((response: any) => {
+      if(response.code === 200){
       const patient = response.data;
       this.patientForm.patchValue({
         formArray: [
@@ -223,11 +229,11 @@ export class AddPatientComponent implements OnInit, OnDestroy {
         ],
       });
       this.patientDocuments = patient.documents;
-      if(this.patientDocuments)
-      {
-        this.isDocumentPresent= true
+      if (this.patientDocuments) {
+        this.isDocumentPresent = true;
       }
       this.onStateChange({ target: { value: patient.state } });
+    }
     });
   }
 

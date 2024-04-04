@@ -7,7 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { HospitalService } from '../../Services/Hospital/hospital.service';
+import { HospitalService } from '../../Services/hospital/hospital.service';
 import { NotificationService } from '../../Services/notification/notification.service';
 import { Router } from '@angular/router';
 import { Hospital } from '../../model/Hospital';
@@ -15,7 +15,7 @@ import { NgIf } from '@angular/common';
 import { ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Constant } from '../../Services/constant/Constant';
-import { ValidationService } from '../../Services/Validation/validation.service';
+import { ValidationService } from '../../Services/validation/validation.service';
 
 @Component({
   selector: 'app-hospitalform',
@@ -40,7 +40,7 @@ export class AddHospitalComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef,
-    private validateService : ValidationService
+    private validateService: ValidationService
   ) {
     console.log('HospitalformComponent constructor');
     this.route.params.subscribe((params) => {
@@ -67,20 +67,11 @@ export class AddHospitalComponent implements OnInit, OnDestroy {
     this.hospitalForm = this.formBuilder.group({
       hospital_id: [''],
       hospital_custom_id: [''],
-      name: [
-        null,
-        this.validateService.getUserNameValidators(),
-      ],
-      address: [
-        null,
-        this.validateService.getAddressValidators(),
-      ],
+      name: [null, this.validateService.getUserNameValidators()],
+      address: [null, this.validateService.getAddressValidators()],
       city: ['', Validators.required],
       state: ['', Validators.required],
-      zipcode: [
-        null,
-        this.validateService.getZipCodeValidators(),
-      ],
+      zipcode: [null, this.validateService.getZipCodeValidators()],
       hospital_type: ['', Validators.required],
       is_active: [true, Validators.required],
     });
@@ -102,8 +93,11 @@ export class AddHospitalComponent implements OnInit, OnDestroy {
         if (response.code === 201) {
           this.notificationService.successNotification('Hospital added');
           this.router.navigate(['/userDashboard/hospital']);
-        } else if (response.code === 404) {
+        } else if (response.code === 105 || response.code === 404) {
           this.notificationService.errorNotification(response.message);
+        }else if (response.code === 202) {
+          this.notificationService.successNotification('Hospital updated');
+          this.router.navigate(['/userDashboard/hospital']);
         }
       });
   }
@@ -111,20 +105,23 @@ export class AddHospitalComponent implements OnInit, OnDestroy {
   // Get hospital by ID
   getHospitalDetailsById(id: any) {
     this.hospitalService.getHospitalById(id).subscribe((response: any) => {
-      const hospital = response.data;
-      this.hospitalForm.patchValue({
-        hospital_id: hospital.hospital_id,
-        hospital_custom_id: hospital.hospital_custom_id,
-        name: hospital.name,
-        address: hospital.address,
-        city: hospital.city,
-        state: hospital.state,
-        zipcode: hospital.zipcode,
-        hospital_type: hospital.hospital_type,
-        is_active: hospital.is_active,
-      });
-
-      this.onStateChange({ target: { value: hospital.state } });
+      if (response.code === 200) {
+        const hospital = response.data;
+        this.hospitalForm.patchValue({
+          hospital_id: hospital.hospital_id,
+          hospital_custom_id: hospital.hospital_custom_id,
+          name: hospital.name,
+          address: hospital.address,
+          city: hospital.city,
+          state: hospital.state,
+          zipcode: hospital.zipcode,
+          hospital_type: hospital.hospital_type,
+          is_active: hospital.is_active,
+        });
+        this.onStateChange({ target: { value: hospital.state } });
+      } else if (response.code === 105 || response.code === 404) {
+        this.notificationService.errorNotification(response.message);
+      }
     });
   }
 
@@ -165,13 +162,13 @@ export class AddHospitalComponent implements OnInit, OnDestroy {
     );
   }
 
-   // Check if field has length error
-   isLengthInvalid(field: string) {
+  // Check if field has length error
+  isLengthInvalid(field: string) {
     const fieldControl = this.hospitalForm.get(field);
-    return ((
-      fieldControl?.hasError('minlength') ||
-      fieldControl?.hasError('maxlength') ||
-      fieldControl?.hasError('max')) &&
+    return (
+      (fieldControl?.hasError('minlength') ||
+        fieldControl?.hasError('maxlength') ||
+        fieldControl?.hasError('max')) &&
       !fieldControl?.errors?.['pattern']
     );
   }
