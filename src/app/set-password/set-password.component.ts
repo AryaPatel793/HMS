@@ -1,13 +1,13 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';
 import { NotificationService } from '../Services/notification/notification.service';
 import { isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID, Inject } from '@angular/core';
-import { Password } from '../model/Password';
+import { Password } from '../model/password';
 import { ResetPasswordService } from '../Services/reset-password/reset-password.service';
 import { ValidationService } from '../Services/validation/validation.service';
 @Component({

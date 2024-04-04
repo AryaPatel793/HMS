@@ -13,7 +13,7 @@ import { NgZone } from '@angular/core';
 import { PatientService } from '../../Services/patient/patient.service';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { UserService } from '../../Services/user/user.service';
-import { Constant } from '../../Services/constant/Constant';
+import { Constant } from '../../Services/constant/constant';
 import { MatDialog } from '@angular/material/dialog';
 import { AddressPopUpComponent } from '../../address-pop-up/address-pop-up.component';
 

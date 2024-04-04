@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { AgGridModule } from 'ag-grid-angular';
 import { NgZone } from '@angular/core';
-import { Constant } from '../../Services/constant/Constant';
+import { Constant } from '../../Services/constant/constant';
 import { UserService } from '../../Services/user/user.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AddressPopUpComponent } from '../../address-pop-up/address-pop-up.component';

@@ -29,7 +29,7 @@
                 <select class="form-control form-select" formControlName="appointment_time"
                     [class.is-valid]="isFieldValid('appointment_time')"
                     [class.is-invalid]="isFieldInvalid('appointment_time')">
-                    <option value="" disabled>--Select a Time --</option>
+                    <option value="" disabled>Select</option>
                     <option *ngFor="let time of timeSlot" [value]="time">
                         {{ time }}
                     </option>
@@ -37,6 +37,9 @@
                 @if (isRequiredInvalid('appointment_time')) {
                 <p class="field-validation-error">Appointment time is required !</p>
                 }
+                <!-- @if (isTimeInvalid('appointment_time')) {
+                    <p class="field-validation-error">This time slot is not available !</p>
+                    } -->
             </div>
         </div>
         <div class="row">

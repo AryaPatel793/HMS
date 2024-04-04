@@ -3,7 +3,7 @@ import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration } from 'chart.js';
 import { ChartAnalysisService } from '../Services/chart-analysis/chart-analysis.service';
 import { ChartOptions } from 'chart.js';
-import { Constant } from '../Services/constant/Constant';
+import { Constant } from '../Services/constant/constant';
 import { UserService } from '../Services/user/user.service';
 
 @Component({
@@ -93,6 +93,7 @@ export class ChartAnalysisComponent implements OnInit, OnDestroy {
       .subscribe((response: any) => {
         if (response.code === 200) {
           let responseData = response.data;
+          // const hospitalNames = Object.keys(responseData).map(hospitalName => hospitalName.split(''));
           this.barChartData = {
             labels: Object.keys(responseData),
             datasets: [{ data: Object.values(responseData), label: 'Patient' }],

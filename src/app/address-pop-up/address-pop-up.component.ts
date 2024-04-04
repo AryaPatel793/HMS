@@ -20,7 +20,7 @@ export class AddressPopUpComponent implements OnInit,OnDestroy{
     public dialogRef: MatDialogRef<AddressPopUpComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
-
+ 
   // Initializing component
   ngOnInit(): void {
     console.log('Address popup Component Onint');

@@ -1,42 +1,54 @@
- /* Sidebar Styles */
- .sidebar {
-    z-index: 900; /* Set a lower z-index for the sidebar */
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    padding-top: 48px; /* Adjusted height of navbar */
-    padding-bottom: 16px; /* Reduced vertical length */
-    box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);
-    width: 240px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+/* Sidebar Styles */
+.sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  padding-top: 48px; /* Adjusted height of navbar */
+  padding-bottom: 16px; /* Reduced vertical length */
+  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);
+  width: 240px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.3s ease-in-out; /* Added transition effect */
+  transform: translateX(0); /* Sidebar starts fully visible */
+}
+
+.toggle-button {
+  margin-top: 22px;
+  margin-left: 5px;
+  position: fixed;
+  z-index: 1000;
+  height: 30px;
+  width: 40px;
 }
 
 /* Adjusted styling for smaller screens */
 @media (max-width: 991.98px) {
-    .sidebar {
-        width: 100%;
-        padding-top: 16px;
-    }
+  .sidebar {
+    width: 100%;
+    padding-top: 16px;
+  }
 }
 
 .sidebar .active {
-    border-radius: 5px;
-    box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
+  border-radius: 5px;
+  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
 }
 
 .sidebar-sticky {
-    position: relative;
-    top: 0;
-    height: calc(100vh - 48px);
-    padding-top: 0.5rem;
-    overflow-x: hidden;
-    overflow-y: auto;
+  position: absolute;
+  top: 0;
+  height: calc(100vh - 48px);
+  padding-top: 0.5rem;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .hide-sidebar {
-    display: none;
+  transform: translateX(-100%); /* When hidden, sidebar is moved to the left */
 }
-
+.sidebar.open {
+  transform: translateX(0);
+}

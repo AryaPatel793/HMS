@@ -14,7 +14,7 @@ import { AppointmentService } from '../../Services/appointment/appointment.servi
 import { NotificationService } from '../../Services/notification/notification.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationPopUpComponent } from '../../confirmation-pop-up/confirmation-pop-up.component';
-import { Constant } from '../../Services/constant/Constant';
+import { Constant } from '../../Services/constant/constant';
 import { UserService } from '../../Services/user/user.service';
 
 @Component({

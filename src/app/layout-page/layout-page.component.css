@@ -1,22 +1,14 @@
- 
-
 #content {
-    margin-left: 240px; /* Adjust this value based on your sidebar width */
-    padding: 15px;
-    padding-top: 100px; /* Adjust this value to match the height of your navbar */
-    height: 800px;
-
+  margin-left: 240px; /* Adjust this value based on your sidebar width */
+  padding: 15px;
+  padding-top: 100px; /* Adjust this value to match the height of your navbar */
+  height: 800px;
+  transition: margin-left 0.5s; /* Add transition */
 }
 
 /* Adjusted styling for smaller screens */
 @media (max-width: 991.98px) {
-    #content {
-        margin-left: 20px;
-    }
+  #content {
+    margin-left: 20px;
+  }
 }
-
-
-
-
-  
-

@@ -10,7 +10,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { LoginService } from '../Services/login/login.service';
 import { NgIf } from '@angular/common';
 import { NotificationService } from '../Services/notification/notification.service';
-import { Login } from '../model/Login';
+import { Login } from '../model/login';
 import { isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID, Inject } from '@angular/core';
 import { ValidationService } from '../Services/validation/validation.service';

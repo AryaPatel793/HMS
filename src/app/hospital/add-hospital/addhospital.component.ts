@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   FormBuilder,
-  FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
@@ -10,11 +9,11 @@ import { ActivatedRoute } from '@angular/router';
 import { HospitalService } from '../../Services/hospital/hospital.service';
 import { NotificationService } from '../../Services/notification/notification.service';
 import { Router } from '@angular/router';
-import { Hospital } from '../../model/Hospital';
+import { Hospital } from '../../model/hospital';
 import { NgIf } from '@angular/common';
 import { ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Constant } from '../../Services/constant/Constant';
+import { Constant } from '../../Services/constant/constant';
 import { ValidationService } from '../../Services/validation/validation.service';
 
 @Component({

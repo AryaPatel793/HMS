@@ -12,10 +12,10 @@ import { NotificationService } from '../../Services/notification/notification.se
 import { Router } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { CommonModule } from '@angular/common';
-import { Constant } from '../../Services/constant/Constant';
+import { Constant } from '../../Services/constant/constant';
 import { NgZone } from '@angular/core';
 import { PLATFORM_ID, Inject } from '@angular/core';
-import { Appointment } from '../../model/Appointment';
+import { Appointment } from '../../model/appointment';
 import { AppointmentService } from '../../Services/appointment/appointment.service';
 import { UserService } from '../../Services/user/user.service';
 @Component({
@@ -84,7 +84,7 @@ export class AddAppointmentComponent {
         ],
       ],
       appointment_date: [null, [Validators.required, this.validateDate]],
-      appointment_time: [null, Validators.required],
+      appointment_time: ['', Validators.required],
     });
   }
 
@@ -108,7 +108,11 @@ export class AddAppointmentComponent {
           this.notificationService.successNotification('Appointment created');
           this.router.navigate(['/userDashboard/appointment']);
           this.initializeForm();
-        } else if (response.code === 404 || response.code === 504 || response.code === 104) {
+        } else if (
+          response.code === 404 ||
+          response.code === 504 ||
+          response.code === 104
+        ) {
           this.notificationService.errorNotification(response.message);
         }
       });
@@ -129,7 +133,11 @@ export class AddAppointmentComponent {
             appointment_date: appointment.appointment_date,
             appointment_time: appointment.appointment_time,
           });
-        } else if (response.code === 404 || response.code === 504 || response.code === 104) {
+        } else if (
+          response.code === 404 ||
+          response.code === 504 ||
+          response.code === 104
+        ) {
           this.notificationService.errorNotification(response.message);
         }
       });
@@ -158,6 +166,27 @@ export class AddAppointmentComponent {
     return null;
   }
 
+  // validateTime(control: FormControl): { [key: string]: any } | null {
+  //   const selectedDate = new Date(this.appointmentForm.get('appointment_date')?.value);
+  //   const today = new Date();
+  //   today.setHours(0, 0, 0, 0);
+
+  //   if (selectedDate.getTime() === today.getTime()) {
+  //     const currentTime = new Date();
+  //     const currentHour = currentTime.getHours();
+  //     const currentMinutes = currentTime.getMinutes();
+  //     const selectedTimeSlot = control.value;
+  //     const selectedHour = parseInt(selectedTimeSlot.split(' ')[0], 10);
+  //     const selectedMinutes = selectedTimeSlot.includes('30') ? 30 : 0;
+
+  //     if (currentHour > selectedHour || (currentHour === selectedHour && currentMinutes >= selectedMinutes)) {
+  //       return { pastTime: true };
+  //     }
+  //   }
+
+  //   return null;
+  // }
+
   // Invalid field validation
   isFieldInvalid(field: string) {
     return (
@@ -177,6 +206,12 @@ export class AddAppointmentComponent {
     const fieldErrors = this.appointmentForm.get(field)?.errors;
     console.log(fieldErrors);
     return fieldErrors?.['pastDate'] || fieldErrors?.['sundayDate'];
+  }
+
+  // Check if field has time error
+  isTimeInvalid(field: string) {
+    const fieldErrors = this.appointmentForm.get(field)?.errors;
+    return fieldErrors?.['pastTime'];
   }
 
   // Check if field has required error

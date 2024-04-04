@@ -21,6 +21,7 @@ import { FooterComponent } from '../footer/footer.component';
   ],
 })
 export class LayoutPageComponent implements OnInit, OnDestroy {
+
   // Required attributes
   username: string | null = null;
 

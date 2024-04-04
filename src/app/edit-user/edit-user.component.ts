@@ -20,7 +20,7 @@ import {
   ErrorStateMatcher,
   ShowOnDirtyErrorStateMatcher,
 } from '@angular/material/core';
-import { Password } from '../model/Password';
+import { Password } from '../model/password';
 import { UserService } from '../Services/user/user.service';
 
 @Component({
