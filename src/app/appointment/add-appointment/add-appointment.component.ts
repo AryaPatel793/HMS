@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -14,10 +14,11 @@ import { NgIf } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { Constant } from '../../Services/constant/constant';
 import { NgZone } from '@angular/core';
-import { PLATFORM_ID, Inject } from '@angular/core';
 import { Appointment } from '../../model/appointment';
 import { AppointmentService } from '../../Services/appointment/appointment.service';
 import { UserService } from '../../Services/user/user.service';
+import { ValidationService } from '../../Services/validation/validation.service';
+
 @Component({
   selector: 'app-add-appointment',
   standalone: true,
@@ -25,7 +26,7 @@ import { UserService } from '../../Services/user/user.service';
   templateUrl: './add-appointment.component.html',
   styleUrl: './add-appointment.component.css',
 })
-export class AddAppointmentComponent {
+export class AddAppointmentComponent implements OnInit, OnDestroy {
   //Attributes required
   appointmentForm!: FormGroup;
 
@@ -40,7 +41,7 @@ export class AddAppointmentComponent {
     private route: ActivatedRoute,
     private zone: NgZone,
     private userService: UserService,
-    @Inject(PLATFORM_ID) private platformId: any
+    private validateService: ValidationService
   ) {
     console.log('AddAppointmentComponent constructor');
     this.route.params.subscribe((params) => {
@@ -69,27 +70,28 @@ export class AddAppointmentComponent {
       appointment_custom_id: [''],
       appointment_title: [
         '',
-        [
-          Validators.required,
-          Validators.maxLength(30),
-          Validators.minLength(5),
-        ],
+        this.validateService.getAppointmentTitleValidators(),
       ],
       appointment_detail: [
         '',
-        [
-          Validators.required,
-          Validators.maxLength(150),
-          Validators.minLength(10),
-        ],
+        this.validateService.getAppointmentTitleValidators(),
       ],
       appointment_date: [null, [Validators.required, this.validateDate]],
-      appointment_time: ['', Validators.required],
+      appointment_time: ['', [Validators.required]],
     });
   }
 
   // Save appointment
   saveAppointment() {
+    if (!this.checkValidTime()) {
+      this.zone.run(() => {
+        this.appointmentForm.markAllAsTouched();
+        this.notificationService.errorNotification(
+          'This time slot is not available'
+        );
+      });
+      return;
+    }
     if (this.appointmentForm.invalid) {
       this.zone.run(() => {
         this.appointmentForm.markAllAsTouched();
@@ -152,7 +154,6 @@ export class AddAppointmentComponent {
     const selectedDate = new Date(control.value);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-
     // Check if selected date is in the past
     if (selectedDate < today) {
       return { pastDate: true };
@@ -162,30 +163,36 @@ export class AddAppointmentComponent {
     if (selectedDate.getDay() === 0) {
       return { sundayDate: true };
     }
-
     return null;
   }
 
-  // validateTime(control: FormControl): { [key: string]: any } | null {
-  //   const selectedDate = new Date(this.appointmentForm.get('appointment_date')?.value);
-  //   const today = new Date();
-  //   today.setHours(0, 0, 0, 0);
+  // Check valid time slot
+  private checkValidTime() {
+    const appointmentDateControl =
+      this.appointmentForm?.get('appointment_date');
+    const appointmentTimeControl =
+      this.appointmentForm?.get('appointment_time');
 
-  //   if (selectedDate.getTime() === today.getTime()) {
-  //     const currentTime = new Date();
-  //     const currentHour = currentTime.getHours();
-  //     const currentMinutes = currentTime.getMinutes();
-  //     const selectedTimeSlot = control.value;
-  //     const selectedHour = parseInt(selectedTimeSlot.split(' ')[0], 10);
-  //     const selectedMinutes = selectedTimeSlot.includes('30') ? 30 : 0;
+    const selectedDate = new Date(appointmentDateControl?.value);
+    const today = new Date();
 
-  //     if (currentHour > selectedHour || (currentHour === selectedHour && currentMinutes >= selectedMinutes)) {
-  //       return { pastTime: true };
-  //     }
-  //   }
-
-  //   return null;
-  // }
+    if (selectedDate.getDate() === today.getDate()) {
+      const currentTime = new Date();
+      const currentHour = currentTime.getHours() + 1;
+      const selectedTimeSlot = appointmentTimeControl?.value;
+      const timeSlotParts = selectedTimeSlot.split(' ');
+      let selectedHour = parseInt(timeSlotParts[2], 10); // Get the hour part from 'X to Y pm/am'
+      // Convert to 24-hour format if the time slot is in the afternoon
+      if (timeSlotParts[3] === 'pm' && selectedHour !== 12) {
+        selectedHour += 12;
+      }
+      // If the current hour has passed the selected hour, it's invalid
+      if (currentHour >= selectedHour) {
+        return false;
+      }
+    }
+    return true;
+  }
 
   // Invalid field validation
   isFieldInvalid(field: string) {
@@ -204,14 +211,7 @@ export class AddAppointmentComponent {
   // Check if field has date error
   isDateInvalid(field: string) {
     const fieldErrors = this.appointmentForm.get(field)?.errors;
-    console.log(fieldErrors);
     return fieldErrors?.['pastDate'] || fieldErrors?.['sundayDate'];
-  }
-
-  // Check if field has time error
-  isTimeInvalid(field: string) {
-    const fieldErrors = this.appointmentForm.get(field)?.errors;
-    return fieldErrors?.['pastTime'];
   }
 
   // Check if field has required error
@@ -220,6 +220,10 @@ export class AddAppointmentComponent {
       this.appointmentForm.get(field)?.errors?.['required'] &&
       this.appointmentForm.get(field)?.touched
     );
+  }
+  // Check if field has pattern error
+  isPatternInvalid(field: string) {
+    return this.appointmentForm.get(field)?.errors?.['pattern'];
   }
 
   // Check if field has length error

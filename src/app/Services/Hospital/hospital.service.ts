@@ -24,4 +24,3 @@ export class HospitalService {
     return this.http.get(`${HospitalService.HOSPITAL_ENDPOINT}/${id}`);
   }
 }
-

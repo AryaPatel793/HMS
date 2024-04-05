@@ -14,6 +14,7 @@ import { Login } from '../model/login';
 import { isPlatformBrowser } from '@angular/common';
 import { PLATFORM_ID, Inject } from '@angular/core';
 import { ValidationService } from '../Services/validation/validation.service';
+import { Constant } from '../Services/constant/constant';
 
 @Component({
   selector: 'app-login',

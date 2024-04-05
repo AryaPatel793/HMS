@@ -2,7 +2,7 @@
   margin-left: 240px; /* Adjust this value based on your sidebar width */
   padding: 15px;
   padding-top: 100px; /* Adjust this value to match the height of your navbar */
-  height: 800px;
+  height: 700px;
   transition: margin-left 0.5s; /* Add transition */
 }
 

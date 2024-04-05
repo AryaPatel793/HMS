@@ -12,7 +12,6 @@ export class ResetPasswordService {
   private static VERIFY_OTP_ENDPOINT = `${Constant.BASE_URL}resetPassword/verifyOtp`;
   private static RESEND_OTP_ENDPOINT = `${Constant.BASE_URL}resetPassword/resendOtp`;
 
-
   constructor(private http: HttpClient) {}
 
   verifyEmail(email: any) {
@@ -27,8 +26,7 @@ export class ResetPasswordService {
     return this.http.post(ResetPasswordService.PASSWORD_ENDPOINT, password);
   }
 
-  resendOtp()
-  {
+  resendOtp() {
     return this.http.get(`${ResetPasswordService.RESEND_OTP_ENDPOINT}`);
   }
 }

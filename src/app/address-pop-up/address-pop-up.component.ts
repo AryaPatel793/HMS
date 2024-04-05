@@ -14,13 +14,13 @@ import {
   templateUrl: './address-pop-up.component.html',
   styleUrl: './address-pop-up.component.css',
 })
-export class AddressPopUpComponent implements OnInit,OnDestroy{
+export class AddressPopUpComponent implements OnInit, OnDestroy {
   // Initialize services
   constructor(
     public dialogRef: MatDialogRef<AddressPopUpComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
- 
+
   // Initializing component
   ngOnInit(): void {
     console.log('Address popup Component Onint');

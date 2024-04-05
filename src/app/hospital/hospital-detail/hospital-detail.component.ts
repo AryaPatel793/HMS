@@ -67,17 +67,17 @@ export class HospitalDetailComponent implements OnInit, OnDestroy {
       headerName: 'Hospital Id',
       cellRenderer: this.hospitalIdCellRenderer, // Use the new cell renderer here
     },
-    { field: 'name', filter: true },
+    { field: 'name', headerName: 'Name', filter: true },
     {
       field: 'address',
       headerName: 'Address',
       filter: true,
       cellRenderer: this.addressIdCellRenderer,
     },
-    { field: 'city', filter: true },
-    { field: 'state', filter: true },
-    { field: 'zipcode', filter: true },
-    { field: 'hospital_type', filter: true },
+    { field: 'city', headerName: 'City', filter: true },
+    { field: 'state', headerName: 'State', filter: true },
+    { field: 'zipcode', headerName: 'Zip Code', filter: true },
+    { field: 'hospital_type', headerName: 'Hospital Type', filter: true },
     {
       field: 'is_active',
       filter: true,

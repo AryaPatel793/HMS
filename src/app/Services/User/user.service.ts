@@ -10,7 +10,7 @@ export class UserService {
     const userName = sessionStorage.getItem('username');
     return userName ? userName : '';
   }
-  
+
   public getUserRole(): string {
     const userRole = sessionStorage.getItem('role');
     return userRole ? userRole : '';
@@ -20,9 +20,9 @@ export class UserService {
     return userEmail ? userEmail : '';
   }
 
-  public logoutUser(){
-    sessionStorage.removeItem('username')
-    sessionStorage.removeItem('role')
-    sessionStorage.removeItem('userEmail')
+  public logoutUser() {
+    sessionStorage.removeItem('username');
+    sessionStorage.removeItem('role');
+    sessionStorage.removeItem('userEmail');
   }
 }

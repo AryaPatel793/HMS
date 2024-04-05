@@ -69,17 +69,17 @@ export class DoctorDetailComponent implements OnInit, OnDestroy {
       cellRenderer: this.doctorIdCellRenderer,
       filter: true,
     },
-    { field: 'doctor_name', filter: true },
-    { field: 'phone_number', filter: true },
+    { field: 'doctor_name', headerName: 'Name', filter: true },
+    { field: 'phone_number', headerName: 'Phone No.', filter: true },
     {
       field: 'address',
       headerName: 'Address',
       filter: true,
       cellRenderer: this.addressIdCellRenderer,
     },
-    { field: 'city', filter: true },
-    { field: 'state', filter: true },
-    { field: 'zipcode', filter: true },
+    { field: 'city', headerName: 'City', filter: true },
+    { field: 'state', headerName: 'State', filter: true },
+    { field: 'zipcode', headerName: 'Zip Code', filter: true },
     {
       field: 'is_active',
       headerName: 'Status',
@@ -126,9 +126,9 @@ export class DoctorDetailComponent implements OnInit, OnDestroy {
   // Get all doctors
   getAllDoctor() {
     this.doctorService.getDoctor().subscribe((response: any) => {
-      if(response.code === 200){
-      this.doctorList = response.data;
-    }
+      if (response.code === 200) {
+        this.doctorList = response.data;
+      }
     });
   }
 

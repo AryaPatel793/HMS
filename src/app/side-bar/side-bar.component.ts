@@ -6,6 +6,8 @@ import {
   ElementRef,
 } from '@angular/core';
 import { RouterOutlet, RouterModule } from '@angular/router';
+import { UserService } from '../Services/user/user.service';
+import { Constant } from '../Services/constant/constant';
 
 @Component({
   selector: 'app-side-bar',
@@ -15,7 +17,14 @@ import { RouterOutlet, RouterModule } from '@angular/router';
   styleUrls: ['./side-bar.component.css'],
 })
 export class SideBarComponent implements OnInit, OnDestroy {
-  constructor(private renderer: Renderer2, private el: ElementRef) {}
+  isSidebarVisible = true;
+  notAllowedRole = Constant.PATIENT;
+
+  constructor(
+    private renderer: Renderer2,
+    private el: ElementRef,
+    public userService: UserService
+  ) {}
 
   ngOnInit(): void {
     console.log('Sidebar OnInit called');
@@ -23,7 +32,6 @@ export class SideBarComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     console.log('Side Bar OnDestroy called');
   }
-  isSidebarVisible = true;
 
   toggleSidebar() {
     console.log('Toggle side bar clicked');
@@ -34,10 +42,8 @@ export class SideBarComponent implements OnInit, OnDestroy {
       this.el.nativeElement.ownerDocument.getElementById('content');
 
     if (this.isSidebarVisible) {
-      // If sidebar is now open, adjust content margin
       this.renderer.setStyle(content, 'margin-left', '240px');
     } else {
-      // If sidebar is now closed, make content take full width
       this.renderer.setStyle(content, 'margin-left', '0');
     }
   }

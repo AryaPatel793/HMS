@@ -78,8 +78,8 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
       filter: true,
       cellRenderer: this.patientIdCellRenderer,
     },
-    { field: 'name', filter: true },
-    { field: 'age', filter: true },
+    { field: 'name',headerName: 'Name' , filter: true },
+    { field: 'age',headerName: 'Age' , filter: true },
     { field: 'blood_group', headerName: 'Blood Gorup', filter: true },
     { field: 'phone_number', headerName: 'Phone Number', filter: true },
     {
@@ -88,9 +88,9 @@ export class PatientDetailComponent implements OnInit, OnDestroy {
       filter: true,
       cellRenderer: this.addressIdCellRenderer,
     },
-    { field: 'city', filter: true },
-    { field: 'state', filter: true },
-    { field: 'zipcode', filter: true },
+    { field: 'city',headerName: 'City' , filter: true },
+    { field: 'state',headerName: 'State' , filter: true },
+    { field: 'zipcode',headerName: 'Zip Code' , filter: true },
     {
       field: 'is_active',
       headerName: 'Status',

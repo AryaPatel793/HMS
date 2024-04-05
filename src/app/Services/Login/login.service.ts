@@ -12,7 +12,6 @@ export class LoginService {
   private static LOGIN_ENDPOINT = `${Constant.BASE_URL}loginUser/login`;
   private static PASSWORD_ENDPOINT = `${Constant.BASE_URL}loginUser/setPassword`;
 
-
   constructor(private http: HttpClient) {}
 
   login(credentials: any): Observable<any> {
@@ -27,7 +26,7 @@ export class LoginService {
     this.userName = user;
   }
 
-  setPassword(credentials :any){
+  setPassword(credentials: any) {
     return this.http.post(LoginService.PASSWORD_ENDPOINT, credentials);
   }
 }

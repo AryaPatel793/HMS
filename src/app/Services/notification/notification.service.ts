@@ -11,6 +11,7 @@ export class NotificationService {
     this.toastr.success(message, '', {
       progressBar: true,
       progressAnimation: 'decreasing',
+      closeButton: true,
     });
   }
 
@@ -18,6 +19,7 @@ export class NotificationService {
     this.toastr.error(message, '', {
       progressBar: true,
       progressAnimation: 'decreasing',
+      closeButton: true,
     });
   }
 }

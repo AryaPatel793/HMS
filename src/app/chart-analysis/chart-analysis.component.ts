@@ -5,6 +5,7 @@ import { ChartAnalysisService } from '../Services/chart-analysis/chart-analysis.
 import { ChartOptions } from 'chart.js';
 import { Constant } from '../Services/constant/constant';
 import { UserService } from '../Services/user/user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-chart-analysis',
@@ -27,8 +28,15 @@ export class ChartAnalysisComponent implements OnInit, OnDestroy {
   constructor(
     private chartAnalysisService: ChartAnalysisService,
     private zone: NgZone,
-    private userService: UserService
-  ) {}
+    private userService: UserService,
+    private router: Router
+  ) {
+    if (this.userService.getUserRole() === Constant.PATIENT) {
+      this.zone.run(() => {
+        this.router.navigate(['userDashboard/hospital']);
+      });
+    }
+  }
 
   // Intializing component
   ngOnInit(): void {
